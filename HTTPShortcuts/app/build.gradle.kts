@@ -53,6 +53,7 @@ android {
     lint {
         disable.add("MissingTranslation")
         disable.add("Instantiatable")
+        disable.add("ExtraTranslation")
     }
 
     defaultConfig {
@@ -147,6 +148,8 @@ android {
             optimization.keepRules {
                 ignoreFrom("com.github.franmontiel:PersistentCookieJar")
             }
+
+            signingConfig = signingConfigs["development"]
 
             buildConfigField("String", "BUILD_TYPE", "\"RELEASE\"")
         }
