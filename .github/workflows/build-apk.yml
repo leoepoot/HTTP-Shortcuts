@@ -27,6 +27,12 @@ jobs:
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
           $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" || true
 
+      - name: Create local.properties
+        working-directory: HTTPShortcuts
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "java.library.path=$JAVA_HOME/lib" >> local.properties
+
       - name: Grant execute permission for gradlew
         run: chmod +x HTTPShortcuts/gradlew
 
