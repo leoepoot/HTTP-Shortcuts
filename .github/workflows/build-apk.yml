@@ -1,0 +1,54 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master, overlord ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-37 build-tools;37.0.0'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x HTTPShortcuts/gradlew
+
+      - name: Generate debug keystore
+        working-directory: HTTPShortcuts
+        run: |
+          mkdir -p keystores
+          keytool -genkey -v \
+            -keystore keystores/development.jks \
+            -storepass Password1 \
+            -keypass Password1 \
+            -alias development \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Development, OU=Dev, O=Dev, L=Dev, ST=Dev, C=CN"
+
+      - name: Build Debug APK
+        working-directory: HTTPShortcuts
+        run: ./gradlew :app:assembleDebug --console=plain
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: http-shortcuts-debug-arm64-v8a
+          path: HTTPShortcuts/app/build/outputs/apk/debug/*arm64-v8a*.apk
+          if-no-files-found: error

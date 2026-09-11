@@ -44,9 +44,11 @@ class FormMultipartRequestBody(private val parameters: List<RequestBuilder.Param
     }
 
     private fun process(writeString: (String) -> Unit, writeStream: (InputStream, Long?) -> Unit) {
-        writeString("\r\n")
-        parameters.forEach { parameter ->
-            writeString("\r\n--${RequestUtil.FORM_MULTIPART_BOUNDARY}\r\n")
+        parameters.forEachIndexed { index, parameter ->
+            if (index > 0) {
+                writeString("\r\n")
+            }
+            writeString("--${RequestUtil.FORM_MULTIPART_BOUNDARY}\r\n")
             when (parameter) {
                 is RequestBuilder.Parameter.StringParameter -> {
                     writeString("Content-Disposition: form-data; name=\"${sanitize(parameter.name)}\"")
