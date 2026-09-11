@@ -34,6 +34,7 @@ jobs:
         working-directory: HTTPShortcuts
         run: |
           mkdir -p keystores
+          rm -f keystores/development.jks
           keytool -genkey -v \
             -keystore keystores/development.jks \
             -storepass Password1 \
