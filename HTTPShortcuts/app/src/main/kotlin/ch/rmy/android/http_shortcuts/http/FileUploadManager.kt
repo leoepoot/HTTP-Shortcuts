@@ -104,6 +104,7 @@ class FileUploadManager internal constructor(
                 fileName = getFileName(uri, type),
                 data = uri,
                 fileSize = FileUtil.getFileSize(contentResolver, uri),
+                lastModified = FileUtil.getFileLastModified(contentResolver, uri),
                 metaData = if (withMetaData) getMetaData(uri, type) else null,
             )
         }
@@ -171,6 +172,7 @@ class FileUploadManager internal constructor(
         val fileName: String,
         val data: Uri,
         val fileSize: Long?,
+        val lastModified: Long?,
         val metaData: FileMetaData?,
     )
 

@@ -165,6 +165,7 @@ constructor(
                         property("name", file.fileName)
                         property("size", file.fileSize)
                         property("type", file.mimeType)
+                        property("mtime", file.lastModified)
                         property(
                             "meta",
                             scriptingEngine.buildJsObject {

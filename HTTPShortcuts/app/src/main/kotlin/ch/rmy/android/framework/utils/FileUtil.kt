@@ -4,6 +4,8 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.net.Uri
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import androidx.core.content.FileProvider
 import ch.rmy.android.framework.extensions.applyIf
@@ -98,6 +100,48 @@ object FileUtil {
         } catch (_: FileNotFoundException) {
             null
         }
+
+    fun getFileLastModified(contentResolver: ContentResolver, fileUri: Uri): Long? {
+        if (fileUri.scheme == ContentResolver.SCHEME_FILE) {
+            val path = fileUri.path ?: return null
+            return try {
+                java.io.File(path).lastModified().takeIf { it > 0 }
+            } catch (_: Exception) {
+                null
+            }
+        }
+
+        if (fileUri.scheme == ContentResolver.SCHEME_CONTENT) {
+            tryOrLog {
+                contentResolver.query(
+                    fileUri,
+                    arrayOf(
+                        DocumentsContract.Document.COLUMN_LAST_MODIFIED,
+                        MediaStore.MediaColumns.DATE_MODIFIED,
+                    ),
+                    null, null, null,
+                )?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        val lastModifiedCol = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+                        if (lastModifiedCol != -1 && !cursor.isNull(lastModifiedCol)) {
+                            val value = cursor.getLong(lastModifiedCol)
+                            if (value > 0) {
+                                return value
+                            }
+                        }
+                        val dateModifiedCol = cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED)
+                        if (dateModifiedCol != -1 && !cursor.isNull(dateModifiedCol)) {
+                            val value = cursor.getLong(dateModifiedCol)
+                            if (value > 0) {
+                                return value * 1000
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
 
     fun getCacheFileOriginalName(cacheFileUri: Uri): String? =
         cacheFileNames[cacheFileUri]
