@@ -166,12 +166,16 @@ constructor(
                         property("size", file.fileSize)
                         property("type", file.mimeType)
                         property("mtime", file.lastModified)
+                        property("uri", file.data.toString())
+                        property("extension", file.fileName.substringAfterLast('.', "").ifEmpty { null })
                         property(
                             "meta",
                             scriptingEngine.buildJsObject {
                                 file.metaData?.let {
                                     property("orientation", it.orientation)
                                     property("created", it.created)
+                                    property("width", it.width)
+                                    property("height", it.height)
                                 }
                             },
                         )

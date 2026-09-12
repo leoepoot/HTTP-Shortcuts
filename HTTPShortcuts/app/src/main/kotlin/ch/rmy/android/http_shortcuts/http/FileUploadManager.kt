@@ -147,6 +147,8 @@ class FileUploadManager internal constructor(
                     FileMetaData(
                         orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0),
                         created = exifInterface.getAttribute(ExifInterface.TAG_DATETIME)?.formatDateTime(),
+                        width = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 0).takeIf { it > 0 },
+                        height = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 0).takeIf { it > 0 },
                     )
                 }
         } catch (_: IOException) {
@@ -176,9 +178,12 @@ class FileUploadManager internal constructor(
         val metaData: FileMetaData?,
     )
 
+    @Keep
     data class FileMetaData(
         val orientation: Int,
         val created: String?,
+        val width: Int?,
+        val height: Int?,
     )
 
     @Keep
