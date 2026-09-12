@@ -145,6 +145,9 @@ const numberOfFiles = selectedFiles.length;
 selectedFiles[0].name;
 selectedFiles[0].size; // 裁剪/旋转之后
 selectedFiles[0].type;
+selectedFiles[0].mtime; // 文件修改时间，毫秒时间戳，若无法获取则为 null
+selectedFiles[0].uri; // 原始 content:// URI 字符串
+selectedFiles[0].extension; // 文件扩展名，无扩展名时为 null
 selectedFiles[0].meta;
 ```
 
@@ -156,7 +159,17 @@ selectedFiles[0].id;
 const allFileIds = selectedFiles.map(file => file.id);
 ```
 
-`meta` 字段目前仅提供有关图像的信息，否则为空对象。它允许读取图像的方向以及创建时间戳（"yyyy-MM-dd HH:mm:ss" 格式）：
+`mtime` 字段返回文件的最后修改时间，以毫秒时间戳表示。若无法从文件提供者获取该信息，则为 `null`。你可以将其转换为 `Date` 对象：
+
+```js
+const mtime = selectedFiles[0].mtime;
+if (mtime !== null) {
+  const date = new Date(mtime);
+  console.log(date.toISOString());
+}
+```
+
+`meta` 字段目前仅提供有关图像的信息，否则为空对象。它允许读取图像的方向、创建时间戳（"yyyy-MM-dd HH:mm:ss" 格式）以及宽度和高度（像素）：
 
 ```js
 const myMeta = selectedFiles[0].meta;
@@ -166,6 +179,8 @@ myMeta 现在可能是这样的：
 {
   'created': '2022-12-31 23:59:59',
   'orientation': 1,
+  'width': 1920,
+  'height': 1080,
 }
 */
 ```
