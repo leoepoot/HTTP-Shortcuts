@@ -72,10 +72,6 @@ android {
         manifestPlaceholders["bugsnagAPIKey"] = bugsnagAPIKey
         testInstrumentationRunnerArguments["package"] = "ch.rmy.android.http_shortcuts"
         vectorDrawables.useSupportLibrary = true
-
-        ndk {
-            abiFilters.addAll(listOf("arm64-v8a"))
-        }
     }
 
     androidResources {
