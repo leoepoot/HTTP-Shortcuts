@@ -1,46 +1,46 @@
 <a id="scripting"></a>
-# Scripting
+# 脚本编写
 
-When a shortcut is executed it is possible to run JavaScript code snippets before or after execution. You'll find the corresponding settings in the shortcut editor in the *"Scripting"* section.
+执行快捷方式时，可以在执行前或执行后运行 JavaScript 代码片段。你可以在快捷方式编辑器的*"脚本编写"*部分找到相应的设置。
 
-![Scripting Option in Shortcut Editor](../assets/documentation/scripting/01.png)
-![Scripting Editor](../assets/documentation/scripting/02.png)
+![快捷方式编辑器中的脚本编写选项](../assets/documentation/scripting/01.png)
+![脚本编辑器](../assets/documentation/scripting/02.png)
 
-Additionally, you'll find an option in the app's settings (labeled "Global Scripting") that allows you to run code before the execution of every shortcut, which can be used to define shared functions.
+此外，你会在应用设置中找到一个选项（标记为"全局脚本"），允许你在每个快捷方式执行前运行代码，这可以用来定义共享函数。
 
-Most of [JavaScript's built-in functionalities](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference) can be used normally, e.g., to manipulate [Strings](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) or [Arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array). Additionally, the app has some functions and utilities built in for convenience, all of which are documented below.
+大多数 [JavaScript 的内置功能](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference) 都可以正常使用，例如操作 [字符串](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) 或 [数组](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)。此外，应用内置了一些方便的函数和工具，所有这些都在下面有文档说明。
 
-Using these code blocks, there are a number of things you can achieve. See the [examples page](scripting-examples.md) for inspiration and some common use-cases.
+使用这些代码块，你可以实现许多功能。有关灵感和一些常见用例，请参阅[示例页面](scripting-examples.md)。
 
-**Pro-tip:** Writing code on a phone is tedious. If you're intending to write longer blocks of code, I recommend you check out the [Web Editor](https://http-shortcuts.rmy.ch/editor/) for more convenient configuration of your shortcuts.
+**专业提示：** 在手机上写代码很繁琐。如果你打算写较长的代码块，我建议你查看 [Web 编辑器](https://http-shortcuts.rmy.ch/editor/) 以便更方便地配置你的快捷方式。
 
 <a id="handle-response"></a>
-## Handling the Response
+## 处理响应
 
-You can access the response of your HTTP request via the `response` object.
+你可以通过 `response` 对象访问 HTTP 请求的响应。
 
-> Please note that the `response` object is only available in the *"Run on Success"* code block, as well as in the *"Run on Failure"* code block in case there was an HTTP response (i.e., a status code of 4xx or 5xx), and will otherwise be `null`.
+> 请注意，`response` 对象仅在*"成功时运行"*代码块中可用，以及在有 HTTP 响应（即 4xx 或 5xx 状态码）的情况下在*"失败时运行"*代码块中可用，否则为 `null`。
 
-### Getting the Response Body
+### 获取响应体
 
-The response body is available as a string via `response.body`.
+响应体可以通过 `response.body` 作为字符串使用。
 
 ```js
 const myBody = response.body;
 ```
 
-If you know that the response body is in JSON format, you can use `JSON.parse()` to turn it into a JS object, array or primitive.
+如果你知道响应体是 JSON 格式的，可以使用 `JSON.parse()` 将其转换为 JS 对象、数组或原始类型。
 
 ```js
 const myJson = JSON.parse(response.body);
 ```
 
 <a id="response-headers"></a>
-### Getting Response Headers
+### 获取响应头
 
-The response headers are available as an object (key-value-pairs) via `response.headers`. Each key corresponds to the name of the header and its value is an array of strings of all the headers with that name.
+响应头可以通过 `response.headers` 作为对象（键值对）使用。每个键对应头的名称，其值是具有该名称的所有头的字符串数组。
 
-There is also a convenience function `response.getHeader(name)` which can be used to get the value of a specific header by its name. If there are multiple headers with that name, the last one is returned, and if there are none, `null` is returned.
+还有一个便捷函数 `response.getHeader(name)`，可用于通过名称获取特定头的值。如果有多个同名头，则返回最后一个；如果没有，则返回 `null`。
 
 ```js
 const contentType = response.headers['Content-Type'][0];
@@ -49,20 +49,20 @@ const contentLength = response.getHeader('Content-Length');
 ```
 
 <a id="response-status"></a>
-### Getting the Status Code
+### 获取状态码
 
-The response's HTTP status code is available as an integer via `response.statusCode`.
+响应的 HTTP 状态码可以通过 `response.statusCode` 作为整数使用。
 
 ```js
 const isNotFound = response.statusCode == 404;
 ```
 
 <a id="response-cookies"></a>
-### Getting Cookies
+### 获取 Cookie
 
-The response's cookies are available as an object (key-value-pairs) via `response.cookies`. Each key corresponds to the name of the cookie and its value is an array of strings of all the cookies with that name.
+响应的 Cookie 可以通过 `response.cookies` 作为对象（键值对）使用。每个键对应 Cookie 的名称，其值是具有该名称的所有 Cookie 的字符串数组。
 
-There is also a convenience function `response.getCookie(name)` which can be used to get the value of a specific cookie by its name. If there are multiple cookies with that name, the last one is returned, and if there are none, `null` is returned.
+还有一个便捷函数 `response.getCookie(name)`，可用于通过名称获取特定 Cookie 的值。如果有多个同名 Cookie，则返回最后一个；如果没有，则返回 `null`。
 
 ```js
 const myCookieValue = response.cookies['MyCookieName'][0];
@@ -70,61 +70,61 @@ const myCookieValue = response.cookies['MyCookieName'][0];
 const myCookieValue2 = response.getCookie('MyCookieName2');
 ```
 
-If you need more details about a cookie (e.g. its expiration timestamp) you can use `response.headers['Set-Cookie']` to read out the cookie headers directly.
+如果你需要关于 Cookie 的更多详细信息（例如其过期时间戳），可以使用 `response.headers['Set-Cookie']` 直接读取 Cookie 头。
 
 <a id="response-errors"></a>
-### Errors
+### 错误
 
-Please note that the `response` object will be `null` if there was no response from the server, i.e., in case of a network error. In that case, you can inspect the `networkError` to get a string describing the error.
+请注意，如果没有来自服务器的响应，即网络错误的情况下，`response` 对象将为 `null`。在这种情况下，你可以检查 `networkError` 以获取描述错误的字符串。
 
 <a id="variables"></a>
-## Reading & Writing Variables
+## 读写变量
 
-In the app you can create [local and global variables](variables) to be used in your shortcuts, e.g. to dynamically insert values for a URL, a query parameter or part of the request body. You'll find the global variable editor via the "Global Variables" option in the menu in the app's main screen.
+在应用中，你可以创建[局部和全局变量](variables.md)以在快捷方式中使用，例如为 URL、查询参数或请求体的一部分动态插入值。你可以通过应用主屏幕菜单中的"全局变量"选项找到全局变量编辑器。
 
-This section explains how you can interact with these variables from a script.
+本节介绍如何从脚本中与这些变量交互。
 
 <a id="get-variable"></a>
 ### getVariable
 
-You can access the value of any of your local or global variables via the `getVariable()` function. Simply pass the variable's name or ID as the first argument.
+你可以通过 `getVariable()` 函数访问任何局部或全局变量的值。只需将变量的名称或 ID 作为第一个参数传入。
 
 ```js
 const myValue = getVariable('myVariable');
 ```
 
-> Please note that the returned value will always be a string. If the variable does not exist an error is raised.
+> 请注意，返回的值始终是字符串。如果变量不存在，则会引发错误。
 
 <a id="set-variable"></a>
 ### setVariable
 
-You can store a value as a string into a variable via the `setVariable()` function. Simply pass the variable's name or ID as the first argument and the value you want to store as the second argument.
+你可以通过 `setVariable()` 函数将值作为字符串存储到变量中。只需将变量的名称或 ID 作为第一个参数传入，将你要存储的值作为第二个参数传入。
 
-In the case of a global variable, if its type supports it, the value will be used for the current shortcut execution and will also be stored. In the case of a local variable, the value will only be used for the current execution, as local variables are not persisted.
+对于全局变量，如果其类型支持，该值将用于当前快捷方式执行，并且也会被存储。对于局部变量，该值仅用于当前执行，因为局部变量不会被持久化。
 
 ```js
 setVariable('myVariable', 'Hello World');
 ```
 
-> Please note that there is a size limit of 30'000 characters. If you set a value larger than that, it will be used unaltered for the current execution, but the value that is stored will be truncated.
+> 请注意，大小限制为 30'000 个字符。如果你设置的值大于此，它将在当前执行中原样使用，但存储的值将被截断。
 
-As an optional third argument you can pass a boolean. If it is `true`, the new value will be stored but not used immediately for the current execution. This is useful for global variables of types which support the 'Remember value' feature (such as Date Input, Time Input, Text Input, etc.) as it allows to change the stored previous value which is used as the default selected value. This argument has no effect for local variables, as they are not persisted.
+作为可选的第三个参数，你可以传入一个布尔值。如果为 `true`，新值将被存储但不会立即用于当前执行。这对于支持"记住值"功能的全局变量类型（如日期输入、时间输入、文本输入等）很有用，因为它允许更改存储的上一个值，该值用作默认选中值。此参数对局部变量没有影响，因为它们不会被持久化。
 
 ```js
-setVariable('myVariable', 'Hello World', true); // only changes the stored value, but variable will still resolve normally if used afterwards
+setVariable('myVariable', 'Hello World', true); // 只更改存储的值，但如果之后使用该变量，它仍会正常解析
 ```
 
 <a id="shortcut-info"></a>
-## Getting Information about the Current Shortcut
+## 获取当前快捷方式的信息
 
-You can easily retrieve information about the current shortcut and the category it belongs to from the `shortcut` object. This includes the shortcut's ID, name, description, icon, and whether it is hidden, as well as its category's ID and name.
+你可以从 `shortcut` 对象中轻松检索当前快捷方式及其所属分类的信息。这包括快捷方式的 ID、名称、描述、图标、是否隐藏，以及其分类的 ID 和名称。
 
 ```js
 shortcut.id;
 shortcut.name;
 shortcut.description;
 shortcut.icon;
-shortcut.canonicalIcon; // same as icon, but without the color suffix, if there is one
+shortcut.canonicalIcon; // 与 icon 相同，但如果有颜色后缀则不包含
 shortcut.hidden;
 shortcut.category.id;
 shortcut.category.name;
@@ -132,23 +132,23 @@ shortcut.category.name;
 
 
 <a id="files"></a>
-## Files
+## 文件
 
-### Selected Files
+### 已选文件
 
-If your shortcut makes use of file parameters or uses the content of a file as the request body then you can access information about these files using the `selectedFiles` array. Each selected file has an entry, allowing you to read out its file name, size (in bytes), media type and potentially some additional meta information.
+如果你的快捷方式使用了文件参数或将文件内容用作请求体，那么你可以使用 `selectedFiles` 数组访问这些文件的信息。每个已选文件都有一个条目，允许你读取其文件名、大小（字节）、媒体类型以及可能的一些额外元信息。
 
 
 ```js
 const numberOfFiles = selectedFiles.length;
 
 selectedFiles[0].name;
-selectedFiles[0].size; // AFTER cropping/rotating
+selectedFiles[0].size; // 裁剪/旋转之后
 selectedFiles[0].type;
 selectedFiles[0].meta;
 ```
 
-Each file also has a unique ID, which can be used within the app to uniquely identify the file during the shortcut execution. It is useful if you want to forward these files to another shortcut using the [`enqueueShortcut`](#trigger-shortcut) function, or if you want to [read from a file](#read-selected-files).
+每个文件还有一个唯一 ID，可用于在应用内部在快捷方式执行期间唯一标识文件。如果你想使用 [`enqueueShortcut`](#trigger-shortcut) 函数将这些文件转发给另一个快捷方式，或者想[从文件读取](#read-selected-files)，这很有用。
 
 ```js
 selectedFiles[0].id;
@@ -156,13 +156,13 @@ selectedFiles[0].id;
 const allFileIds = selectedFiles.map(file => file.id);
 ```
 
-The `meta` field currently only provides information about images and is otherwise an empty object. It allows to read out an image's orientation and the timestamp of when it was created (in "yyyy-MM-dd HH:mm:ss" format):
+`meta` 字段目前仅提供有关图像的信息，否则为空对象。它允许读取图像的方向以及创建时间戳（"yyyy-MM-dd HH:mm:ss" 格式）：
 
 ```js
 const myMeta = selectedFiles[0].meta;
 
 /*
-myMeta might look like this now:
+myMeta 现在可能是这样的：
 {
   'created': '2022-12-31 23:59:59',
   'orientation': 1,
@@ -170,36 +170,36 @@ myMeta might look like this now:
 */
 ```
 
-The `orientation` field is an integer with the following meaning:
+`orientation` 字段是一个整数，含义如下：
 
-- 0 means no orientation information is available
-- 1 means a rotation of 0 degrees, i.e., no adjustment is needed
-- 2 means a rotation of 0 degrees, and the image is mirrored
-- 3 means a rotation of 180 degrees
-- 4 means a rotation of 180 degrees, and the image is mirrored
-- 5 means a rotation of 90 degrees
-- 6 means a rotation of 90 degrees, and the image is mirrored
-- 7 means a rotation of 270 degrees
-- 8 means a rotation of 270 degrees, and the image is mirrored
+- 0 表示没有方向信息
+- 1 表示旋转 0 度，即无需调整
+- 2 表示旋转 0 度，且图像已镜像
+- 3 表示旋转 180 度
+- 4 表示旋转 180 度，且图像已镜像
+- 5 表示旋转 90 度
+- 6 表示旋转 90 度，且图像已镜像
+- 7 表示旋转 270 度
+- 8 表示旋转 270 度，且图像已镜像
 
 
 <a id="read-write-files"></a>
-### Reading and Writing Files
+### 读写文件
 
-If you want to read from an existing file or write data to a file, you first need to mount the directory which contains the file. This can be done via the ["(Mounted) Directories screen](directories.md). Once you have a mounted directory, you can use the `getDirectory()` function to get a handle to it. Pass the name of the mounted directory as the first argument. This handle then lets you read and write files, using the `readFile()`, `writeFile()` and `appendFile()` functions.
+如果你想读取现有文件或将数据写入文件，首先需要挂载包含该文件的目录。这可以通过["（已挂载的）目录"屏幕](directories.md)完成。挂载目录后，你可以使用 `getDirectory()` 函数获取其句柄。将挂载目录的名称作为第一个参数传入。然后，该句柄允许你使用 `readFile()`、`writeFile()` 和 `appendFile()` 函数读写文件。
 
-For `readFiles()`, pass the name or path of the file you wish to read from as the first argument, relative to the mounted directory. The file must exist, otherwise an error is raised. As an optional second argument, you can pass the encoding that should be used to read the file, which defaults to UTF-8. The file's entire content is returned as a string.
+对于 `readFile()`，将你想要读取的文件的名称或路径作为第一个参数传入，相对于挂载目录。该文件必须存在，否则会引发错误。作为可选的第二个参数，你可以传入用于读取文件的编码，默认为 UTF-8。文件的全部内容作为字符串返回。
 
 ```js
 const dir = getDirectory('myMountedDirectory');
 const fileContent = dir.readFile('someDir/someFile.txt');
 ```
 
-For `writeFile()` and `appendFile()`, pass the name or path of the file you wish to write to as the first argument, relative to the mounted directory. If the file or a directory along its path does not yet exist, it is automatically created.
+对于 `writeFile()` 和 `appendFile()`，将你想要写入的文件的名称或路径作为第一个参数传入，相对于挂载目录。如果文件或其路径上的目录尚不存在，它会自动创建。
 
-> For `writeFile()`, if the file already exists, its contents will be replaced without warning! For `appendFile()`, the new content will be appended and the existing file content is preserved.
+> 对于 `writeFile()`，如果文件已存在，其内容将被替换，不会有警告！对于 `appendFile()`，新内容将被追加，现有文件内容将被保留。
 
-As the second argument, pass the content you wish to write into the file. If this is an array, `Uint8Array` or `Int8Array`, it will be written as bytes. Otherwise, it will be written as a string, using UTF-8 encoding.
+作为第二个参数，传入你想要写入文件的内容。如果它是数组、`Uint8Array` 或 `Int8Array`，它将被作为字节写入。否则，它将被作为字符串写入，使用 UTF-8 编码。
 
 ```js
 const dir = getDirectory('myMountedDirectory');
@@ -208,37 +208,37 @@ dir.appendFile('someFile.txt', [72, 101, 108, 108, 111]);
 ```
 
 <a id="read-selected-files"></a>
-### Reading selected files
+### 读取已选文件
 
-The `getDirectory` function can also be used to read the contents of files that have been selected or shared, i.e., the files listed in `selectedFiles`. Instead of passing the name or ID of a mounted directory, simply omit the argument. You can then call the `readFile()` function on the returned object, using either the file name or ID as the first argument.
+`getDirectory` 函数还可用于读取已选择或已共享的文件的内容，即 `selectedFiles` 中列出的文件。无需传入挂载目录的名称或 ID，直接省略参数即可。然后你可以对返回的对象调用 `readFile()` 函数，将文件名或 ID 作为第一个参数。
 
 ```js
 const dir = getDirectory();
 const fileContent = dir.readFile(selectedFiles[0].id);
 ```
 
-> It is not possible to write to the selected files.
+> 无法写入已选文件。
 
 <a id="user-interaction"></a>
-## User Interaction
+## 用户交互
 
-This section describes how you can interact with the user (i.e., you), during the execution of a shortcut, e.g., to ask for additional input, to confirm an action or to display information.
+本节介绍如何在快捷方式执行期间与用户（即你）交互，例如询问额外输入、确认操作或显示信息。
 
 <a id="show-toast"></a>
 ### showToast
 
-With this function you can display a toast message on the screen. Simply pass your message as the first argument.
+使用此函数，你可以在屏幕上显示吐司提示消息。只需将你的消息作为第一个参数传入。
 
 ```js
 showToast('Hello World');
 ```
 
-> Please note that no toast will be displayed if the string you pass is empty. Also note that a toast will show at most two lines of text, so it is best suited for short messages.
+> 请注意，如果你传入的字符串为空，则不会显示吐司。还要注意，吐司最多显示两行文本，因此最适合短消息。
 
 <a id="show-dialog"></a>
 ### showDialog
 
-With this function you can display a dialog window on the screen. Simply pass your message as the first argument, and optionally a title for the dialog as the second argument. The dialog will be displayed until its *"OK"* button is pressed.
+使用此函数，你可以在屏幕上显示对话框窗口。只需将你的消息作为第一个参数传入，可选地将对话框标题作为第二个参数传入。对话框将一直显示，直到按下其*"确定"*按钮。
 
 ```js
 showDialog('My Message', 'My Title');
@@ -246,11 +246,11 @@ showDialog('My Message', 'My Title');
 showDialog('You can also use <b>basic</b> <i>HTML</i> for formatting the message.');
 ```
 
-> Please note that no dialog will be displayed if the string you pass is empty.
+> 请注意，如果你传入的字符串为空，则不会显示对话框。
 
-As an optional third argument, you can pass an object with additional options. Currently, the only supported option is `buttons`, which is an array of 1-2 strings to customize the buttons displayed on the dialog.
+作为可选的第三个参数，你可以传入一个带有额外选项的对象。目前，唯一支持的选项是 `buttons`，它是一个包含 1-2 个字符串的数组，用于自定义对话框上显示的按钮。
 
-The function returns an object with a `result` field in it, which resolves to either "ok" (if no custom buttons were defined and the default OK button was clicked), "button1" (if the first custom button was clicked), "button2" (if the second custom button was clicked), or "canceled" (if the dialog was canceled).
+该函数返回一个对象，其中包含 `result` 字段，其值为 "ok"（如果未定义自定义按钮且点击了默认的确定按钮）、"button1"（如果点击了第一个自定义按钮）、"button2"（如果点击了第二个自定义按钮）或 "canceled"（如果对话框被取消）。
 
 ```js
 const dialogResult = showDialog('My Message', 'My Title', {buttons: ['Yay', 'Oh no']});
@@ -262,17 +262,17 @@ if (dialogResult.result == 'button1') {
 <a id="show-window"></a>
 ### showWindow
 
-With this function you can display arbitrary text in a fullscreen window, by passing in an object with the configuration for the screen.
+使用此函数，你可以在全屏窗口中显示任意文本，方法是传入一个带有屏幕配置的对象。
 
-The config object supports the following fields:
+配置对象支持以下字段：
 
-|Parameter|Description|Type / Values|
+|参数|描述|类型 / 值|
 |---|---|---|
-|title|Defines the title of the window|string|
-|text|The main content to display in the window. Must be non-empty|string|
-|mimeType|The type of the `text`, used to determine how to render it. Supported values are "text/plain" (default), "text/html", "text/xml", "text/yaml" and "application/json" |string|
-|monospace|Whether to use a monospace font for the text. Defaults to `false`|boolean|
-|fontSize|The font size for the text. Must be a value between 5 and 50.|int|
+|title|定义窗口的标题|string|
+|text|窗口中显示的主要内容。必须非空|string|
+|mimeType|`text` 的类型，用于确定如何渲染它。支持的值有 "text/plain"（默认）、"text/html"、"text/xml"、"text/yaml" 和 "application/json"|string|
+|monospace|是否对文本使用等宽字体。默认为 `false`|boolean|
+|fontSize|文本的字体大小。必须是 5 到 50 之间的值。|int|
 
 ```js
 showWindow({
@@ -285,15 +285,15 @@ showWindow({
 <a id="prompt-confirm"></a>
 ### prompt, confirm
 
-Similar to how JavaScript works in a browser, you can use `prompt()` and `confirm()` to ask the user for input as part of a workflow.
+与 JavaScript 在浏览器中的工作方式类似，你可以使用 `prompt()` 和 `confirm()` 作为工作流的一部分向用户询问输入。
 
-`prompt()` will open a dialog window asking for text input. The entered text is then returned as a string. If the dialog is canceled, `null` is returned instead. Pass a message in as the first argument, and optionally a second argument to prefill the text input field. As an optional third argument, you may pass an object with additional options. Currently only the `multiline` option is supported, which when set to `true` will change the text input field to allow for multiline text.
+`prompt()` 将打开一个对话框窗口，要求输入文本。输入的文本随后作为字符串返回。如果对话框被取消，则返回 `null`。将消息作为第一个参数传入，可选地传入第二个参数来预填文本输入字段。作为可选的第三个参数，你可以传入一个带有额外选项的对象。目前仅支持 `multiline` 选项，当设置为 `true` 时，会将文本输入字段更改为允许多行文本。
 
-`confirm()` will open a confirmation dialog. It returns true if the dialog is confirmed, or false if it is canceled. Pass a message in as the first argument.
+`confirm()` 将打开一个确认对话框。如果对话框被确认，则返回 true；如果被取消，则返回 false。将消息作为第一个参数传入。
 
 ```js
 if (confirm('Are you sure?')) {
-  // Do something only if the user clicked 'OK'
+  // 仅在用户点击'确定'时执行某些操作
 }
 ```
 
@@ -306,11 +306,11 @@ prompt("What's your story?", "I was born in...", { multiline: true });
 <a id="prompt-number"></a>
 ### promptNumber
 
-You can use the `promptNumber` function to open an input dialog that asks for a number. The entered number will be the return value, or `null` if the dialog is canceled. If the entered value is not a valid number `NaN` will be returned.
+你可以使用 `promptNumber` 函数打开一个要求输入数字的输入对话框。输入的数字将是返回值，如果对话框被取消则为 `null`。如果输入的值不是有效数字，则返回 `NaN`。
 
-See also [promptNumberSlider](#prompt-number-slider).
+另请参阅 [promptNumberSlider](#prompt-number-slider)。
 
-As the first argument pass the text to display on the dialog. This must not be empty. As an optional second argument you may pass a default value which is used to prefill the input field.
+将要在对话框上显示的文本作为第一个参数传入。这不能为空。作为可选的第二个参数，你可以传入一个默认值，用于预填输入字段。
 
 ```js
 const myNumber = promptNumber('What is your favorite number?', 42);
@@ -319,20 +319,20 @@ const myNumber = promptNumber('What is your favorite number?', 42);
 <a id="prompt-number-slider"></a>
 ### promptNumberSlider
 
-The `promptNumberSlider` function opens a dialog window that shows a horizontal number slider widget. The selected number will be the return value, or `null` if the dialog is canceled.
+`promptNumberSlider` 函数打开一个对话框窗口，显示一个水平数字滑块小部件。所选数字将是返回值，如果对话框被取消则为 `null`。
 
-As the first argument pass an object that may contain the following fields to configure the dialog and the slider:
+将一个对象作为第一个参数传入，该对象可能包含以下字段来配置对话框和滑块：
 
-|Parameter|Description|Type / Values|
+|参数|描述|类型 / 值|
 |---|---|---|
-|title|Defines the title of the dialog|string|
-|text|The main content to dialog|string|
-|prefix|Text displayed before the number|string|
-|suffix|Text displayed after the number|string|
-|value|The initially selected value|number|
-|min|The minimum value of the slider. Defaults to 0|number|
-|max|The maximum value of the slider. Defaults to 100|number|
-|stepSize|The step size of the slider. Defaults to 1|number|
+|title|定义对话框的标题|string|
+|text|对话框的主要内容|string|
+|prefix|显示在数字之前的文本|string|
+|suffix|显示在数字之后的文本|string|
+|value|初始选中的值|number|
+|min|滑块的最小值。默认为 0|number|
+|max|滑块的最大值。默认为 100|number|
+|stepSize|滑块的步长。默认为 1|number|
 
 ```js
 const myNumber = promptNumberSlider({
@@ -349,7 +349,7 @@ const myNumber = promptNumberSlider({
 <a id="prompt-password"></a>
 ### promptPassword
 
-The `promptPassword()` function opens a text input dialog that asks for a password. The entered password is then returned, or `null` if the dialog is canceled. Pass a message in as the first argument, and optionally a second argument to prefill the text input field.
+`promptPassword()` 函数打开一个要求输入密码的文本输入对话框。输入的密码随后被返回，如果对话框被取消则返回 `null`。将消息作为第一个参数传入，可选地传入第二个参数来预填文本输入字段。
 
 ```js
 const myPassword = promptPassword("Please enter your password:");
@@ -359,7 +359,7 @@ const myPassword2 = promptPassword("Please enter your password:", "secret123");
 <a id="prompt-color"></a>
 ### promptColor
 
-The `promptColor()` function opens a color picker. The selected color is returned in hex RGB (e.g. FF0000 for red), or `null` if the picker is canceled. As an optional first argument you can pass in the pre-selected color. As an optional second argument you can pass a title for the picker dialog.
+`promptColor()` 函数打开一个颜色选择器。所选颜色以十六进制 RGB 返回（例如红色为 FF0000），如果选择器被取消则返回 `null`。作为可选的第一个参数，你可以传入预选的颜色。作为可选的第二个参数，你可以为选择器对话框传入标题。
 
 ```js
 const myColor = promptColor();
@@ -367,12 +367,12 @@ const myColor2 = promptColor("#FF0000");
 const myColor3 = promptColor(null, "Pick a color");
 ```
 
-If you need the red, green and blue components separately, check out [this example](scripting-examples.md#split-color).
+如果你需要分别获取红色、绿色和蓝色分量，请查看[此示例](scripting-examples.md#split-color)。
 
 <a id="prompt-date"></a>
 ### promptDate
 
-The `promptDate()` function opens a date picker. The selected date is returned, or `null` if the picker is canceled. As the first argument, you may pass the date format that should be used for the return value (defaults to yyyy-MM-dd), and as a second argument you may pass the preselected date (in yyyy-MM-dd format). As an optional third argument you can pass a title for the picker dialog.
+`promptDate()` 函数打开一个日期选择器。所选日期被返回，如果选择器被取消则返回 `null`。作为第一个参数，你可以传入用于返回值的日期格式（默认为 yyyy-MM-dd），作为第二个参数，你可以传入预选日期（yyyy-MM-dd 格式）。作为可选的第三个参数，你可以为选择器对话框传入标题。
 
 ```js
 const myDate = promptDate();
@@ -383,7 +383,7 @@ const myDate3 = promptDate(null, null, "Pick a date");
 <a id="prompt-time"></a>
 ### promptTime
 
-The `promptTime()` function opens a time picker. The selected time is returned, or `null` if the picker is canceled. As the first argument, you may pass the time format that should be used for the return value (defaults to HH:mm), and as a second argument you may pass the preselected time (in HH:mm format). As an optional third argument you can pass a title for the picker dialog.
+`promptTime()` 函数打开一个时间选择器。所选时间被返回，如果选择器被取消则返回 `null`。作为第一个参数，你可以传入用于返回值的时间格式（默认为 HH:mm），作为第二个参数，你可以传入预选时间（HH:mm 格式）。作为可选的第三个参数，你可以为选择器对话框传入标题。
 
 ```js
 const myTime = promptTime();
@@ -394,27 +394,27 @@ const myTime3 = promptTime(null, null, "Pick a time");
 <a id="show-selection"></a>
 ### showSelection & showMultiSelection
 
-These functions allows you to display a dialog with multiple options to choose from. The first argument must be either an object consisting of key-value string pairs, or an array of strings. As an optional second argument you may pass a title for the dialog.
+这些函数允许你显示一个带有多个选项可供选择的对话框。第一个参数必须是由键值字符串对组成的对象，或者是字符串数组。作为可选的第二个参数，你可以为对话框传入标题。
 
-For `showSelection`, a single option can be selected, and the function returns its key or value, or `null` if the dialog is closed without a selection (e.g. by pressing the back button).
+对于 `showSelection`，可以选择单个选项，函数返回其键或值，如果对话框在没有选择的情况下关闭（例如通过按返回按钮）则返回 `null`。
 
-For `showMultiSelection`, multiple options can be selected and the function returns an array of of the selected keys or values, or `null` if the dialog is closed without a selection.
+对于 `showMultiSelection`，可以选择多个选项，函数返回所选键或值的数组，如果对话框在没有选择的情况下关闭则返回 `null`。
 
 ```js
-// Using an array of strings, for a single selection
+// 使用字符串数组，进行单选
 const starterPokemon = showSelection(['Bulbasaur', 'Charmander', 'Squirtle']);
 
-// Using an object, for a single selection
+// 使用对象，进行单选
 const favoriteColor = showSelection({
   '#ff0000': 'Red',
   '#00ff00': 'Green',
   '#0000ff': 'Blue',
 }, 'Pick your favorite color');
 
-// Using an array of strings, for multiple selection
+// 使用字符串数组，进行多选
 const favoriteSeasons = showMultiSelection(['spring', 'summer', 'fall', 'winter']);
 
-// Using an object, for multiple selection
+// 使用对象，进行多选
 const availableWeekdays = showMultiSelection({
   '0': 'Sunday',
   '1': 'Monday',
@@ -429,9 +429,9 @@ const availableWeekdays = showMultiSelection({
 <a id="show-notification"></a>
 ### showNotification
 
-The `showNotification()` function allows you to display text in a notification. As the first argument, pass the title of the notification and as an optional second argument you can pass a message.
+`showNotification()` 函数允许你在通知中显示文本。将通知的标题作为第一个参数传入，作为可选的第二个参数，你可以传入一条消息。
 
-> The first time this function is used, you will be prompted to grant the notification permission. If you decline, the function will not do anything. To enable it again, you need to go to the app's permissions settings and grant the notification permission manually.
+> 第一次使用此函数时，系统会提示你授予通知权限。如果你拒绝，该函数将不会执行任何操作。要再次启用它，你需要前往应用的权限设置并手动授予通知权限。
 
 ```js
 showNotification('Hello World');
@@ -441,7 +441,7 @@ showNotification('Hello World', 'This is a notification');
 <a id="play-sound"></a>
 ### playSound
 
-With this function you can play a notification sound. If no argument is passed, it will use the system's default notification sound. You can use the Code Snippet picker inside the app to select a different sound.
+使用此函数，你可以播放通知声音。如果不传入任何参数，它将使用系统的默认通知声音。你可以使用应用内的代码片段选择器选择不同的声音。
 
 ```js
 playSound();
@@ -450,9 +450,9 @@ playSound();
 <a id="speak"></a>
 ### speak
 
-With this function you can have a piece of text be read out loud, using the device's text-to-speech engine. Simply pass the text you want to read as the first argument, and optionally a language identifier as the second argument.
+使用此函数，你可以使用设备的文本转语音引擎将一段文本大声朗读出来。只需将你想要朗读的文本作为第一个参数传入，可选地将语言标识符作为第二个参数传入。
 
-> Please note that only the first 400 characters will be read. Please also note that the second argument is ignored if the language is not supported.
+> 请注意，只会朗读前 400 个字符。还要注意，如果不支持该语言，第二个参数将被忽略。
 
 ```js
 speak('Hello World');
@@ -460,24 +460,24 @@ speak('Hello World');
 speak('Dieser Text ist deutsch', 'de');
 ```
 
-> This function may not be supported by all devices.
+> 并非所有设备都支持此函数。
 
 <a id="vibrate"></a>
 ### vibrate
 
-With this function you can cause the device to vibrate (if supported). As an optional first argument, you can pass the name of the vibration pattern you want to use, and as an optional second argument you can pass a boolean denoting whether the execution should wait for the vibration pattern to finish or not.
+使用此函数，你可以使设备振动（如果支持）。作为可选的第一个参数，你可以传入你想要使用的振动模式的名称，作为可选的第二个参数，你可以传入一个布尔值，表示执行是否应等待振动模式完成。
 
-Vibration patterns:
+振动模式：
 
-| Name | Description |
+| 名称 | 描述 |
 | --- | --- |
-| short | 1 short pulse. This is the default if no pattern is provided |
-| long | 1 long pulse |
-| 3 pulses | 3 short pulses |
-| click | A very brief, gentle pulse, typically used for haptic feedback of UI elements |
-| tick | A very brief, gentle pulse. Less strong than "click" |
-| heavy click | A very brief, gentle pulse. Stronger than "click" |
-| double click | 2 very brief, gentle pulses |
+| short | 1 个短脉冲。如果未提供模式，这是默认值 |
+| long | 1 个长脉冲 |
+| 3 pulses | 3 个短脉冲 |
+| click | 一个非常短暂、轻柔的脉冲，通常用于 UI 元素的触觉反馈 |
+| tick | 一个非常短暂、轻柔的脉冲。比 "click" 弱 |
+| heavy click | 一个非常短暂、轻柔的脉冲。比 "click" 强 |
+| double click | 2 个非常短暂、轻柔的脉冲 |
 
 ```js
 vibrate("3 pulses", true);
@@ -487,23 +487,23 @@ vibrate("click");
 <a id="scan-barcode"></a>
 ### scanBarcode
 
-The `scanBarcode` function lets you scan a barcode (e.g. a QR code). On success the function returns the raw data of the barcode as a string. If the scanner is canceled, `null` is returned instead.
+`scanBarcode` 函数允许你扫描条形码（例如二维码）。成功时，该函数将条形码的原始数据作为字符串返回。如果扫描器被取消，则返回 `null`。
 
 ```js
 const code = scanBarcode();
 ```
 
-The scanning itself is done by an external app, specifically either [QR Droid](https://play.google.com/store/apps/details?id=la.droid.qr), [Barcode Scanner](https://play.google.com/store/apps/details?id=com.google.zxing.client.android) or [Binary Eye](https://play.google.com/store/apps/details?id=de.markusfisch.android.binaryeye), which means you need to have that app installed for this function to work. This also means that the HTTP Shortcuts app itself will not need access to your camera directly.
+扫描本身由外部应用完成，特别是 [QR Droid](https://play.google.com/store/apps/details?id=la.droid.qr)、[Barcode Scanner](https://play.google.com/store/apps/details?id=com.google.zxing.client.android) 或 [Binary Eye](https://play.google.com/store/apps/details?id=de.markusfisch.android.binaryeye)，这意味着你需要安装该应用才能使用此功能。这也意味着 HTTP Shortcuts 应用本身不需要直接访问你的相机。
 
 <a id="modify-shortcuts"></a>
-## Modify Shortcuts
+## 修改快捷方式
 
-This section lists all the built-in functions which you can use to modify existing shortcuts programmatically.
+本节列出了所有可用于以编程方式修改现有快捷方式的内置函数。
 
 <a id="rename-shortcut"></a>
 ### renameShortcut
 
-With this function you can rename a shortcut. Simply pass the name or ID of a shortcut as the first argument and the new name as the second one. You can also pass an empty string as the first argument to target the current shortcut.
+使用此函数，你可以重命名快捷方式。只需将快捷方式的名称或 ID 作为第一个参数传入，将新名称作为第二个参数传入。你也可以将空字符串作为第一个参数传入，以针对当前快捷方式。
 
 ```js
 renameShortcut('Old Name', 'New Name');
@@ -512,18 +512,18 @@ renameShortcut('Old Name', 'New Name');
 <a id="change-description"></a>
 ### changeDescription
 
-With this function you can change the description of a shortcut. Simply pass the name or ID of a shortcut as the first argument and the new description as the second one. You can also pass an empty string as the first argument to target the current shortcut.
+使用此函数，你可以更改快捷方式的描述。只需将快捷方式的名称或 ID 作为第一个参数传入，将新描述作为第二个参数传入。你也可以将空字符串作为第一个参数传入，以针对当前快捷方式。
 
 ```js
 changeDescription('My Shortcut', 'New Description');
 ```
 
-> A shortcut's description is only visible in categories that use a list layout, not in those that use a grid layout.
+> 快捷方式的描述仅在使用列表布局的分类中可见，在使用网格布局的分类中不可见。
 
 <a id="change-icon"></a>
 ### changeIcon
 
-With this function you can change the icon of a shortcut. Simply pass the name or ID of a shortcut as the first argument and the name of the icon as the second one. You can also pass an empty string as the first argument to target the current shortcut. Use the *"Add Code Snippet"* button in the app to select an icon. Alternatively, you can check the [source code](https://github.com/Waboodoo/HTTP-Shortcuts/blob/develop/HTTPShortcuts/app/src/main/kotlin/ch/rmy/android/http_shortcuts/icons/Icons.kt) for all the available icons names (look for the prefix "R.drawable.", everything after it is a valid icon name).
+使用此函数，你可以更改快捷方式的图标。只需将快捷方式的名称或 ID 作为第一个参数传入，将图标名称作为第二个参数传入。你也可以将空字符串作为第一个参数传入，以针对当前快捷方式。使用应用中的*"添加代码片段"*按钮选择一个图标。或者，你可以查看[源代码](https://github.com/Waboodoo/HTTP-Shortcuts/blob/develop/HTTPShortcuts/app/src/main/kotlin/ch/rmy/android/http_shortcuts/icons/Icons.kt)以获取所有可用图标名称（查找前缀 "R.drawable."，其后的所有内容都是有效的图标名称）。
 
 ```js
 changeIcon('My Shortcut', 'bitsies_lightbulb');
@@ -532,59 +532,59 @@ changeIcon('My Shortcut', 'bitsies_lightbulb');
 <a id="set-shortcut-hidden"></a>
 ### setShortcutHidden
 
-This function allows you to show or hide individual shortcuts inside the app. Simply pass the name or ID of a shortcut as the first argument and `true` or `false` as the second argument. You can also pass an empty string as the first argument to target the current shortcut.
+此函数允许你在应用内显示或隐藏单个快捷方式。只需将快捷方式的名称或 ID 作为第一个参数传入，将 `true` 或 `false` 作为第二个参数传入。你也可以将空字符串作为第一个参数传入，以针对当前快捷方式。
 
 ```js
 setShortcutHidden('My Shortcut', true);
 ```
 
-> You can make hidden shortcuts visible via an option on the Settings screen.
+> 你可以通过设置屏幕上的一个选项让隐藏的快捷方式可见。
 
 <a id="set-category-hidden"></a>
 ### setCategoryHidden
 
-This function allows you to show or hide categories. Simply pass the name or ID of a category as the first argument and `true` or `false` as the second argument.
+此函数允许你显示或隐藏分类。只需将分类的名称或 ID 作为第一个参数传入，将 `true` 或 `false` 作为第二个参数传入。
 
 ```js
 setCategoryHidden('My Category', true);
 ```
 
-> There must always be at least one non-hidden category. If you try to hide the last visible category with this, nothing will happen.
+> 必须始终至少有一个非隐藏分类。如果你尝试用此函数隐藏最后一个可见分类，什么也不会发生。
 
 <a id="control-flow"></a>
-## Control Flow
+## 控制流
 
-This section lists some of the options you have to control the execution flow of your script.
+本节列出了你可以用来控制脚本执行流程的一些选项。
 
 <a id="wait"></a>
 ### wait
 
-The `wait` function allows you to delay execution by waiting (also called sleeping) for a specified number of milliseconds before continuing with the execution of the script.
+`wait` 函数允许你通过等待（也称为休眠）指定的毫秒数来延迟执行，然后再继续执行脚本。
 
 ```js
-wait(3000); // delay execution by 3 seconds
+wait(3000); // 延迟执行 3 秒
 ```
 
-> Please note that this is a blocking action, meaning that you will not be able to interact with the app during the waiting time.
+> 请注意，这是一个阻塞操作，这意味着在等待期间你将无法与应用交互。
 
 <a id="abort"></a>
 ### abort, abortAll and abortAndTreatAsFailure
 
-With the `abort` function you can abort the execution of the shortcut.
+使用 `abort` 函数，你可以中止快捷方式的执行。
 
 ```js
 abort();
 ```
 
-If the shortcut was called from another shortcut via the [executeShortcut](#execute-shortcut) function, only the current shortcut will be aborted. If you want to abort also the calling shortcut, you can use `abortAll()`.
+如果快捷方式是通过 [executeShortcut](#execute-shortcut) 函数从另一个快捷方式调用的，则只会中止当前快捷方式。如果你想同时中止调用的快捷方式，可以使用 `abortAll()`。
 
-As part of the "Run on Success" code block, you can also use the `abortAndTreatAsFailure()` function, which skips the rest of the "success" steps and instead treats the execution as a failure, meaning that the "Run on Failure" code will be run, as well as any other failure-related steps such as displaying an error message. You can use this in cases where the default behavior of only checking the HTTP status code is not enough to determine whether a request should be considered a success. As an optional argument, you can pass a string which will be used as the error message.
+在"成功时运行"代码块中，你还可以使用 `abortAndTreatAsFailure()` 函数，它会跳过剩余的"成功"步骤，而是将执行视为失败，这意味着将运行"失败时运行"代码，以及任何其他与失败相关的步骤，如显示错误消息。你可以在仅检查 HTTP 状态码不足以确定请求是否应被视为成功的情况下使用它。作为可选参数，你可以传入一个字符串，该字符串将用作错误消息。
 
 ```js
-// Basic example
+// 基本示例
 abortAndTreatAsFailure();
 
-// More realistic example
+// 更实际的示例
 const responseBody = JSON.parse(response.body);
 if (responseBody.status === 'error') {
   abortAndTreatAsFailure(responseBody.error);
@@ -592,64 +592,64 @@ if (responseBody.status === 'error') {
 ```
 
 <a id="text-processing"></a>
-## Text Processing
+## 文本处理
 
-This section lists some of the built-in text processing functions.
+本节列出了一些内置的文本处理函数。
 
 <a id="base-64"></a>
 ### base64encode and base64decode
 
-With the `base64encode` and `base64decode` functions you can encode or decode a given string using Base64.
+使用 `base64encode` 和 `base64decode` 函数，你可以使用 Base64 对给定字符串进行编码或解码。
 
 ```js
 const encoded = base64encode('Hello world');
 const decoded = base64decode(encoded);
 ```
 
-The return type of `base64encode` is a string, the returned value of `base64decode` is a `Uint8Array`. You can use `toString()` to convert it to a string if needed.
+`base64encode` 的返回类型是字符串，`base64decode` 的返回值是 `Uint8Array`。如果需要，你可以使用 `toString()` 将其转换为字符串。
 
 <a id="html-encode"></a>
 ### htmlEncode and htmlDecode
 
-The `htmlEncode` function allows you to encode text such that it is HTML-safe, i.e., certain characters will be escaped such that the string can safely be embedded in HTML.
-The `htmlDecode` functions does the opposite, converting HTML encoded text into plain text. This will also strip any HTML tags and replace them with their inner text.
+`htmlEncode` 函数允许你对文本进行编码，使其符合 HTML 安全，即某些字符将被转义，这样字符串就可以安全地嵌入 HTML 中。
+`htmlDecode` 函数则相反，将 HTML 编码的文本转换为纯文本。这也会去除任何 HTML 标签并用其内部文本替换它们。
 
-> The transformations done by these functions is done on a best-effort basis.
+> 这些函数的转换是尽力而为的。
 
 ```js
-htmlEncode("<b>Hello</b>"); // returns &lt;b&gt;Hello&lt;/b&gt;
-htmlDecode("&lt;b&gt;Hello&lt;/b&gt"); // returns <b>Hello</b>
-htmlDecode("<b>Hello</b>"); // returns Hello
+htmlEncode("<b>Hello</b>"); // 返回 &lt;b&gt;Hello&lt;/b&gt;
+htmlDecode("&lt;b&gt;Hello&lt;/b&gt"); // 返回 <b>Hello</b>
+htmlDecode("<b>Hello</b>"); // 返回 Hello
 ```
 
 <a id="hash"></a>
 ### hash
 
-With the `hash` function you can compute the hash of a given string. The first argument denotes the hashing algorithm to use (supported algorithms are `MD5`, `SHA-1`, `SHA-256`, and `SHA-512`) and the second one the string to hash. The return value is in hex format.
+使用 `hash` 函数，你可以计算给定字符串的哈希值。第一个参数表示要使用的哈希算法（支持的算法有 `MD5`、`SHA-1`、`SHA-256` 和 `SHA-512`），第二个参数是要哈希的字符串。返回值为十六进制格式。
 
 ```js
 const hashed = hash('SHA-256', 'Hello world');
-// the value of `hashed` is '64ec88ca00b268e5ba1a35678a1b5316d212f4f366b2477232534a8aeca37f3c' now.
+// `hashed` 的值现在是 '64ec88ca00b268e5ba1a35678a1b5316d212f4f366b2477232534a8aeca37f3c'。
 ```
 
 <a id="hmac"></a>
 ### hmac
 
-With the `hmac` function you can compute the [HMAC](https://en.wikipedia.org/wiki/HMAC) of a given message. The first argument denotes the hashing algorithm to use (supported algorithms are `MD5`, `SHA-1`, `SHA-256`, and `SHA-512`), the second one the secret key, and the third one the message (as a string or byte array) for which to compute the HMAC. The returned value is a `Uint8Array`.
+使用 `hmac` 函数，你可以计算给定消息的 [HMAC](https://en.wikipedia.org/wiki/HMAC)。第一个参数表示要使用的哈希算法（支持的算法有 `MD5`、`SHA-1`、`SHA-256` 和 `SHA-512`），第二个参数是密钥，第三个参数是要计算其 HMAC 的消息（作为字符串或字节数组）。返回值是一个 `Uint8Array`。
 
 ```js
 const myHMAC = hmac('SHA-256', 'my_key123', 'Hello world');
 const myHMACasHex = toHexString(myHMAC);
-// the value of `myHMACasHex` is '34d60d40202ae16ae3dd70c9715b1900f9fe30cf10af483e74ea8f6bef18bd09' now.
+// `myHMACasHex` 的值现在是 '34d60d40202ae16ae3dd70c9715b1900f9fe30cf10af483e74ea8f6bef18bd09'。
 ```
 
 <a id="parse-html"></a>
 ### parseHTML
 
-The `parseHTML` function allows to parse an HTML string into an object representation. Each HTML element is converted into a JS object with attributes `name`, `attributes`, `children`, and `text` (if any), as is showcased by the following example:
+`parseHTML` 函数允许将 HTML 字符串解析为对象表示形式。每个 HTML 元素都被转换为一个 JS 对象，具有 `name`、`attributes`、`children` 和 `text`（如果有）属性，如以下示例所示：
 
 ```js
-// Given some XML string
+// 给定一些 XML 字符串
 const myHTML = `<html lang="de">
   <head>
     <title>Hello World</title>
@@ -665,7 +665,7 @@ const myHTML = `<html lang="de">
 const result = parseHTML(myHTML);
 
 /*
-The result variable now holds the following object (blank text fields omitted for clarity):
+result 变量现在包含以下对象（为清晰起见省略了空白文本字段）：
 {
   "name": "html",
   "attributes": {
@@ -714,18 +714,18 @@ The result variable now holds the following object (blank text fields omitted fo
 }
 */
 
-// We can now easily extract the parts we're interested in
+// 我们现在可以轻松提取感兴趣的部分
 const title = result.children[0].children[0].text;
 ```
 
-As a second argument, you can provide a query to search for and parse only specific parts of the HTML. In this case, the returned value is an array of all found elements. By default, this query string is interpreted as a CSS-style selector, but you can also provide an XPath query by passing the string "xpath" as the third argument.
+作为第二个参数，你可以提供一个查询来搜索并仅解析 HTML 的特定部分。在这种情况下，返回值是所有找到的元素的数组。默认情况下，此查询字符串被解释为 CSS 风格的选择器，但你也可以通过传入字符串 "xpath" 作为第三个参数来提供 XPath 查询。
 ```js
-const myHTML = '...'; // same as in the example above
+const myHTML = '...'; // 与上面的示例相同
 
-const result = parseHTML(myHTML, 'ul > li'); // query for all `li` elements which are direct descendants of `ul` elements.
+const result = parseHTML(myHTML, 'ul > li'); // 查询所有作为 `ul` 元素直接后代的 `li` 元素。
 
 /*
-The result variable now holds the following array of objects:
+result 变量现在包含以下对象数组：
 [
   {
     "name": "li",
@@ -743,21 +743,21 @@ The result variable now holds the following array of objects:
 */
 ```
 
-In case you're not familiar with CSS selectors, here's some examples:
-- `li` would select all `<li>` elements
-- `.my-class` would select all elements that have the class "my-class"
-- `p img` would select all `<img>` elements which are within a `<p>` element (not necessarily as a direct child)
-- `a[href]` would select all `<a>` elements which have a `href` attribute
-- `[id="my-id"]` would select all elements which have the `id="my-id"` attribute
-- `ul.my-class > li` would select all `<li>` elements which are direct child elements of `<ul>` elements which have the "my-class" class
+如果你不熟悉 CSS 选择器，这里有一些示例：
+- `li` 会选择所有 `<li>` 元素
+- `.my-class` 会选择所有具有 "my-class" 类的元素
+- `p img` 会选择所有位于 `<p>` 元素内的 `<img>` 元素（不一定是直接子元素）
+- `a[href]` 会选择所有具有 `href` 属性的 `<a>` 元素
+- `[id="my-id"]` 会选择所有具有 `id="my-id"` 属性的元素
+- `ul.my-class > li` 会选择所有作为具有 "my-class" 类的 `<ul>` 元素的直接子元素的 `<li>` 元素
 
 <a id="parse-xml"></a>
 ### parseXML
 
-The `parseXML` function allows to parse an XML string into an object representation. Each XML element is converted into a JS object with attributes `name`, `attributes`, `children`, and `text` (if any), as is showcased by the following example:
+`parseXML` 函数允许将 XML 字符串解析为对象表示形式。每个 XML 元素都被转换为一个 JS 对象，具有 `name`、`attributes`、`children` 和 `text`（如果有）属性，如以下示例所示：
 
 ```js
-// Given some XML string
+// 给定一些 XML 字符串
 const myXML = `<element>
     <foo bar="123">Hello World</foo>
 </element>`;
@@ -765,7 +765,7 @@ const myXML = `<element>
 const result = parseXML(myXML);
 
 /*
-The result variable now holds the following object:
+result 变量现在包含以下对象：
 {
   "name": "element",
   "attributes": {},
@@ -783,32 +783,32 @@ The result variable now holds the following object:
 }
 */
 
-// We can now easily extract the parts we're interested in
-const rootElement = result.name; // will be "element"
-const childElement = result.children[0].name; // will be "foo"
-const childAttributes = Object.keys(result.children[0].attributes); // will be ["bar"]
-const childBarAttribute = result.children[0].attributes.bar; // will be "123"
-const childText = result.children[0].text; // will be "Hello World"
+// 我们现在可以轻松提取感兴趣的部分
+const rootElement = result.name; // 将是 "element"
+const childElement = result.children[0].name; // 将是 "foo"
+const childAttributes = Object.keys(result.children[0].attributes); // 将是 ["bar"]
+const childBarAttribute = result.children[0].attributes.bar; // 将是 "123"
+const childText = result.children[0].text; // 将是 "Hello World"
 ```
 
 <a id="to-string-to-hex-string"></a>
 ### toString and toHexString
 
-The functions `toString` and `toHexString` can be used to convert a `Uint8Array` to a string, which is particularly useful in combination with the `hmac` and `base64decode` functions.
+`toString` 和 `toHexString` 函数可用于将 `Uint8Array` 转换为字符串，这在与 `hmac` 和 `base64decode` 函数结合使用时特别有用。
 
 ```js
 const myValue = base64decode('SGVsbG8=');
 const result = toString(myValue);
-// the value of `result` is 'Hello' now.
+// `result` 的值现在是 'Hello'。
 ```
 
 <a id="network"></a>
-## Network
+## 网络
 
 <a id="get-wifi-ip-address"></a>
 ### getWifiIPAddress
 
-With this function you can retrieve the IPv4 address of the device on the current Wi-Fi. It will return `null` if there is currently no Wi-Fi connection.
+使用此函数，你可以检索设备在当前 Wi-Fi 上的 IPv4 地址。如果当前没有 Wi-Fi 连接，它将返回 `null`。
 
 ```js
 const myIP = getWifiIPAddress();
@@ -817,18 +817,18 @@ const myIP = getWifiIPAddress();
 <a id="get-wifi-ssid"></a>
 ### getWifiSSID
 
-With this function you can retrieve the SSID (i.e., the name) of the Wi-Fi network the device is currently connected to. It will return `null` if there is currently no Wi-Fi connection or if the SSID can not be determined.
+使用此函数，你可以检索设备当前连接的 Wi-Fi 网络的 SSID（即名称）。如果当前没有 Wi-Fi 连接或无法确定 SSID，它将返回 `null`。
 
 ```js
 const mySSID = getWifiSSID();
 ```
 
-For this function to work, location services need to be enabled and the app needs to be granted the permission to access the device's location. This is a technical limitation imposed by the Android OS. See also the [Permissions](permissions.md) page for details.
+要使此函数正常工作，需要启用位置服务，并且应用需要被授予访问设备位置的权限。这是 Android 操作系统施加的技术限制。另请参阅[权限](permissions.md)页面了解详情。
 
 <a id="wol"></a>
 ### Wake-on-LAN
 
-You can use the `wakeOnLan` function to send a magic packet to turn on another device on your network. The first argument has to be the MAC-address of the device. As the optional second argument, you can pass the network/broadcast address to be used, and as the third argument you can define the port.
+你可以使用 `wakeOnLan` 函数发送魔术包来开启网络上的另一台设备。第一个参数必须是设备的 MAC 地址。作为可选的第二个参数，你可以传入要使用的网络/广播地址，作为第三个参数，你可以定义端口。
 
 ```js
 wakeOnLan('01-23-45-67-89-ab');
@@ -839,20 +839,20 @@ wakeOnLan('01-23-45-67-89-ab', '255.255.255.255', 9);
 <a id="send-http-request"></a>
 ### Send HTTP request
 
-The `sendHttpRequest` function allows you to send a simple HTTP request. The first argument is the URL, the second (optional) argument provides an object with additional options. The following fields are supported in the options object:
+`sendHttpRequest` 函数允许你发送一个简单的 HTTP 请求。第一个参数是 URL，第二个（可选）参数提供一个带有额外选项的对象。选项对象中支持以下字段：
 
-|Parameter|Description|Type / Values|
+|参数|描述|类型 / 值|
 |---|---|---|
-|method|Defines the HTTP method to use, e.g. "GET" or "POST". Defaults to "GET".|string|
-|headers|Additional headers to add to the request, as key-value-pairs.|object|
-|body|The body to use in the request, for when you want to send data|string|
-|formData|Form parameters to add to the request, as key-value-pairs. Can not be combined with `body`.|object|
-|charset|Defines which charset to use to decode the response body. If not provided, the charset is derived from the response headers, or falls back to UTF-8|string|
-|followRedirects|Whether to follow HTTP redirects. Enabled by default.|boolean|
+|method|定义要使用的 HTTP 方法，例如 "GET" 或 "POST"。默认为 "GET"。|string|
+|headers|要添加到请求的额外请求头，作为键值对。|object|
+|body|请求中使用的请求体，用于发送数据时|string|
+|formData|要添加到请求的表单参数，作为键值对。不能与 `body` 组合使用。|object|
+|charset|定义用于解码响应体的字符集。如果未提供，则从响应头中推断字符集，或回退到 UTF-8|string|
+|followRedirects|是否跟随 HTTP 重定向。默认启用。|boolean|
 
-The function returns an object which includes a `status` field, which has the value "success", "httpError" or "networkError". If it is "networkError", you can check the field `networkError` for details. Otherwise, you can check the `response` field for the HTTP response object. It includes fields `body`, `headers`, `cookies` and `statusCode`.
+该函数返回一个对象，其中包含 `status` 字段，其值为 "success"、"httpError" 或 "networkError"。如果是 "networkError"，你可以检查 `networkError` 字段了解详情。否则，你可以检查 `response` 字段获取 HTTP 响应对象。它包含 `body`、`headers`、`cookies` 和 `statusCode` 字段。
 
-> If you need more options, consider creating a dedicated HTTP Shortcut for your request and invoking it using [enqueueShortcut](#trigger-shortcut) or [executeShortcut](#execute-shortcut) instead.
+> 如果你需要更多选项，请考虑为你的请求创建一个专用的 HTTP 快捷方式，然后使用 [enqueueShortcut](#trigger-shortcut) 或 [executeShortcut](#execute-shortcut) 来调用它。
 
 ```js
 const result = sendHttpRequest(
@@ -878,7 +878,7 @@ if (result.status == "success") {
 <a id="send-mqtt-message"></a>
 ### Send MQTT message
 
-The `sendMqttMessages` function allows you to connect to an MQTT broker, send (i.e. publish) one or more messages to it, and then disconnect again. The first argument is the URI of the server/broker, the second (optional) argument provides options for the connection (e.g. username and password) and the third argument is an array of all the messages that should be sent.
+`sendMQTTMessages` 函数允许你连接到 MQTT 代理，向其发送（即发布）一条或多条消息，然后再断开连接。第一个参数是服务器/代理的 URI，第二个（可选）参数提供连接选项（如用户名和密码），第三个参数是所有应该发送的消息的数组。
 
 ```js
 sendMQTTMessages(
@@ -891,9 +891,9 @@ sendMQTTMessages(
 );
 ```
 
-> Please note that this does not provide any particular quality of service guarantees, and that it is not possible to subscribe to topics this way, meaning you can't receive any MQTT messages.
+> 请注意，这不提供任何特定的服务质量保证，并且无法通过这种方式订阅主题，这意味着你无法接收任何 MQTT 消息。
 
-If you use SSL, you may also configure the hostname verification by adding additional options to the second argument, to either check for a specific SHA-1 or SHA-5 fingerprint by including the `"fingerprint": "AA:AA:..."` option, or to just skip hostname verification entirely by including the `"verifyHostname": false` option. This is mainly only useful when using self-signed certificates, and you should only do this if you know what you are doing.
+如果你使用 SSL，你还可以通过向第二个参数添加额外选项来配置主机名验证，要么通过包含 `"fingerprint": "AA:AA:..."` 选项来检查特定的 SHA-1 或 SHA-5 指纹，要么通过包含 `"verifyHostname": false` 选项来完全跳过主机名验证。这主要仅在使用自签名证书时有用，你应该只在知道自己在做什么的情况下才这样做。
 
 ```js
 sendMQTTMessages(
@@ -908,9 +908,9 @@ sendMQTTMessages(
 <a id="send-tcp-packet"></a>
 ### Send TCP Packet
 
-You can use the `sendTCPPacket` function to send a TCP packet to another device on your network. This can be useful when interacting with devices that have a telnet interface.
+你可以使用 `sendTCPPacket` 函数向网络上的另一台设备发送 TCP 数据包。这在与具有 telnet 接口的设备交互时很有用。
 
-Pass the packet data as the first argument (either as a string, `Uint8Array` or array of numbers denoting bytes), the target host's name or IP address as the second argument and its TCP port as the third argument.
+将数据包数据作为第一个参数传入（可以是字符串、`Uint8Array` 或表示字节的数字数组），将目标主机的名称或 IP 地址作为第二个参数，将其 TCP 端口作为第三个参数。
 
 ```js
 sendTCPPacket('hello', '192.168.1.42', 1337);
@@ -918,11 +918,11 @@ sendTCPPacket('hello', '192.168.1.42', 1337);
 sendTCPPacket([0x68, 0x65, 0x6C, 0x6C, 0x6F], 'example.com', 4242);
 ```
 
-If you want to listen for incoming data from the TCP connection, you can specify so by passing in a configuration object as the fourth argument. This object may have the following fields:
+如果你想监听来自 TCP 连接的传入数据，可以通过传入一个配置对象作为第四个参数来指定。此对象可能包含以下字段：
 
-- `read`: If set to "text", all incoming data is read as text and returned as a string. If set to "line", only a single line of text is read and returned as a string. If not specified, nothing is read and `null` is returned.
-- `timeout`: The time in milliseconds after which the socket is automatically closed. Must be at most 30000, defaults to 3000. If `read` is set to "text" and this timeout is hit, all data that was read until that point is returned.
-- `charset`: The charset that should be used to decode the incoming data. Defaults to UTF-8.
+- `read`：如果设置为 "text"，所有传入数据都将作为文本读取并作为字符串返回。如果设置为 "line"，则只读取一行文本并作为字符串返回。如果未指定，则不读取任何内容并返回 `null`。
+- `timeout`：套接字自动关闭后的时间（毫秒）。最多为 30000，默认为 3000。如果 `read` 设置为 "text" 且达到此超时，则返回到此时点为止读取的所有数据。
+- `charset`：用于解码传入数据的字符集。默认为 UTF-8。
 
 ```js
 const reply = sendTCPPacket('hello', '192.168.1.42', 1337, {
@@ -934,7 +934,7 @@ const reply = sendTCPPacket('hello', '192.168.1.42', 1337, {
 <a id="send-udp-packet"></a>
 ### Send UDP Packet
 
-You can use the `sendUDPPacket` function to send a UDP packet to another device on your network. Pass the packet data as the first argument (either as a string, `Uint8Array` or array of numbers denoting bytes), the target host's name or IP address as the second argument and its UDP port as the third argument.
+你可以使用 `sendUDPPacket` 函数向网络上的另一台设备发送 UDP 数据包。将数据包数据作为第一个参数传入（可以是字符串、`Uint8Array` 或表示字节的数字数组），将目标主机的名称或 IP 地址作为第二个参数，将其 UDP 端口作为第三个参数。
 
 ```js
 sendUDPPacket('hello', '192.168.1.42', 1337);
@@ -943,20 +943,20 @@ sendUDPPacket([0x68, 0x65, 0x6C, 0x6C, 0x6F], 'example.com', 4242);
 ```
 
 <a id="misc"></a>
-## Miscellaneous Built-In Functions
+## 其他内置函数
 
-This section lists all of the built-in functions which do not fall into a specific category.
+本节列出了所有不属于特定类别的内置函数。
 
 <a id="trigger-shortcut"></a>
 ### enqueueShortcut
 
-With this function you can enqueue a shortcut to execute after the current one (or after the last enqueued one if there are already shortcuts scheduled to execute). Simply pass the name or ID of a shortcut as the first argument.
+使用此函数，你可以将一个快捷方式排队以在当前快捷方式之后执行（或者如果已经有计划执行的快捷方式，则在最后一个排队的快捷方式之后执行）。只需将快捷方式的名称或 ID 作为第一个参数传入。
 
 ```js
 enqueueShortcut('My Other Shortcut');
 ```
 
-Optionally you can pass an object as the second argument to provide values for variables. This will not change the stored values of the variables but they will assume the specified value when the other shortcut is executed. This is particularly useful for dynamic variable types (such as *"Text Input"* or *"Multiple Choice Selection"*).
+可选地，你可以传入一个对象作为第二个参数来提供变量值。这不会更改变量的存储值，但在另一个快捷方式执行时，它们将采用指定的值。这对于动态变量类型（如*"文本输入"*或*"多选"*）特别有用。
 
 ```js
 enqueueShortcut('My Other Shortcut', {
@@ -965,22 +965,22 @@ enqueueShortcut('My Other Shortcut', {
 });
 ```
 
-As an optional third argument, you can pass the number of milliseconds by which to delay the execution. This way you can schedule a shortcut to run at a later point in time.
+作为可选的第三个参数，你可以传入要延迟执行的毫秒数。这样，你可以安排一个快捷方式在稍后的时间点运行。
 
-> Please note that the delay will not be exact and can not exceed 5 minutes.
+> 请注意，延迟不会精确，且不能超过 5 分钟。
 
 ```js
-enqueueShortcut('My Other Shortcut', null, 2 * 60 * 1000); // runs in 2 minutes
+enqueueShortcut('My Other Shortcut', null, 2 * 60 * 1000); // 2 分钟后运行
 ```
 
-Note that the shortcut will only be executed once the current shortcut (and all shortcuts that have been enqueued before it) has finished executing. It will *not* be executed immediately. If you need the shortcut to run immediately, use `executeShortcut` instead.
+请注意，只有在当前快捷方式（以及之前已排队的所有快捷方式）执行完成后，该快捷方式才会被执行。它*不会*立即执行。如果你需要立即运行快捷方式，请改用 `executeShortcut`。
 
-Also note that this might lead to infinite loops if the enqueued shortcut also enqueues shortcuts. To reduce the impact of this in case it happens accidentally, the app will delay every 10th execution by 5 seconds so that you have enough time to stop the execution manually. If you're really sure that you *do* want an infinite loop, you can work around this protection by setting a delay of at least 500 milliseconds.
+还要注意，如果被排队的快捷方式也会排队快捷方式，这可能会导致无限循环。为了在意外发生时减少影响，应用会将每第 10 次执行延迟 5 秒，以便你有足够的时间手动停止执行。如果你真的确定*确实*想要无限循环，你可以通过设置至少 500 毫秒的延迟来绕过此保护。
 
 <a id="cancel-shortcut"></a>
 ### cancelShortcut
 
-The `cancelShortcut` function can be used to cancel the execution of a shortcut, i.e., a shortcut that is enqueued to run at a later point in time, e.g. because it was scheduled with `enqueueShortcut`, or was configured to run with a delay or to repeat. Pass the ID or name as the first argument.
+`cancelShortcut` 函数可用于取消快捷方式的执行，即已排队稍后运行的快捷方式，例如因为它是通过 `enqueueShortcut` 安排的，或被配置为带延迟运行或重复运行。将 ID 或名称作为第一个参数传入。
 
 ```js
 cancelShortcut('My Repeating Shortcut');
@@ -989,13 +989,13 @@ cancelShortcut('My Repeating Shortcut');
 <a id="execute-shortcut"></a>
 ### executeShortcut
 
-This function allows you to execute another shortcut within the current one and receive its result. Pass the name or ID of a shortcut as the first argument.
+此函数允许你在当前快捷方式中执行另一个快捷方式并接收其结果。将快捷方式的名称或 ID 作为第一个参数传入。
 
 ```js
 executeShortcut('My Other Shortcut');
 ```
 
-Optionally you can pass an object as the second argument to provide values for variables. This will not change the stored values of the variables but they will assume the specified value when the other shortcut is executed. This is particularly useful for dynamic variable types (such as *"Text Input"* or *"Multiple Choice Selection"*).
+可选地，你可以传入一个对象作为第二个参数来提供变量值。这不会更改变量的存储值，但在另一个快捷方式执行时，它们将采用指定的值。这对于动态变量类型（如*"文本输入"*或*"多选"*）特别有用。
 
 ```js
 executeShortcut('My Other Shortcut', {
@@ -1004,12 +1004,12 @@ executeShortcut('My Other Shortcut', {
 });
 ```
 
-The function will return an object which contains a `status` field which you can query to see if the shortcut's execution was successful. It may contain the values "success", "failure", "unknown", or "aborted".
+该函数将返回一个对象，其中包含 `status` 字段，你可以查询该字段以查看快捷方式的执行是否成功。它可能包含 "success"、"failure"、"unknown" 或 "aborted" 值。
 
-- "success" means that the shortcut successfully executed an HTTP request. Its response is returned in the `response` field, using the same [format](#handle-response) as the `response` object that is available for all shortcut executions.
-- "failure" means that the shortcut's HTTP request failed, either due to a network error or the HTTP status was not 2xx or 3xx. In this case, you can get more information about the failure via the `response` field or the `networkError` field, one of which is always non-null in this case.
-- "unknown" means that the shortcut did not (directly) make an HTTP request and therefore has no response. This will happen if the shortcut is not an HTTP shortcut or if the HTTP request was delayed or rescheduled.
-- "aborted" means that the `abort()` function was called
+- "success" 表示快捷方式成功执行了 HTTP 请求。其响应在 `response` 字段中返回，使用与所有快捷方式执行可用的 `response` 对象相同的[格式](#handle-response)。
+- "failure" 表示快捷方式的 HTTP 请求失败，无论是由于网络错误还是 HTTP 状态不是 2xx 或 3xx。在这种情况下，你可以通过 `response` 字段或 `networkError` 字段获取有关失败的更多信息，其中一个在这种情况下始终非空。
+- "unknown" 表示快捷方式没有（直接）发出 HTTP 请求，因此没有响应。如果快捷方式不是 HTTP 快捷方式，或者 HTTP 请求被延迟或重新安排，就会发生这种情况。
+- "aborted" 表示调用了 `abort()` 函数
 
 ```js
 const result = executeShortcut('My Other Shortcut');
@@ -1025,52 +1025,52 @@ if (result.status === 'success') {
 }
 ```
 
-Please note the following technical limitations:
-- A shortcut that is executed this way cannot display its response in a fullscreen window. If you need to display its response, please change the response display type to use a toast or dialog window instead.
-- A shortcut that is executed this way shares the resolution of variable values with the original, i.e., calling shortcut. This means that if you have e.g. a multiple choice variable that is used in both of the shortcuts, you will be prompted to select a value only once (not twice) and the selected value will be used for both shortcut executions.
-- There is a maximum recursion depth of 3, meaning that you can not arbitrarily nest shortcut executions within shortcut executions. This is to prevent infinite recursion and stack overflows. If you want to chain more shortcuts together, consider using [enqueueShortcut()](#trigger-shortcut).
+请注意以下技术限制：
+- 以这种方式执行的快捷方式不能在全屏窗口中显示其响应。如果你需要显示其响应，请将响应显示类型更改为使用吐司提示或对话框窗口。
+- 以这种方式执行的快捷方式与原始快捷方式（即调用快捷方式）共享变量值的解析。这意味着，如果你在两个快捷方式中都使用了例如一个多选变量，你只会被提示选择一次值（而不是两次），并且所选值将用于两次快捷方式执行。
+- 最大递归深度为 3，这意味着你不能任意地在快捷方式执行中嵌套快捷方式执行。这是为了防止无限递归和堆栈溢出。如果你想串联更多快捷方式，请考虑使用 [enqueueShortcut()](#trigger-shortcut)。
 
 <a id="set-result"></a>
-#### Passing data back
-If you wish to pass data from the called shortcut to the calling shortcut, you can either do this by storing values into global variables (using [setVariable()](#set-variable)) in the called shortcut and then reading those values in the calling shortcut (using [getVariable()](#get-variable)), or you can use the `setResult` function. The latter accepts a single string argument. This string can then be accessed by the calling shortcut on the object returned by the `executeShortcut` function via its `result` key.
+#### 传回数据
+如果你希望将数据从被调用的快捷方式传递给调用的快捷方式，你可以通过在被调用的快捷方式中（使用 [setVariable()](#set-variable)）将值存储到全局变量中，然后在调用的快捷方式中（使用 [getVariable()](#get-variable)）读取这些值来实现，或者你可以使用 `setResult` 函数。后者接受一个字符串参数。然后，调用快捷方式可以通过 `executeShortcut` 函数返回的对象的 `result` 键访问此字符串。
 
 ```js
-// What the called shortcut does:
+// 被调用的快捷方式执行的操作：
 setResult('Hello World');
 
-// What the calling shortcut does:
+// 调用的快捷方式执行的操作：
 const resultObject = executeShortcut('My other shortcut');
-const myResult = resultObject.result; // will now have the value "Hello World"
+const myResult = resultObject.result; // 现在值为 "Hello World"
 ```
 
-This same mechanism also allows passing data back to Tasker in the case where the shortcut was triggered from Tasker.
+在从 Tasker 触发快捷方式的情况下，同样的机制也允许将数据传回 Tasker。
 
-#### Forwarding Files
-When executing or enqueuing another shortcut, it is possible to forward one or more selected files to it. This can be useful if you have a shortcut that uses a file in a form parameter or its request body, and you want to use the same file also for another shortcut to include in another request. To do this, pass the [IDs of the files](#files) in via the special `$files` variable. You can pass either a single file ID or an array of file IDs, as shown in the following examples:
+#### 转发文件
+在执行或排队另一个快捷方式时，可以将一个或多个已选文件转发给它。如果你有一个快捷方式在表单参数或其请求体中使用了文件，并且你想在另一个快捷方式中使用相同的文件以包含在另一个请求中，这会很有用。为此，请通过特殊的 `$files` 变量传入[文件的 ID](#files)。你可以传入单个文件 ID 或文件 ID 数组，如以下示例所示：
 
 ```js
-// Pass a single file
+// 传递单个文件
 enqueueShortcut('My Other Shortcut', {
   '$files': selectedFiles[0].id,
 });
 
-// Pass 2 files
+// 传递 2 个文件
 enqueueShortcut('My Other Shortcut', {
   '$files': [selectedFiles[0].id, selectedFiles[1].id],
 });
 
-// Pass all files
+// 传递所有文件
 enqueueShortcut('My Other Shortcut', {
   '$files': selectedFiles.map(file => file.id),
 });
 ```
 
-This mechanism works both for the `enqueueShortcut` and the `executeShortcut` function.
+此机制对 `enqueueShortcut` 和 `executeShortcut` 函数都有效。
 
 <a id="log-event"></a>
 ### Log Event
 
-The `logEvent` function allows you to log custom events into the Event History (which you'll find by selecting "Trouble Shooting" in the app's main menu). This can be used for debugging and troubleshooting. Pass an event title as the first argument and optionally a message with details as the second argument.
+`logEvent` 函数允许你将自定义事件记录到事件历史中（通过在应用主菜单中选择"故障排除"可以找到）。这可用于调试和故障排除。将事件标题作为第一个参数传入，可选地将带有详细信息的消息作为第二个参数传入。
 
 ```js
 logEvent('Hello World');
@@ -1083,7 +1083,7 @@ logEvent('My complex event', {'foo': 'bar'});
 <a id="device-id"></a>
 ### Get Device ID
 
-When first opened, the app generates a random device ID, consisting of letters and digits. The `getDeviceId` function can be used to read this ID. This is mainly useful in cases where you use the same shortcut on multiple devices and need to differentiate the devices somehow.
+首次打开时，应用会生成一个由字母和数字组成的随机设备 ID。`getDeviceId` 函数可用于读取此 ID。这在你在多台设备上使用同一个快捷方式并需要以某种方式区分设备的情况下很有用。
 
 ```js
 const myId = getDeviceId();
@@ -1092,7 +1092,7 @@ const myId = getDeviceId();
 <a id="uuid-v4"></a>
 ### Generate UUID
 
-You can use the `uuidv4()` function to generate a random UUID (**U**niversal **U**nique **Id**entifier, version 4). The returned value is of type string.
+你可以使用 `uuidv4()` 函数生成随机 UUID（**U**niversal **U**nique **Id**entifier，通用唯一标识符，第 4 版）。返回值为字符串类型。
 
 ```js
 const myUUID = uuidv4();
@@ -1101,57 +1101,57 @@ const myUUID = uuidv4();
 <a id="get-clipboard-content"></a>
 ### Get Clipboard Content
 
-The `getClipboardContent` function allows you to query the latest item in your device's clipboard, i.e., the last piece of text that you copied from somewhere. If there is nothing in the clipboard or if its content is not text (e.g., if you copied an image instead), this function will return null instead.
+`getClipboardContent` 函数允许你查询设备剪贴板中的最新项，即你从某处复制的最后一段文本。如果剪贴板中没有内容，或者其内容不是文本（例如你复制的是图像），此函数将返回 null。
 
 ```js
 const clipboardValue = getClipboardContent();
 ```
 
-> This function can not be used when executing shortcuts in the background, as the Android OS (starting from Android 10) does not allow apps in the background to access the clipboard. In this case the function will return `null`.
+> 在后台执行快捷方式时不能使用此函数，因为 Android 操作系统（从 Android 10 开始）不允许后台应用访问剪贴板。在这种情况下，函数将返回 `null`。
 
 <a id="copy-to-clipboard"></a>
 ### Copy to the Clipboard
 
-With the `copyToClipboard` function you can copy a value to the device's clipboard. Simply pass the value you want to copy as the first argument.
+使用 `copyToClipboard` 函数，你可以将一个值复制到设备的剪贴板。只需将要复制的值作为第一个参数传入。
 
 ```js
 copyToClipboard('Hello World');
 ```
 
-> This function can not be used when executing shortcuts in the background, as the Android OS (starting from Android 10) does not allow apps in the background to access the clipboard.
+> 在后台执行快捷方式时不能使用此函数，因为 Android 操作系统（从 Android 10 开始）不允许后台应用访问剪贴板。
 
 <a id="share-text"></a>
 ### Share Text with Another App
 
-You can use the `shareText` function to share a piece of text with another app. Simply pass the value you want to share as the first argument. This will open the system's share picker where you can select which app to share into.
+你可以使用 `shareText` 函数与另一个应用共享一段文本。只需将要共享的值作为第一个参数传入。这将打开系统的共享选择器，你可以在其中选择要共享到哪个应用。
 
 ```js
 shareText('Hello World');
 ```
 
-> Please note that the text that is shared can be at most 200000 characters long, otherwise it will be truncated.
+> 请注意，共享的文本最多为 200000 个字符，否则将被截断。
 
 <a id="open-app"></a>
 ### Open another App
 
-The `openApp` function allows you to open another app via its package name. If no app with the given package name is installed, an error is displayed.
+`openApp` 函数允许你通过包名打开另一个应用。如果没有安装具有给定包名的应用，则会显示错误。
 
 ```js
-openApp('com.github.android'); // Opens the GitHub app
+openApp('com.github.android'); // 打开 GitHub 应用
 ```
 
 <a id="open-url"></a>
 ### Open a URL
 
-This function allows you to open a URL in another app. This typically opens a browser, but it can also be used to invoke a deep-link into another app. An error message is displayed if the URL is malformed or if there is no app installed that can handle the URL.
+此函数允许你在另一个应用中打开 URL。这通常会打开浏览器，但也可用于调用到另一个应用的深度链接。如果 URL 格式错误或没有安装可以处理该 URL 的应用，则会显示错误消息。
 
 ```js
 openUrl('https://www.wikipedia.org/');
 ```
 
-> Please note that this can not be used to open files.
+> 请注意，这不能用于打开文件。
 
-As a second argument, you may pass the package name of the browser or app that should handle the URL. You may instead also pass "custom-tabs" or "custom-tabs(\[package-name])" to open the URL using a custom tab instead of a standalone browser window.
+作为第二个参数，你可以传入应处理该 URL 的浏览器或应用的包名。你也可以传入 "custom-tabs" 或 "custom-tabs(\[包名])" 来使用自定义标签页而不是独立的浏览器窗口打开 URL。
 
 ```js
 openUrl('https://example.com', 'org.mozilla.firefox');
@@ -1160,35 +1160,35 @@ openUrl('https://example.com', 'custom-tabs(org.mozilla.firefox)');
 
 <a id="send-intent"></a>
 ### Send Intent
-With the `sendIntent` function you can send an [Intent](https://developer.android.com/guide/components/intents-filters), which allows you to interact with other Android apps on the same device. It takes an object as its only argument, where the object should have one or more of the properties listed in the table below. Which values to use depends on the target app, so please consult their documentation, source code or developers for more information.
+使用 `sendIntent` 函数，你可以发送一个 [Intent](https://developer.android.com/guide/components/intents-filters)，这允许你与同一设备上的其他 Android 应用交互。它接受一个对象作为其唯一参数，该对象应具有下表中列出的一个或多个属性。使用哪些值取决于目标应用，因此请查阅其文档、源代码或开发者以获取更多信息。
 
-|Parameter|Description|Type / Values|
+|参数|描述|类型 / 值|
 |---|---|---|
-|type|Defines how the intent should be sent.|`'broadcast'` (default), `'activity'` or `'service'`|
-|action|A string that specifies the generic action to perform (such as view or pick).|string|
-|category|A string containing additional information about the kind of component that should handle the intent.|string|
-|categories|Same as `category` but allows specifying multiple values.|array of strings|
-|dataUri|A URI that references the data to be acted on|string|
-|dataType|The MIME type of the data|string|
-|className|The full name of a class that is to be started by the Intent|string|
-|packageName|The name of an application package that is to be started by the Intent|string|
-|extras|An array of extras, i.e., additional parameters to be sent|array of objects (see below)|
-|clearTask|Whether to set the [`FLAG_ACTIVITY_CLEAR_TASK`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_CLEAR_TASK) flag|boolean|
-|excludeFromRecents|Whether to set the [`FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) flag|boolean|
-|newTask|Whether to set the [`FLAG_ACTIVITY_NEW_TASK`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NEW_TASK) flag|boolean|
-|noHistory|Whether to set the [`FLAG_ACTIVITY_NO_HISTORY`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NO_HISTORY) flag|boolean|
+|type|定义 intent 的发送方式。|`'broadcast'`（默认）、`'activity'` 或 `'service'`|
+|action|指定要执行的通用操作（如查看或选择）的字符串。|string|
+|category|包含有关应处理 intent 的组件类型的附加信息的字符串。|string|
+|categories|与 `category` 相同，但允许指定多个值。|字符串数组|
+|dataUri|引用要操作的数据的 URI|string|
+|dataType|数据的 MIME 类型|string|
+|className|要由 Intent 启动的类的全名|string|
+|packageName|要由 Intent 启动的应用程序包的名称|string|
+|extras|extra 数组，即要发送的附加参数|对象数组（见下文）|
+|clearTask|是否设置 [`FLAG_ACTIVITY_CLEAR_TASK`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_CLEAR_TASK) 标志|boolean|
+|excludeFromRecents|是否设置 [`FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) 标志|boolean|
+|newTask|是否设置 [`FLAG_ACTIVITY_NEW_TASK`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NEW_TASK) 标志|boolean|
+|noHistory|是否设置 [`FLAG_ACTIVITY_NO_HISTORY`](https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NO_HISTORY) 标志|boolean|
 
-Each extra consists of the following properties:
+每个 extra 由以下属性组成：
 
-|Parameter|Description|Type / Values|
+|参数|描述|类型 / 值|
 |---|---|---|
-|name|The name of the extra|string|
-|type|The type of the extra|`'string'` (default), `'boolean'`, `'int'`, `'long'`, `'double'`, `'float'`|
-|value|The value of the extra|depends on the `type`|
+|name|extra 的名称|string|
+|type|extra 的类型|`'string'`（默认）、`'boolean'`、`'int'`、`'long'`、`'double'`、`'float'`|
+|value|extra 的值|取决于 `type`|
 
-> Please note that it is unfortunately *not* possible to send intents that require the app to hold a specific permission, as there is no way to dynamically add such a permission to the app. This is a technical limitation that the app itself cannot address. The recommended workaround is to use a 3rd-party automation app such as Tasker to perform such actions and trigger their tasks/workflows either via an intent or via the `triggerTaskerTask` function (see below). Another possibility would be to fork the app, add the required permission to it and build it yourself.
+> 请注意，不幸的是，*不可能*发送需要应用持有特定权限的 intent，因为没有办法动态地向应用添加这样的权限。这是应用本身无法解决的技术限制。建议的变通办法是使用第三方自动化应用（如 Tasker）来执行此类操作，并通过 intent 或 `triggerTaskerTask` 函数（见下文）触发其任务/工作流。另一种可能性是分叉应用，向其中添加所需权限并自行构建。
 
-Here is a generic example showing the syntax:
+这是一个显示语法的通用示例：
 
 ```js
 sendIntent({
@@ -1206,7 +1206,7 @@ sendIntent({
 });
 ```
 
-The following example shows how you can use this function to open another application, in this case a browser to display a website:
+以下示例显示如何使用此函数打开另一个应用程序，在本例中是浏览器以显示网站：
 
 ```js
 sendIntent({
@@ -1215,9 +1215,9 @@ sendIntent({
   dataUri: 'https://example.com',
 });
 ```
-The above example is equivalent to calling `openUrl('https://example.com')`.
+上面的示例等同于调用 `openUrl('https://example.com')`。
 
-If you want to just open a specific app without sending any data to it, you can do so by specifying the app's package name and using the `android.intent.action.MAIN` action. The following example will just open Google Chrome:
+如果你只想打开一个特定的应用而不向其发送任何数据，可以通过指定应用的包名并使用 `android.intent.action.MAIN` action 来实现。以下示例将只打开 Google Chrome：
 
 ```js
 sendIntent({
@@ -1227,11 +1227,11 @@ sendIntent({
 });
 ```
 
-The above example is equivalent to calling `openApp('com.android.chrome')`.
+上面的示例等同于调用 `openApp('com.android.chrome')`。
 
 <a id="trigger-tasker-task"></a>
 ### Trigger Tasker Task
-If you have [Tasker](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm) installed on your device, you can use this function to trigger one of its tasks. Pass in the name of the task as the first argument, and optionally an object containing some key-value pairs to pass along as local variables as the second argument.
+如果你的设备上安装了 [Tasker](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm)，你可以使用此函数触发其某个任务。将任务名称作为第一个参数传入，可选地传入一个包含一些键值对的对象作为第二个参数，以作为局部变量传递。
 
 ```js
 triggerTaskerTask('doStuff');
@@ -1242,19 +1242,19 @@ triggerTaskerTask('mytask', {
 });
 ```
 
-> Please note that you may need to manually go to the app's permissions and allow the app to run Tasker tasks for this to work, and also you will need to allow this in Tasker's settings under "Preferences > Misc > Allow External Access".
+> 请注意，你可能需要手动前往应用的权限并允许应用运行 Tasker 任务才能正常工作，并且你还需要在 Tasker 的设置中"首选项 > 杂项 > 允许外部访问"下允许此操作。
 
 <a id="run-termux-command"></a>
 ### Run Termux Command
-If you have [Termux](https://github.com/termux/termux-app) installed, you can use the `runTermuxCommand` function to run a command in a Termux terminal.
+如果你安装了 [Termux](https://github.com/termux/termux-app)，可以使用 `runTermuxCommand` 函数在 Termux 终端中运行命令。
 
-For this to work, you will need to grant the "Run commands in Termux environment" permission to the app and you will need set `allow-external-apps` to `true` in `~/.termux/termux.properties`. See https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent#setup-instructions for more details.
+要使其正常工作，你需要向应用授予"在 Termux 环境中运行命令"权限，并且需要在 `~/.termux/termux.properties` 中将 `allow-external-apps` 设置为 `true`。有关更多详细信息，请参阅 https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent#setup-instructions。
 
 ```js
-// simple syntax
+// 简单语法
 runTermuxCommand('/data/data/com.termux/files/usr/bin/top', ['-n', '5']);
 
-// complete set of options
+// 完整选项集
 runTermuxCommand({
   command: '/data/data/com.termux/files/usr/bin/top',
   arguments: ['-n', '5'],
@@ -1265,32 +1265,32 @@ runTermuxCommand({
 })
 ```
 
-> It is currently not possible to pass data from Termux back to the app. As a workaround, you might be able to write data into a file and then later have the app read from that same file.
+> 目前无法将数据从 Termux 传回应用。作为变通办法，你可以将数据写入文件，然后让应用从同一文件读取。
 
 <a id="set-wireguard-tunnel-state"></a>
 ### Set Wireguard Tunnel State
-If you have [Wireguard](https://play.google.com/store/apps/details?id=com.wireguard.android) installed, you can use the `setWireguardTunnelState` function to enable or disable a tunnel. Pass in the name of the tunnel as the first argument, and as the second argument pass `true` to enable the tunnel or `false` to disable it.
+如果你安装了 [Wireguard](https://play.google.com/store/apps/details?id=com.wireguard.android)，可以使用 `setWireguardTunnelState` 函数启用或禁用隧道。将隧道名称作为第一个参数传入，作为第二个参数传入 `true` 以启用隧道，或传入 `false` 以禁用隧道。
 
 ```js
 setWireguardTunnelState('my-tunnel', true);
 ```
 
-> For this to work, you will need to grant the app a special permission, and you will need to enable the "Allow remote control apps" setting in the Wireguard app. You might also need to exclude the Wireguard app from battery optimizations and allow it to run unrestricted.
+> 要使其正常工作，你需要向应用授予特殊权限，并且需要在 Wireguard 应用中启用"允许远程控制应用"设置。你可能还需要将 Wireguard 应用从电池优化中排除，并允许其无限制运行。
 
 
 <a id="get-location"></a>
 ### Get Location
-If you want to query your device's physical location, you can do so via the `getLocation()` function. It can take up to 20 seconds for the location request to complete, and it might not always be possible to determine the location.
+如果你想查询设备的物理位置，可以通过 `getLocation()` 函数实现。位置请求最多可能需要 20 秒才能完成，并且可能并不总是能够确定位置。
 
-The resulting object consists of the following fields:
+结果对象由以下字段组成：
 
-|Field|Description|Type|
+|字段|描述|类型|
 |---|---|---|
-|status|Indicates whether a location could be determined. Will be `'success'` or `'unknown'`|string|
-|latitude|The latitude in degrees, or null if the location is unknown|number|
-|longitude|The longitude in degrees, or null if the location is unknown|number|
-|accuracy|The estimated horizontal accuracy radius in meters at the 68th percentile confidence level, or null if the location or the accuracy is unknown|number|
-|coordinates|The latitude and longitude concatenated with a comma, for convenience|string|
+|status|指示是否可以确定位置。将为 `'success'` 或 `'unknown'`|string|
+|latitude|纬度（度），如果位置未知则为 null|number|
+|longitude|经度（度），如果位置未知则为 null|number|
+|accuracy|在第 68 百分位置信水平下的估计水平精度半径（米），如果位置或精度未知则为 null|number|
+|coordinates|为方便起见，纬度和经度用逗号连接|string|
 
 ```js
 const myLocation = getLocation();
@@ -1301,5 +1301,4 @@ if (myLocation.status == 'success') {
 }
 ```
 
-> Please note that this function makes use of Google Play Services. If those are not available on the device, or if you've installed the app from F-Droid, then a fallback is used which may be less accurate, less reliable or take longer to find the location.
-
+> 请注意，此函数使用 Google Play 服务。如果设备上没有这些服务，或者你是从 F-Droid 安装的应用，则会使用回退方案，其精度可能较低、可靠性较差或查找位置所需时间较长。

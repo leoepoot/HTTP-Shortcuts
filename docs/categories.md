@@ -1,27 +1,25 @@
-# Categories
+# 分类
 
-Categories can be used to group different shortcuts together into separate tabs inside the app. Each category has a name and can contain zero or more shortcuts. You can switch between categories while on the app's main screen by swiping horizontally or by selecting the tab at the top of the screen below the title bar.
+分类可用于将不同的快捷方式分组到应用内的独立标签页中。每个分类都有一个名称，可以包含零个或多个快捷方式。你可以在应用主屏幕上通过水平滑动或选择标题栏下方顶部的标签页来在分类之间切换。
 
-### Managing Categories
+### 管理分类
 
-You can access the categories editor via the "Categories" option in the dropdown menu in the app's main screen. You can also long-press on the background of a category to open a context menu, from which you can directly jump to the editor by clicking the "Edit" option.
+你可以通过应用主屏幕下拉菜单中的"分类"选项访问分类编辑器。你也可以长按某个分类的背景来打开上下文菜单，从中点击"编辑"选项可直接跳转到编辑器。
 
-### Layout Types
+### 布局类型
 
-A category's layout type defines how shortcuts within it are displayed. There are 4 options: list, which will display the shortcuts vertically below each other in a list, and 3 different types of grid, where shortcuts are displayed in a grid, similar to Android's home screen.
+分类的布局类型定义了其中快捷方式的显示方式。有 4 种选项：列表（将快捷方式在列表中垂直一个接一个地显示）和 3 种不同类型的网格（快捷方式在网格中显示，类似于 Android 的主屏幕）。
 
-You can change a category's background to either use the default color (i.e., white or black, depending on whether dark mode is enabled) or set it to a specific color.
+你可以将分类的背景更改为使用默认颜色（即根据是否启用深色模式而为白色或黑色）或设置为特定颜色。
 
-You also have the option to apply a scaling factor, to increase or decrease the display size of shortcuts within the category.
+你还可以应用缩放因子来增大或减小分类内快捷方式的显示尺寸。
 
-### Category Sections
+### 分类分区
 
-The shortcuts within a category can be grouped into sections. You can configure sections by going to the "Categories" screen, long-pressing on a category and selecting "Manage Sections", or by long-pressing on a category's background on the main screen and selecting "Manage Sections" there. To move a shortcut into a section, long-press it on the main screen and select "Move" in the menu that pops up. This will take you to the "Move Shortcuts" screen, where you can freely rearrange all shortcuts and move them between categories and sections.
+分类内的快捷方式可以分组到各个分区中。你可以通过进入"分类"屏幕，长按某个分类并选择"管理分区"来配置分区，或者在主屏幕上长按分类的背景并在那里选择"管理分区"。要将快捷方式移动到某个分区，请在主屏幕上长按它，然后在弹出的菜单中选择"移动"。这将带你进入"移动快捷方式"屏幕，在那里你可以自由地重新排列所有快捷方式，并在分类和分区之间移动它们。
 
-### Hidden Categories
+### 隐藏分类
 
-A category can be set to be hidden. A hidden category will not show up as a tab in the app. This can be useful if you have shortcuts that you only want to access directly from the home screen (make sure to place them first before hiding the category) or that you only want to trigger from other shortcuts, using [Scripting](scripting.md#trigger-shortcut)
- or via a [Multi-Shortcut](shortcuts.md#multi-shortcut).
+分类可以设置为隐藏。隐藏的分类不会在应用中显示为标签页。如果你有一些只想从主屏幕直接访问的快捷方式（请确保在隐藏分类之前先将它们放置好），或者只想通过[脚本编写](scripting.md#trigger-shortcut)或[多重快捷方式](shortcuts.md#multi-shortcut)从其他快捷方式触发，这会很有用。
  
- > Is is also possible to hide individual shortcuts. This can be achieved by long-pressing on the shortcut on the main screen and selecting "Hide".
- 
+> 也可以隐藏单个快捷方式。这可以通过在主屏幕上长按快捷方式并选择"隐藏"来实现。

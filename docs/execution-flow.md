@@ -1,75 +1,75 @@
-# Execution Flow
+# 执行流程
 
-When you click a shortcut, either on your home screen or within the app, it will execute. This means it will go through the following steps:
+当你点击快捷方式时（无论是在主屏幕上还是在应用内），它都会执行。这意味着它将经历以下步骤：
 
-## 1. Ask for Confirmation
+## 1. 要求确认
 
-If you selected the *"Require confirmation before execution"* option for your shortcut, you will be asked to confirm in this step. If you select *"Cancel"* the remaining steps will not be executed.
+如果你为快捷方式选择了*"执行前要求确认"*选项，你将在此步骤中被要求确认。如果你选择*"取消"*，则不会执行剩余步骤。
 
-## 2. Check Wi-Fi SSID
+## 2. 检查 Wi-Fi SSID
 
-If you configured your shortcut to only run when on a specific Wi-Fi, this step will check whether that condition is met. If it is not, the remaining steps will not be executed and instead you will be prompted to switch Wi-Fis.
+如果你将快捷方式配置为仅在特定 Wi-Fi 上运行，此步骤将检查该条件是否满足。如果不满足，则不会执行剩余步骤，而是会提示你切换 Wi-Fi。
 
-## 3. Delay
+## 3. 延迟
 
-If you set your shortcut up to have a delay it will be applied in this step. E.g., if you selected that your shortcut should be delayed by 5 seconds then the app will wait for 5 seconds before executing the next steps.
+如果你设置了快捷方式的延迟，它将在此步骤中应用。例如，如果你选择将快捷方式延迟 5 秒，应用将在执行后续步骤前等待 5 秒。
 
-## 4. Resolve Files
+## 4. 解析文件
 
-If your shortcut needs one or more files, e.g. for its request body or for a form parameter, they will be resolved in this step. You will be prompted with one or multiple file pickers.
+如果你的快捷方式需要一个或多个文件，例如用于其请求体或表单参数，它们将在此步骤中被解析。系统会向你提示一个或多个文件选择器。
 
-If you cancel any of the file pickers then the remaining steps will not be executed.
+如果你取消了任何文件选择器，则不会执行剩余步骤。
 
-## 5. Run "Global" Script
+## 5. 运行"全局"脚本
 
-If you added any JavaScript code into the *"Global Scripting"* section in the app's settings then that code will execute in this step.
+如果你在应用设置的*"全局脚本"*部分中添加了任何 JavaScript 代码，那么这些代码将在此步骤中执行。
 
-If the script fails (e.g., due to a syntax error) then an error message will be displayed and the remaining steps will not be executed.
+如果脚本失败（例如由于语法错误），将显示错误消息，且不会执行剩余步骤。
 
-For more details see the documentation on [Scripting](scripting.md).
+更多详情请参阅[脚本编写](scripting.md)文档。
 
-## 6. Run "Before" Script
+## 6. 运行"执行前"脚本
 
-If you added any JavaScript code into the *"Run before Execution"* textarea in your shortcut's *"Scripting"* section (or your shortcut is a *Scripting* shortcut) then that code will be executed in this step.
+如果你在快捷方式的*"脚本"*部分的*"执行前运行"*文本区域中添加了任何 JavaScript 代码（或者你的快捷方式是*脚本*快捷方式），那么这些代码将在此步骤中执行。
 
-If the script fails (e.g., due to a syntax error) then an error message will be displayed and the remaining steps will not be executed.
+如果脚本失败（例如由于语法错误），将显示错误消息，且不会执行剩余步骤。
 
-For more details see the documentation on [Scripting](scripting.md).
+更多详情请参阅[脚本编写](scripting.md)文档。
 
-## 7. Resolve Global Variables
+## 7. 解析全局变量
 
-If you use any global variables in your shortcut, they will be resolved in this step. E.g., if you used a global variable of type *"Color Input*" you will be asked to pick a color, or if you have a global variable of type *"Text Input"* you will be presented with a dialog window that asks you to enter a text value.
+如果你在快捷方式中使用了任何全局变量，它们将在此步骤中被解析。例如，如果你使用了类型为*"颜色输入"*的全局变量，系统会要求你选择一种颜色；如果你有类型为*"文本输入"*的全局变量，系统会弹出一个对话框窗口要求你输入文本值。
 
-If you select *"Cancel"* on any of the variable resolution dialogs then the remaining steps will not be executed.
+如果你在任何变量解析对话框中选择*"取消"*，则不会执行剩余步骤。
 
-Note that it is possible for some variables to already be resolved before this step, e.g. if you ask for their value via Scripting in step 5 or 6 or if you explicitly passed a value for a variable when triggering the shortcut (which is possible when starting a shortcut via Tasker, Intent, deep-link or Scripting).
+请注意，某些变量可能已经在此步骤之前被解析，例如，如果你在步骤 5 或 6 中通过脚本请求其值，或者在触发快捷方式时显式传递了变量的值（通过 Tasker、Intent、深度链接或脚本启动快捷方式时可能做到这一点）。
 
-For more information see the [Variables](variables.md) documentation.
+更多信息请参阅[变量](variables.md)文档。
 
-## 8. Send HTTP Request
+## 8. 发送 HTTP 请求
 
-In this step the actual HTTP request is sent and the response received.
+在此步骤中，将发送实际的 HTTP 请求并接收响应。
 
-If the request fails due to a network problem (e.g., because your device is not connected to the internet) and you selected the *"Wait for connection when offline"* option then it will be rescheduled at this point. Once a network connection is detected the execution will start over from step 5.
+如果请求由于网络问题而失败（例如因为你的设备未连接到互联网），并且你选择了*"离线时等待连接"*选项，那么它将在此点被重新安排。一旦检测到网络连接，执行将从步骤 5 重新开始。
 
-## 9. Run "Success" or "Failure" Script
+## 9. 运行"成功"或"失败"脚本
 
-If the HTTP request was a success (i.e., it completed with a 2xx response code, or a 3xx response code and following redirects was disabled) and if you added any JavaScript code into the *"Run on Success"* textarea in your shortcut's *"Scripting"* section then that code will be executed in this step.
+如果 HTTP 请求成功（即它以 2xx 响应码完成，或以 3xx 响应码完成且禁用了跟随重定向），并且你在快捷方式的*"脚本"*部分的*"成功时运行"*文本区域中添加了任何 JavaScript 代码，那么这些代码将在此步骤中执行。
 
-Similarly, if the HTTP request failed (e.g., because of a network error or because of a 4xx or 5xx response code) and if you added any JavaScript code into the *"Run on Failure"* textarea in your shortcut's *"Scripting"* section then that code will be executed in this step.
+同样，如果 HTTP 请求失败（例如因为网络错误或因为 4xx 或 5xx 响应码），并且你在快捷方式的*"脚本"*部分的*"失败时运行"*文本区域中添加了任何 JavaScript 代码，那么这些代码将在此步骤中执行。
 
-If the script fails (e.g., due to a syntax error or runtime error) then an error message will be displayed and the remaining steps will not be executed.
+如果脚本失败（例如由于语法错误或运行时错误），将显示错误消息，且不会执行剩余步骤。
 
-For more details see the documentation on [Scripting](scripting.md).
+更多详情请参阅[脚本编写](scripting.md)文档。
 
-## 10. Store Response
+## 10. 存储响应
 
-If you configured your shortcut to store the HTTP response into a file, that will happen in this step. A file is only created for a successful request.
+如果你将快捷方式配置为将 HTTP 响应存储到文件中，那么将在此步骤中进行。仅为成功的请求创建文件。
 
-## 10. Display Result
+## 10. 显示结果
 
-Depending on what options you picked in the *"Response Handling"* section of your shortcut, the response or a pre-defined message will be displayed in this final step, either as a toast, in a dialog window or a fullscreen window.
+根据你在快捷方式的*"响应处理"*部分中选择的选项，响应或预定义消息将在此最终步骤中显示，显示为吐司提示、对话框窗口或全屏窗口。
 
-## 11. Execute Next Shortcut
+## 11. 执行下一个快捷方式
 
-If you called [`enqueueShortcut`](scripting.md#trigger-shortcut) at any point in the Scripting of your shortcut, that enqueued shortcut will now be executed, possibly after a delay if you specified one.
+如果你在快捷方式的脚本编写中的任何时候调用了 [`enqueueShortcut`](scripting.md#trigger-shortcut)，那么该已排队的快捷方式现在将被执行，如果你指定了延迟，可能会在延迟后执行。

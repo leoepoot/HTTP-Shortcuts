@@ -1,32 +1,32 @@
-# Privacy Policy
+# 隐私政策
 
-## Data Collection
+## 数据收集
 
-With the exception of Crash Reporting, the Remote Edit ("Edit on Computer") feature, and the use of Material Design icons (see below for these), all data entered into the app is only ever sent to the servers specified by the user through the use of shortcuts. No data about the user, their activity or device is collected or sent to the developer or any other third-party as part of this app.
+除了崩溃报告、远程编辑（"在电脑上编辑"）功能以及使用 Material Design 图标（详见下文）外，输入到应用中的所有数据只会被发送到用户通过使用快捷方式指定的服务器。作为本应用的一部分，不会收集任何有关用户、其活动或设备的数据，也不会将其发送给开发者或任何其他第三方。
 
 <a id="crash-reporting"></a>
-## Crash Reporting
-The app uses the third-party service [Bugsnag](https://www.bugsnag.com/) to collect diagnostic data in the event of an app crash ("crash reports"). This serves the purpose of discovering and fixing bugs in the app. The collected data contains basic information about the device (e.g. manufacturer, language, OS version) and the crash itself (e.g. stacktrace, time of occurrence). No personal identifiable information such as usernames, email addresses, IP addresses or physical location is collected. The crash data is only used by the developer for debugging purposes. All collected data is automatically deleted after 7 days.
+## 崩溃报告
 
-The user has the option to opt-out of the sending of these crash reports by changing their settings in the app.
+应用使用第三方服务 [Bugsnag](https://www.bugsnag.com/) 在应用崩溃时收集诊断数据（"崩溃报告"）。这用于发现和修复应用中的错误。收集的数据包含有关设备的基本信息（如制造商、语言、操作系统版本）和崩溃本身的信息（如堆栈跟踪、发生时间）。不会收集任何个人身份信息，如用户名、电子邮件地址、IP 地址或物理位置。崩溃数据仅由开发者用于调试目的。所有收集的数据将在 7 天后自动删除。
 
-If the app is installed from *F-Droid* then this crash reporting is automatically disabled and can not be enabled.
+用户可以通过在应用中更改设置来选择退出发送这些崩溃报告。
 
-## Remote Editing ("Edit on Computer")
+如果应用是从 *F-Droid* 安装的，则此崩溃报告功能会自动禁用，且无法启用。
 
-The "Edit on Computer" feature requires the use of a remote server. By default, this server is available at [https://http-shortcuts.rmy.ch/editor](https://http-shortcuts.rmy.ch/editor), provided by the developer himself. If the user wishes to make use of this feature, they consent that all their app's data (shortcuts, categories, variables) is pushed to the remote service, where it is accessible via a device ID and a password set by the user. This data is only used for the purpose of the remote editing feature itself and is not used in any other way (not even analytics or user event tracking) or by any party other than the user. The data is automatically deleted from the remote server 2 hours after pushing from the app or saving changes from the respective web app.
+## 远程编辑（"在电脑上编辑"）
 
-The user has the option to change to a different remote server from within the app, in which case the privacy policy of that server applies instead of the one for the default server.
+"在电脑上编辑"功能需要使用远程服务器。默认情况下，此服务器位于 [https://http-shortcuts.rmy.ch/editor](https://http-shortcuts.rmy.ch/editor)，由开发者本人提供。如果用户希望使用此功能，则表示他们同意将其所有应用数据（快捷方式、分类、变量）推送到远程服务，在那里可以通过设备 ID 和用户设置的密码进行访问。此数据仅用于远程编辑功能本身，不会以任何其他方式使用（甚至不用于分析或用户事件跟踪），也不会被用户以外的任何方使用。数据在从应用推送或从相应的 Web 应用保存更改后的 2 小时内会自动从远程服务器删除。
 
-The use of this feature is non-essential and the app can otherwise be fully used without the "Edit on Computer" feature.
+用户可以选择在应用内切换到其他远程服务器，在这种情况下，该服务器的隐私政策将取代默认服务器的隐私政策。
 
-## Material Design Icons
+使用此功能不是必需的，没有"在电脑上编辑"功能，应用也可以完全正常使用。
 
-When picking an icon for a shortcut, the user has the option to select from the "Material Design Icons" collection. These icons are fetched from [https://http-shortcuts.rmy.ch](https://http-shortcuts.rmy.ch), which provides a mirror of [https://github.com/Templarian/MaterialDesign-SVG](https://github.com/Templarian/MaterialDesign-SVG). When using this feature, the user has to first confirm that network requests will be made to fetch these icons.
+## Material Design 图标
 
-The use of this feature is non-essential and the app can otherwise be fully used without it.
+在为快捷方式选择图标时，用户可以选择从"Material Design 图标"集合中选择。这些图标从 [https://http-shortcuts.rmy.ch](https://http-shortcuts.rmy.ch) 获取，该网站提供了 [https://github.com/Templarian/MaterialDesign-SVG](https://github.com/Templarian/MaterialDesign-SVG) 的镜像。使用此功能时，用户必须首先确认将发起网络请求以获取这些图标。
 
-## Permissions
+使用此功能不是必需的，没有它应用也可以完全正常使用。
 
-The app may request some sensitive permissions, in particular the permission for reading the device's precise location. All of the data and functionality accessed through these permissions is used solely for the declared purpose. For details, see the [Permissions](permissions.md) page.
+## 权限
 
+应用可能会请求一些敏感权限，特别是读取设备精确位置的权限。通过这些权限访问的所有数据和功能仅用于声明的目的。有关详细信息，请参阅[权限](permissions.md)页面。

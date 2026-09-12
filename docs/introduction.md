@@ -1,28 +1,27 @@
-# Introduction
+# 简介
 
-## What is HTTP?
+## 什么是 HTTP？
 
-HTTP (**H**yper**t**ext **T**ransfer **P**rotocol) is a widely used protocol which forms the foundation of the web as we know it. It revolves around the concept of requesting resources (e.g. pages of a website or endpoints in a REST API), identified by a URL, from a server.
+HTTP（**H**yper**t**ext **T**ransfer **P**rotocol，超文本传输协议）是一种被广泛使用的协议，构成了我们所知互联网的基础。它围绕着从服务器请求资源（例如网站页面或 REST API 中的端点）这一概念展开，这些资源由 URL 标识。
 
-This app assumes that you're already familiar with the basics of the protocol, so in case you're not I suggest you get yourself an [overview](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) first.
+本应用假设你已经熟悉该协议的基本知识，所以如果你还不熟悉，我建议你先[大致了解一下](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)。
 
-## What is this app about?
+## 这个应用是做什么的？
 
-The main goal of this app is to provide an easy way to send HTTP requests from an Android device. It achieves this by allowing you to create so called [shortcuts](shortcuts.md) which can be clicked to trigger such a request, either from within the app directly or via a widget placed on your home screen.
+本应用的主要目标是提供一种从 Android 设备发送 HTTP 请求的简便方式。它通过允许你创建所谓的[快捷方式](shortcuts.md)来实现这一点，你可以点击这些快捷方式来触发请求，既可以在应用内直接点击，也可以通过放置在主屏幕上的小部件点击。
 
-Shortcuts can be grouped together into different [categories](categories.md) which are shown as separate tabs inside the app.
+快捷方式可以分组到不同的[分类](categories.md)中，这些分类在应用内显示为独立的标签页。
 
-In some cases you want to do more than just send a simple HTTP request but need more powerful tools for advanced workflows. This is where [variables](variables.md) come in, which allow you to dynamically inject values into your request, and the [scripting](scripting.md) capabilities of the app, which allow you to use JavaScript code snippets to further customize how your shortcuts behave.
+在某些情况下，你可能想做的不仅仅是发送一个简单的 HTTP 请求，而是需要更强大的工具来处理高级工作流。这时就需要用到[变量](variables.md)（允许你动态地向请求中注入值）以及应用的[脚本](scripting.md)功能（允许你使用 JavaScript 代码片段进一步自定义快捷方式的行为）。
 
-## Creating your first shortcut
+## 创建你的第一个快捷方式
 
-To get started, click the "+" button on the app's main screen. On the screen that appears select the type of shortcut you want to create. More on this [here](shortcuts.md), but for now let's just go with a "Regular HTTP Shortcut" by selecting the "Create from scratch" option.
+首先，点击应用主屏幕上的"+"按钮。在出现的屏幕上选择你要创建的快捷方式类型。更多信息[在此处](shortcuts.md)，但现在让我们先选择"从零创建"选项来创建一个"常规 HTTP 快捷方式"。
 
-You are now in the shortcut editor. Here you can enter a name for your shortcut and optionally a short description. By clicking on the icon to the right of the name field you can choose an icon for your shortcut.
+现在你进入了快捷方式编辑器。在这里你可以为快捷方式输入名称，并可选地输入简短描述。点击名称字段右侧的图标可以为快捷方式选择一个图标。
 
-At the very least you need to provide a URL. To do this, click on "Basic Request Settings". On the screen that opens you can also select the HTTP method. By default it will be set to GET. Now you can go back and test your shortcut by clicking the play button or saving it by clicking the checkmark button.
+至少你需要提供一个 URL。为此，点击"基本请求设置"。在打开的屏幕上，你还可以选择 HTTP 方法。默认设置为 GET。现在你可以返回，通过点击播放按钮测试你的快捷方式，或点击勾选按钮保存它。
 
-You can also further configure it by checking out the options in the other sections further below. I encourage you to have a look around and try out different options.
+你也可以查看下方其他部分的选项来进一步配置它。我鼓励你四处看看并尝试不同的选项。
 
-Once you are happy with your shortcut you can save all changes and return to the main screen. You can now trigger your shortcut from here or choose to place it on the home screen. By long-pressing it, you open the menu with additional options.
-
+当你对快捷方式满意后，可以保存所有更改并返回主屏幕。现在你可以从这里触发你的快捷方式，或者选择将其放置在主屏幕上。长按它可以打开带有额外选项的菜单。

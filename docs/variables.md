@@ -1,141 +1,141 @@
-# Variables
+# 变量
 
-Variables allow you to inject pieces of information dynamically into your shortcuts when executing them. Each variable, at the very least, consists of a name and a value. There are two kinds of variables; [local variables](#local-variables) and [global variables](#global-variables).
+变量允许你在执行快捷方式时将信息动态注入其中。每个变量至少由名称和值组成。有两种变量：[局部变量](#local-variables) 和 [全局变量](#global-variables)。
 
-Variables are also particularly useful when combined with the app's [Scripting](scripting.md) capabilities, as it allows you to compute a value using a piece of JavaScript code, store that value into a variable and then use that value as part of the HTTP request.
+变量在与应用的[脚本编写](scripting.md)功能结合使用时也特别有用，因为它允许你使用一段 JavaScript 代码计算一个值，将该值存储到变量中，然后将该值用作 HTTP 请求的一部分。
 
-For more details on when variables are resolved see the [Execution Flow](execution-flow.md) documentation.
+有关变量何时被解析的更多详情，请参阅[执行流程](execution-flow.md)文档。
 
-## Using Variables
+## 使用变量
 
-You can insert a placeholder for a variable into your shortcuts' url, requests parameters, request body, authentication and header fields by clicking the *"{ }"* button next to the input field and selecting a variable.
+你可以通过点击输入字段旁边的 *"{ }"* 按钮并选择一个变量，将变量的占位符插入到快捷方式的 URL、请求参数、请求体、认证和请求头字段中。
 
-When executing a shortcut that contains variable placeholders, all of them are resolved according to their type. For some variable types this means that a prompt dialog is shown that asks for a value, others can be resolved without user input. They are resolved in the order in which they appear in the Global Variables screen, so if you want one variable to be resolved before another, make sure to rearrange them accordingly by dragging.
+执行包含变量占位符的快捷方式时，所有占位符都会根据其类型进行解析。对于某些变量类型，这意味着会显示一个提示对话框要求输入值，而其他类型可以在没有用户输入的情况下解析。它们按照在"全局变量"屏幕上出现的顺序进行解析，所以如果你希望一个变量在另一个之前被解析，请务必通过拖动来相应地重新排列它们。
 
-You can also insert these placeholders into some of your global variables, i.e., you can have variables reference other variables, and you can use them when writing [scripts](scripting.md#variables).
+你也可以将这些占位符插入到某些全局变量中，即你可以让变量引用其他变量，也可以在编写[脚本](scripting.md#variables)时使用它们。
 
-Placeholders for local variables are shown as orange and are enclosed by 2 sets of curly brackets, whereas those for global variables are shown as purple with only 1 set of curly brackets.
+局部变量的占位符显示为橙色，由两组花括号括起来，而全局变量的占位符显示为紫色，只有一组花括号。
 
 <a id="local-variables"></a>
-## Local Variables
+## 局部变量
 
-Local variables are implicitly created when a placeholder for them is used and only exist in the context of the shortcut they are used in. You can assign a value to a local variable by using the [setVariable](scripting.md#set-variable) Scripting function or by passing in a value via [deep linking](advanced.md#deep-link), the [executeShortcut](scripting.md#execute-shortcut) or [enqueueShortcut](scripting.md#trigger-shortcut) functions, or from [Tasker](advanced.md#integrate-with-tasker).
+局部变量是在使用其占位符时隐式创建的，并且仅存在于使用它们的快捷方式的上下文中。你可以通过使用 [setVariable](scripting.md#set-variable) 脚本函数，或通过[深度链接](advanced.md#deep-link)、[executeShortcut](scripting.md#execute-shortcut) 或 [enqueueShortcut](scripting.md#trigger-shortcut) 函数传入值，或从 [Tasker](advanced.md#integrate-with-tasker) 来为局部变量赋值。
 
-The assigned value is not stored and will be forgotten after the execution of the shortcut completes. If you want to store a value, use a global variable instead.
+赋值不会被存储，并且会在快捷方式执行完成后被遗忘。如果你想存储一个值，请改用全局变量。
 
 <a id="global-variables"></a>
-## Global Variable
+## 全局变量
 
-As opposed to local variables, global variables exist independently of shortcuts and can be used by multiple of them. They can be created and managed from the *Global Variables* screen, accessed via the menu on the main screen.
+与局部变量不同，全局变量独立于快捷方式存在，并且可以被多个快捷方式使用。它们可以通过主屏幕菜单中的*全局变量*屏幕创建和管理。
 
-When creating a global variable, you have to select its type. The type dictates how the variable will receive its value, and what types of values it supports.
+创建全局变量时，你必须选择其类型。类型决定了变量如何获取其值，以及它支持哪些类型的值。
 
 <a id="constant"></a>
-### Static Variable
+### 静态变量
 
-A *Static Variable* (formerly called *constant*) stores a static value. A typical use case is to store a piece of information that is shared across multiple shortcuts, such as an authentication token or a domain name. This way it can easily be changed.
+*静态变量*（以前称为*常量*）存储一个静态值。典型的用例是存储在多个快捷方式之间共享的信息，如认证令牌或域名。这样可以轻松更改它。
 
-It is also possible to change the value of a static variable programmatically before or after a shortcut runs, e.g., to store parts of an HTTP response into it. See the [Scripting](scripting.md#variables) documentation for more details.
+也可以在快捷方式运行之前或之后以编程方式更改静态变量的值，例如将 HTTP 响应的一部分存储到其中。更多详情请参阅[脚本编写](scripting.md#variables)文档。
 
-> The value of a static variable can be at most 40'000 characters long.
+> 静态变量的值最多为 40'000 个字符。
 
-If the value of the variable is sensitive, e.g. because it is a password or API token, you can check the "Treat value as secret" checkbox. This will ensure that the value will not be displayed when editing the variable and prevents it from being exposed in the Event History. Keep in mind though that this will not fully protect the variable, as it would still be possible to access the value from a shortcut or via the export feature. The latter can be mitigated by checking the "Exclude stored value from exports" checkbox at the bottom of the variable editing screen. If you want to fully protect the value, it is recommended to set up a lock in the app's Settings.
+如果变量的值是敏感的，例如因为它是密码或 API 令牌，你可以勾选"将值视为机密"复选框。这将确保在编辑变量时不显示该值，并防止其在事件历史中暴露。但请记住，这并不能完全保护变量，因为仍然可以从快捷方式或通过导出功能访问该值。后者可以通过勾选变量编辑屏幕底部的"从导出中排除存储的值"复选框来缓解。如果你想完全保护该值，建议在应用设置中设置一个锁。
 
 <a id="multiple-choice"></a>
-### Multiple Choice Selection
+### 多选
 
-The *Multiple Choice Selection* type consists of a list of options, each of which has a value and a label. It triggers a dialog from which one of the options can be selected.
+*多选*类型由一个选项列表组成，每个选项都有一个值和一个标签。它会触发一个对话框，从中可以选择其中一个选项。
 
-It can also be configured to allow selecting multiple values. The selected values will be concatenated using the specified separator. The order in which they were selected is preserved.
+它也可以配置为允许选择多个值。选中的值将使用指定的分隔符连接。选择的顺序会被保留。
 
 <a id="text-number-password"></a>
-### Text Input, Number and Password Input
+### 文本输入、数字和密码输入
 
-The *Text Input*, *Number Input* and *Password Input* types trigger a prompt dialog where a value can be entered into a text field.
+*文本输入*、*数字输入*和*密码输入*类型会触发一个提示对话框，可以在文本字段中输入值。
 
 <a id="number-slider"></a>
-### Number Slider
+### 数字滑块
 
-The *Number Slider* type is similar to the *number* type. It allows you to pick a number. However, the number is entered using a horizontal slider, for which you can define the minimum and maximum value, as well as the step size.
+*数字滑块*类型类似于*数字*类型。它允许你选择一个数字。但是，该数字是使用水平滑块输入的，你可以为其定义最小值和最大值以及步长。
 
 <a id="date-time"></a>
-### Date Input and Time Input
+### 日期输入和时间输入
 
-The *Date Input* and *Time Input* types trigger a prompt dialog where a date or time can be selected. If you just want the current date or time without showing a picker dialog, use the [timestamp](#timestamp) type instead.
+*日期输入*和*时间输入*类型会触发一个提示对话框，可以选择日期或时间。如果你只想要当前日期或时间而不显示选择器对话框，请改用[时间戳](#timestamp)类型。
 
-The output format can be specified using letters from the following table:
+可以使用下表中的字母指定输出格式：
 
-| Letter | Date or Time Component                           | Examples                                    |
+| 字母 | 日期或时间组件                                | 示例                                        |
 | ------ | ------------------------------------------------ | ------------------------------------------- |
-| `G`    | Era designator                                   | `AD`                                        |
-| `y`    | Year                                             | `1996`; `96`                                |
-| `Y`    | Week year                                        | `2009`; `09`                                |
-| `M`    | Month in year (context sensitive)                | `July`; `Jul`; `07`                         |
-| `L`    | Month in year (standalone form)                  | `July`; `Jul`; `07`                         |
-| `w`    | Week in year                                     | `27`                                        |
-| `W`    | Week in month                                    | `2`                                         |
-| `D`    | Day in year                                      | `189`                                       |
-| `d`    | Day in month                                     | `10`                                        |
-| `F`    | Day of week in month                             | `2`                                         |
-| `E`    | Day name in week                                 | `Tuesday`; `Tue`                            |
-| `u`    | Day number of week (1 = Monday, ..., 7 = Sunday) | `1`                                         |
-| `a`    | Am/pm marker                                     | `PM`                                        |
-| `H`    | Hour in day (0-23)                               | `0`                                         |
-| `k`    | Hour in day (1-24)                               | `24`                                        |
-| `K`    | Hour in am/pm (0-11)                             | `0`                                         |
-| `h`    | Hour in am/pm (1-12)                             | `12`                                        |
-| `m`    | Minute in hour                                   | `30`                                        |
-| `s`    | Second in minute                                 | `55`                                        |
-| `S`    | Millisecond                                      | `978`                                       |
-| `z`    | Time zone                                        | `Pacific Standard Time`; `PST`; `GMT-08:00` |
-| `Z`    | Time zone                                        | `-0800`                                     |
-| `X`    | Time zone                                        | `-08`; `-0800`; `-08:00`                    |
+| `G`    | 纪元标记                                         | `AD`                                        |
+| `y`    | 年                                               | `1996`; `96`                                |
+| `Y`    | 周年                                             | `2009`; `09`                                |
+| `M`    | 年中的月份（上下文相关）                         | `July`; `Jul`; `07`                         |
+| `L`    | 年中的月份（独立形式）                           | `July`; `Jul`; `07`                         |
+| `w`    | 年中的周                                         | `27`                                        |
+| `W`    | 月中的周                                         | `2`                                         |
+| `D`    | 年中的日                                         | `189`                                       |
+| `d`    | 月中的日                                         | `10`                                        |
+| `F`    | 月中的星期几                                     | `2`                                         |
+| `E`    | 星期名称                                         | `Tuesday`; `Tue`                            |
+| `u`    | 星期几数字（1 = 星期一，...，7 = 星期日）        | `1`                                         |
+| `a`    | 上午/下午标记                                    | `PM`                                        |
+| `H`    | 一天中的小时（0-23）                             | `0`                                         |
+| `k`    | 一天中的小时（1-24）                             | `24`                                        |
+| `K`    | 上午/下午的小时（0-11）                          | `0`                                         |
+| `h`    | 上午/下午的小时（1-12）                          | `12`                                        |
+| `m`    | 小时中的分钟                                     | `30`                                        |
+| `s`    | 分钟中的秒                                       | `55`                                        |
+| `S`    | 毫秒                                             | `978`                                       |
+| `z`    | 时区                                             | `Pacific Standard Time`; `PST`; `GMT-08:00` |
+| `Z`    | 时区                                             | `-0800`                                     |
+| `X`    | 时区                                             | `-08`; `-0800`; `-08:00`                    |
 
-For more details see Android's [SimpleDateFormat](https://developer.android.com/reference/java/text/SimpleDateFormat.html), which is used under the hood.
+更多详情请参阅 Android 的 [SimpleDateFormat](https://developer.android.com/reference/java/text/SimpleDateFormat.html)，它是底层使用的实现。
 
 <a id="timestamp"></a>
-### Timestamp
+### 时间戳
 
-A variable of *timestamp* type will use the current date and/or time as its valid, using the specified format. It can be configured to either use the local timezone of the device, or to use UTC.
+*时间戳*类型的变量将使用当前日期和/或时间作为其值，并使用指定的格式。它可以配置为使用设备的本地时区，或使用 UTC。
 
-The time format uses the same syntax as that of [Date Input and Time Input variables](#date-time)
+时间格式使用与[日期输入和时间输入变量](#date-time)相同的语法。
 
-> The device's default locale is used, meaning that e.g. "Day of week" will be in the language of the device
+> 使用设备的默认区域设置，这意味着例如"星期几"将使用设备的语言
 
 <a id="color"></a>
-### Color Input
+### 颜色输入
 
-The *Color Input* type triggers a prompt dialog where a color can be selected. Its value is returned in RGB hex format (e.g., ff0000 for red).
+*颜色输入*类型会触发一个提示对话框，可以选择颜色。其值以 RGB 十六进制格式返回（例如红色为 ff0000）。
 
 <a id="toggle"></a>
-### Toggle
+### 开关
 
-The *Toggle* type consists of a list of values. Every time it is used it resolves to the next value in the list. When the last value is reached it starts again from the first.
+*开关*类型由一个值列表组成。每次使用它时，它都会解析为列表中的下一个值。当到达最后一个值时，它会从第一个重新开始。
 
 <a id="increment"></a>
-### Incrementing Counter
+### 递增计数器
 
-The *Incrementing Counter* type tracks a and returns a number. Each time the variable is resolved, the number is increased by 1.
+*递增计数器*类型跟踪一个数字并返回一个数字。每次解析变量时，该数字增加 1。
 
 <a id="uuid"></a>
 ### UUID
 
-The *uuid* type will generate a random UUID (*U*niversally *U*nique *Id*entifier, version 4) and use that as its value.
+*uuid* 类型将生成一个随机 UUID（**U**niversally **U**nique **Id**entifier，通用唯一标识符，第 4 版）并将其用作其值。
 
-> Please note that the UUID is generated once per shortcut execution, not once per variable use, meaning that if you use the same variable multiple times within one shortcut it will have the same value in all places. If you need multiple UUIDs for a single shortcut execution you'll need to use multiple different variables.
+> 请注意，UUID 是在每次快捷方式执行时生成一次，而不是每次使用变量时生成一次，这意味着如果你在一个快捷方式中多次使用同一个变量，它在所有地方的值都相同。如果你需要为单次快捷方式执行获取多个 UUID，则需要使用多个不同的变量。
 
 <a id="clipboard-content"></a>
-### Clipboard Content
+### 剪贴板内容
 
-Variables of type *clipboard content* will resolve to the latest textual value that was copied to the clipboard. If there is no text in the clipboard or the last thing that was copied does not have a textual representation, the variable will have an empty value.
+*剪贴板内容*类型的变量将解析为复制到剪贴板的最新文本值。如果剪贴板中没有文本，或者最后复制的内容没有文本表示形式，该变量的值将为空。
 
-> This variable type can not be used when executing shortcuts in the background, as the Android OS (starting from Android 10) does not allow apps in the background to access the clipboard. In this case the variable will just assume an empty string as its value.
+> 在后台执行快捷方式时不能使用此变量类型，因为 Android 操作系统（从 Android 10 开始）不允许后台应用访问剪贴板。在这种情况下，该变量将假设为空字符串作为其值。
 
 <a id="sharing"></a>
-## Sharing Values into Variables
-In the advanced settings section of a global variable you can mark it as *Allow Receiving Value from Share Dialog*. This makes it possible to provide the value of this variable through Android's *Share*-dialog, e.g., by sharing a URL or text snippet from another app. The variable will then assume the shared value during the execution of a shortcut.
+## 共享值到变量
 
-If you enable this option, you will also find a dropdown further down which lets you pick which part of the shared value the variable should assume: the text, the title/subject (if any), or both.
+在全局变量的高级设置部分，你可以将其标记为*允许从共享对话框接收值*。这使得可以通过 Android 的*共享*对话框提供此变量的值，例如通过从另一个应用共享 URL 或文本片段。然后，该变量将在快捷方式执行期间采用共享的值。
 
-If you are on Android 11 or newer, you can enhance this by enabling a shortcut as a Direct Share target. You will find the checkbox for this in its "Trigger & Execution Settings". When this is enabled, the shortcut will appear in the Direct Share sheet, making it easier to quickly share text with that specific shortcut.
+如果你启用此选项，你还会在下方找到一个下拉菜单，允许你选择变量应采用共享值的哪一部分：文本、标题/主题（如果有），或两者。
 
+如果你使用的是 Android 11 或更高版本，你可以通过将快捷方式启用为直接共享目标来增强此功能。你可以在其"触发与执行设置"中找到该复选框。启用后，该快捷方式将出现在直接共享表中，从而更容易快速与该特定快捷方式共享文本。

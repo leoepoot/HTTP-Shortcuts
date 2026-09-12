@@ -1,130 +1,129 @@
-# FAQ
+# 常见问题
 
-## This app is free and contains no ads. What's the catch?
+## 这个应用是免费的，也没有广告。有什么陷阱吗？
 
-There is no catch. I'm a developer who one day realized he needed an app like this, built it, and then decided to share it. HTTP Shortcuts is essentially a one-man show, and I'm only working on it in my spare time. I'm doing it because I enjoy the project and because it lets me try out and learn new things, which is why the app is completely free and will remain so. No ads, no tracking, no premium features, just a simple open-source app that aims to be useful.
+没有陷阱。我是一名开发者，某天意识到自己需要这样一个应用，就把它做出来了，然后决定分享出去。HTTP Shortcuts 本质上是一个人的独角戏，我只在业余时间做它。我这样做是因为我喜欢这个项目，也因为它让我有机会尝试和学习新东西，所以这个应用是完全免费的，而且会一直保持下去。没有广告，没有追踪，没有高级功能，只是一个简单的开源应用，力求对用户有用。
 
-If you want to show your support though, check out [this page](https://http-shortcuts.rmy.ch/support-me).
+如果你想表示支持，请查看[此页面](https://http-shortcuts.rmy.ch/support-me)。
 
-## Running shortcuts works from within the app, but not from the home screen. How do I fix it?
+## 在应用内可以运行快捷方式，但从主屏幕不行。怎么解决？
 
-This usually happens when Data Saver or Battery Saver is enabled, as those restrict how apps can use the network. Try disabling them or whitelisting the HTTP Shortcuts app.
+这通常发生在启用了"数据节省"或"电池节省"模式时，因为这些模式会限制应用使用网络的方式。尝试禁用它们或将 HTTP Shortcuts 应用加入白名单。
 
-It might also be that you need to enable the "Allow drawing over other apps" option. You'll find it by opening the app's main menu and selecting *Troubleshooting*.
+也可能是你需要启用"允许在其他应用上方显示"选项。你可以通过打开应用的主菜单并选择*故障排除*来找到它。
 
-## I don't like the blue arrow icon that overlays all my shortcuts on the home screen. Can I remove it?
+## 我不喜欢主屏幕上覆盖在所有快捷方式上的蓝色箭头图标。能去掉吗？
 
-Unfortunately, this icon overlay is added by the Android system itself, not the app. There is a potential workaround though. Try adding a shortcut via your home screen's widget menu (usually accessed by long pressing on the home screen), and when prompted by the app about which method to use for placement, select the *Legacy* option. Please note that this may not always work, and if it doesn't then there really is no way to remove the icon overlay. Also note that this will prevent you from dynamically changing the name or icon of the shortcut, i.e., you'll need to remove and re-add it to the home screen manually if you change its name or icon.
+不幸的是，这个图标覆盖层是由 Android 系统本身添加的，而不是应用。不过有一个可能的变通办法。尝试通过主屏幕的小部件菜单添加快捷方式（通常通过长按主屏幕访问），当应用提示你选择放置方法时，选择*旧版*选项。请注意，这可能不总是有效，如果不行，那真的没有办法移除图标覆盖层。还要注意，这会阻止你动态更改快捷方式的名称或图标，也就是说，如果你更改了名称或图标，需要手动从主屏幕移除并重新添加它。
 
-Alternatively, you can use the *"Customizable Widget"* from your home screen's widgets menu. This widget looks a bit different from a regular shortcut and offers a few customization options.
+或者，你可以使用主屏幕小部件菜单中的*"可自定义小部件"*。这个小部件看起来与常规快捷方式有些不同，并提供了一些自定义选项。
 
 <a id="trigger-from-other-app"></a>
-## Can I trigger a shortcut from another app?
+## 我可以从其他应用触发快捷方式吗？
 
-Most automation apps offer some way to trigger a shortcut directly. Look for "shortcut" or "plugin". If that isn't an option you can instead trigger a shortcut by sending a *broadcast intent* with the following parameters:
+大多数自动化应用都提供了直接触发快捷方式的方法。寻找"快捷方式"或"插件"。如果这不可行，你可以改为通过发送带有以下参数的*广播 intent* 来触发快捷方式：
 
 - action: "ch.rmy.android.http_shortcuts.execute"
-- package name: "ch.rmy.android.http_shortcuts"
-- string extra "id" which holds the ID* of the shortcut you want to trigger
+- 包名: "ch.rmy.android.http_shortcuts"
+- 字符串 extra "id"，其中包含你要触发的快捷方式的 ID*
 
-Alternatively, you can invoke a shortcut via a deep-linking URL, which is particularly useful when you want to trigger a shortcut from a QR code or an NFC tag.
+或者，你可以通过深度链接 URL 调用快捷方式，当你想通过扫描二维码或 NFC 标签来触发快捷方式时，这特别有用。
 
-\* You'll find the shortcut's ID as well as its deep-linking URL by long-pressing the shortcut and selecting *Show Info* from the menu.
+\* 你可以通过长按快捷方式并从菜单中选择*显示信息*来找到快捷方式的 ID 及其深度链接 URL。
 
-See also the [documentation on deep-linking](advanced.md#deep-link).
+另请参阅[深度链接文档](advanced.md#deep-link)。
 
-## Can I send multiple requests with one shortcut?
+## 一个快捷方式可以发送多个请求吗？
 
-A normal shortcut corresponds to a single request. You can, however, have one shortcut trigger one or more other shortcuts. The easiest way to achieve that is by creating a ["Multi-Shortcut"](shortcuts.md#multi-shortcut), which allows you to pick one or more shortcuts which are then all triggered when the multi-shortcut itself is executed, one after the other. 
+一个普通快捷方式对应一个请求。但是，你可以让一个快捷方式触发一个或多个其他快捷方式。最简单的方法是创建一个["多重快捷方式"](shortcuts.md#multi-shortcut)，它允许你选择一个或多个快捷方式，当多重快捷方式本身被执行时，这些快捷方式会一个接一个地被触发。
 
-In some cases using a Multi Shortcut might not be enough, e.g., when you want to trigger the same shortcut twice, want to trigger it only under certain conditions or if you want to pass variable values to it. In this case you can create a ["Scripting Shortcut"](shortcuts.md#scripting-shortcut) instead and add one or more instances of the ["enqueueShortcut"](scripting.md#trigger-shortcut) action to it. When creating or editing your scripting shortcut, open the section "Scripting" and then click the "+" button underneath the textarea. On the screen that opens select "Miscellaneous" and then "Enqueue Shortcut". This way, whenever you run your first shortcut, it will trigger the selected other one after it completed. See [the Scripting documentation](scripting.md#trigger-shortcut) for more information.
+在某些情况下，使用多重快捷方式可能不够，例如，当你想触发同一个快捷方式两次、只想在特定条件下触发它，或者想向它传递变量值时。在这种情况下，你可以改为创建一个["脚本快捷方式"](shortcuts.md#scripting-shortcut)，并向其中添加一个或多个 ["enqueueShortcut"](scripting.md#trigger-shortcut) 操作。创建或编辑你的脚本快捷方式时，打开"脚本编写"部分，然后点击文本区域下方的"+"按钮。在打开的屏幕上选择"其他"，然后选择"排队快捷方式"。这样，每当你运行第一个快捷方式时，它在完成后都会触发所选的另一个快捷方式。更多信息请参阅[脚本编写文档](scripting.md#trigger-shortcut)。
 
-## Can I schedule requests to be sent periodically or at a specific time?
+## 我可以定期或在特定时间安排请求发送吗？
 
-Currently the app only has basic functionality for running a shortcut repeatedly. When creating or editing the shortcut, go to the *Trigger & Execution Settings* section and look for the *Run repeatedly* dropdown at the bottom.
+目前应用只有重复运行快捷方式的基本功能。创建或编辑快捷方式时，转到*触发与执行设置*部分，然后在底部查找*重复运行*下拉菜单。
 
-If you need more advanced or more precise scheduling, you can try to achieve that by combining the app with an automation app, such as Tasker or MacroDroid.
+如果你需要更高级或更精确的调度，可以尝试将本应用与自动化应用（如 Tasker 或 MacroDroid）结合使用来实现。
 
 <a id="share-text"></a>
-## Can I trigger a shortcut with text shared from another app? Can I share text (e.g. a URL from a browser) into a shortcut?
+## 我可以用从其他应用共享的文本来触发快捷方式吗？我可以将文本（如浏览器中的 URL）共享到快捷方式中吗？
 
-If you want to share text via an HTTP shortcut, you can do so like this:
+如果你想通过 HTTP 快捷方式共享文本，可以这样做：
 
-1. Open the app
-2. Open the dropdown menu at the top right and select *Global Variables*
-3. Click the + button and select *Static Variable* as the variable type
-4. Enter a name for the variable
-5. **Tick the *Allow 'Share...'* checkbox
-6. From the dropdown menu that appears below select which part of the shared text you want to handle: text, title, or both. Most apps will only share text, so if in doubt go with that.
-7. Click the checkmark button at the top right to save your variable
-8. Go back to the app's main screen
-9. Click the + button to start creating a new shortcut or long press an existing shortcut and select *Edit* to open the shortcut editor
-10. Find the input field for the place where you want to share the text as, e.g. the URL, the request body or a header. Click the *{}* button next to that field
-11. Select the global variable that you created earlier
-12. Save the changes to your shortcut
-13. You should now be able to share text from other apps (e.g. a URL from a browser) into the HTTP Shortcuts app and there select your shortcut as the share target. It will execute the shortcut and insert the shared text into where you put the variable placeholder.
+1. 打开应用
+2. 打开右上角的下拉菜单，选择*全局变量*
+3. 点击 + 按钮，选择*静态变量*作为变量类型
+4. 输入变量名称
+5. **勾选 *允许"共享..."* 复选框
+6. 从下方出现的下拉菜单中选择你要处理的共享文本部分：文本、标题或两者。大多数应用只共享文本，所以如果有疑问，就选文本。
+7. 点击右上角的勾选按钮保存变量
+8. 返回应用的主屏幕
+9. 点击 + 按钮开始创建新的快捷方式，或长按现有快捷方式并选择*编辑*打开快捷方式编辑器
+10. 找到你要将文本共享到的位置的输入字段，例如 URL、请求体或请求头。点击该字段旁边的 *{}* 按钮
+11. 选择你之前创建的全局变量
+12. 保存对快捷方式的更改
+13. 现在你应该能够从其他应用将文本（如浏览器中的 URL）共享到 HTTP Shortcuts 应用中，并在那里选择你的快捷方式作为共享目标。它将执行快捷方式，并将共享的文本插入到你放置变量占位符的位置。
 
-## Can I share files into a shortcut's request body?
+## 我可以将文件共享到快捷方式的请求体中吗？
 
-Yes, you can. You'll find information about this on the [advanced features](advanced.md#share-files) page.
+是的，可以。你可以在[高级功能](advanced.md#share-files)页面找到相关信息。
 
-## Can I pass values from one shortcut to another?
+## 我可以将值从一个快捷方式传递给另一个吗？
 
-Yes, you can. To do so, you can either use a [local variable](variables.md#local-variable) or create a [global variable](variables.md) of static type to hold the value. You can then use the [Scripting](scripting.md) feature to store a value into that variable from one of your shortcuts and then use or read out the value again in the other shortcut. To store a value into a variable, use the [setVariable](scripting.md#variables) function.
+是的，可以。为此，你可以使用[局部变量](variables.md#local-variables)，或创建一个静态类型的[全局变量](variables.md)来保存该值。然后你可以使用[脚本编写](scripting.md)功能将一个快捷方式中的值存储到该变量中，然后在另一个快捷方式中使用或读出该值。要将值存储到变量中，请使用 [setVariable](scripting.md#variables) 函数。
 
-If you use [executeShortcut](scripting.md#execute-shortcut) to call another shortcut, you can also use the [setResult](scripting.md#set-result) function to pass data back to the calling shortcut.
+如果你使用 [executeShortcut](scripting.md#execute-shortcut) 调用另一个快捷方式，你也可以使用 [setResult](scripting.md#set-result) 函数将数据传回调用快捷方式。
 
-## How do I pass data from Tasker to HTTP Shortcuts?
+## 如何将数据从 Tasker 传递到 HTTP Shortcuts？
 
-See the guide on [integrating with Tasker](advanced.md#integrate-with-tasker).
+请参阅[与 Tasker 集成](advanced.md#integrate-with-tasker)指南。
 
-## In what order are global variables resolved? Can I change the variable resolution order?
+## 全局变量的解析顺序是什么？我可以更改变量解析顺序吗？
 
-Primarily, global variables are resolved in the order in which they appear on the Global Variables screen. You can change this order by rearranging the variables there. If this is not sufficient, e.g. because you use the same global variables in multiple shortcuts but want a different order per shortcut, there is a workaround you can do:
+基本上，全局变量按照它们在"全局变量"屏幕上出现的顺序进行解析。你可以通过在那里重新排列变量来更改此顺序。如果这还不够，例如，因为你在多个快捷方式中使用了相同的全局变量，但希望每个快捷方式有不同的顺序，你可以这样做一个变通办法：
 
-1. In the shortcut editor, click on "Scripting"
-2. In the "Run before Execution" field, add a line like the following, one for each global variable that you want to use, in the desired order:
+1. 在快捷方式编辑器中，点击"脚本编写"
+2. 在"执行前运行"字段中，为你要使用的每个全局变量添加一行，按照所需顺序排列：
 
 ```js
 getVariable("my_variable2");
 getVariable("my_variable1");
 ```
 
-This will essentially override the resolution order, as the Scripting forces the variables to be resolved before the regular variable resolution step.
+这实际上会覆盖解析顺序，因为脚本编写会强制变量在常规变量解析步骤之前被解析。
 
-## I hid one of my shortcuts and now I can't access it anymore. How do I make it visible again?
+## 我隐藏了一个快捷方式，现在无法访问它了。如何让它重新可见？
 
-If you go to the app's Settings screen, you'll find an option in the "Appearance" section which lets you configure whether hidden shortcuts should be visible or not. By default, hidden shortcuts will not be shown, but if you change this setting, the shortcuts will instead be visible but appear partially transparent. You can long-press them and select "Show" from the menu to make them fully visible again.
+如果你进入应用的设置屏幕，你会在"外观"部分找到一个选项，可以让你配置隐藏的快捷方式是否可见。默认情况下，隐藏的快捷方式不会显示，但如果你更改此设置，这些快捷方式将变为可见，但会显示为半透明。你可以长按它们并从菜单中选择"显示"，使它们完全可见。
 
 <a id="debugging"></a>
-## Something's not working with my requests. Can I get more detailed information for debugging?
-The easiest way to get more details about the shortcuts that you're executing in the app is by going to the *Event History* screen. You will find it in the app's main menu under *Troubleshooting*. The Event History shows all recently triggered shortcuts, the HTTP requests that were sent out and the HTTP responses that were received, as well as all the (network) errors that have occurred.
+## 我的请求出了点问题。能获得更详细的信息来调试吗？
+获取你在应用中执行的快捷方式的更多详细信息的最简单方法是前往*事件历史*屏幕。你可以在应用主菜单的*故障排除*下找到它。事件历史显示了最近触发的所有快捷方式、发出的 HTTP 请求和收到的 HTTP 响应，以及所有发生的（网络）错误。
 
-Another way to get more information about the request and the response is by opening the *Response Handling* section when editing a shortcut and changing the *Display Type* to *Fullscreen Window* and then ticking the *Show Meta Information* checkbox. This will display the full response in a window, along with all response headers and some additional meta information.
+另一种获取有关请求和响应的更多信息的方法是，在编辑快捷方式时打开*响应处理*部分，将*显示类型*更改为*全屏窗口*，然后勾选*显示元信息*复选框。这将在一个窗口中显示完整的响应，以及所有响应头和一些额外的元信息。
 
 <a id="infinite-loops"></a>
-## I accidentally created an infinite loop of shortcuts triggering other shortcuts, how do I stop it?
-First, force stop the app. Then, assuming you're viewing this page in a browser on the same device where you have the app installed, click this link: <a href="http-shortcuts://cancel-executions">CANCEL ALL EXECUTIONS</a>. The link will open the app but in a safe mode, where all scheduled shortcut executions are cancelled.
+## 我不小心创建了一个快捷方式触发其他快捷方式的无限循环，怎么停止？
+首先，强制停止应用。然后，假设你在安装了应用的同一设备上的浏览器中查看此页面，点击此链接：<a href="http-shortcuts://cancel-executions">取消所有执行</a>。该链接将打开应用，但会以安全模式打开，所有已安排的快捷方式执行都会被取消。
 
 <a id="permissions"></a>
-## What does the app need all of these permissions for?
-See the [Permissions](permissions.md) page for details.
+## 应用需要这些权限干什么？
+详情请参阅[权限](permissions.md)页面。
 
-## I would like to help translate the app. How can I contribute?
+## 我想帮忙翻译这个应用。怎么贡献？
 
-First of all, thank you for even considering this. I appreciate the effort. You can join the translation project here: [HTTP Shortcuts on crowdin.com](https://crowdin.com/project/http-shortcuts)
+首先，感谢你有这个想法。我很感激。你可以在这里加入翻译项目：[crowdin.com 上的 HTTP Shortcuts](https://crowdin.com/project/http-shortcuts)
 
-If you encounter problems with the translation software or something is unclear, feel free to [contact me](https://http-shortcuts.rmy.ch/contact).
+如果翻译软件有问题或有什么不清楚的地方，欢迎随时[联系我](https://http-shortcuts.rmy.ch/contact)。
 
-## Is this app also available on iOS?
+## 这个应用在 iOS 上也有吗？
 
-No, this app only exists for Android.
+没有，这个应用只存在于 Android 平台。
 
-## I've sent an email with a question / bug report, but haven't heard back anything. What gives?
+## 我发了一封提问/错误报告的邮件，但没有收到回复。怎么回事？
 
-I'm just one guy developing this app in my free time. Sometimes I don't regularly read my emails or I don't have the time to respond right away. Sometimes it may take weeks. Sorry about that. Most likely I'll get back to you eventually. Please be patient with me. If you don't hear from me after a month, I'm sorry, I might have forgotten. Feel free to reach out again if it is important.
+我只是一个利用空闲时间开发这个应用的人。有时我不经常看邮件，或者没有时间立即回复。有时可能需要几周时间。对此我很抱歉。大多数情况下我最终会回复你。请耐心等待。如果一个月后还没收到我的消息，对不起，我可能忘了。如果很重要，请随时再次联系。
 
-## I love this app. How can I show my support?
+## 我喜欢这个应用。怎么表示支持？
 
-First of all, thank you. Second of all: I've created a [page](https://http-shortcuts.rmy.ch/support-me) with a list of ways in which you can support this app.
-
+首先，谢谢你。其次：我创建了一个[页面](https://http-shortcuts.rmy.ch/support-me)，列出了你可以支持这个应用的各种方式。

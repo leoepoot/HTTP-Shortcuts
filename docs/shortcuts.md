@@ -1,59 +1,58 @@
-# Shortcuts
+# 快捷方式
 
-The *HTTP Shortcuts* app allows you to create *shortcuts* that represent an action, resource or workflow. They can be invoked (executed) by clicking them, either inside the app itself, or after placing them on your device's home screen as widgets.
+*HTTP Shortcuts* 应用允许你创建代表一个动作、资源或工作流的*快捷方式*。你可以通过点击它们来调用（执行），既可以在应用内部点击，也可以将它们作为小部件放置在设备主屏幕上后点击。
 
-Get started by clicking the *plus button* at the bottom right when opening the app and pick which type of shortcut you want to create. For each shortcut you can set a name, an icon and a description. Depending on the type, there's a number of additional options.
+打开应用时，点击右下角的*加号按钮*开始，然后选择你要创建的快捷方式类型。每个快捷方式都可以设置名称、图标和描述。根据类型的不同，还有许多额外选项。
 
-Once you've create a shortcut, it will appear on the app's main screen. You can long-press it to open its context menu, which includes options such as editing, exporting, deleting, etc.
+创建快捷方式后，它会出现在应用的主屏幕上。你可以长按它来打开上下文菜单，其中包含编辑、导出、删除等选项。
 
-![Start creating a shortcut by picking a type](../assets/documentation/shortcuts/01.png)
+![通过选择类型开始创建快捷方式](../assets/documentation/shortcuts/01.png)
 
 <a id="regular"></a>
-## Regular HTTP Shortcuts
+## 常规 HTTP 快捷方式
 
-The main purpose of the app is to make it easy to send HTTP requests, so the main type of shortcut is a regular HTTP shortcut. For this at the very least you need to specify an HTTP method (e.g. GET, POST, PUT, ...) and the URL that you want to reach (e.g. an API endpoint, a hosted text document or a website).
+本应用的主要目的是简化 HTTP 请求的发送，因此主要的快捷方式类型是常规 HTTP 快捷方式。为此，你至少需要指定一个 HTTP 方法（如 GET、POST、PUT...）和你想访问的 URL（如 API 端点、托管的文本文档或网站）。
 
-You will also find a number of options, such as custom request headers, request body settings, or how the response should be displayed. You will also find more advanced features like proxy settings or [scripting](scripting.md).
+你还会发现许多选项，如自定义请求头、请求体设置，或响应的显示方式。你还会发现更高级的功能，如代理设置或[脚本编写](scripting.md)。
 
-See the [Execution Flow](execution-flow.md) page for more information on how a shortcut is executed.
+有关快捷方式执行方式的更多信息，请参阅[执行流程](execution-flow.md)页面。
 
 <a id="curl-import"></a>
-### Import from cURL
+### 从 cURL 导入
 
-Instead of starting from scratch you can use the *"Import from cURL"* option to type or paste an existing cURL command which then serves as a template for your shortcut.
+你可以使用*"从 cURL 导入"*选项来输入或粘贴现有的 cURL 命令，以此作为快捷方式的模板，而不必从头开始。
 
-> The cURL command is parsed on a best-effort basis. Not all parameters are supported, so some may be ignored or coerced.
+> cURL 命令的解析是尽力而为的。并非所有参数都受支持，因此有些可能会被忽略或转换。
 
-## Other Types of Shortcuts
+## 其他类型的快捷方式
 
-In some cases you need to create shortcuts that don't correspond to a single HTTP request but instead need to perform a different workflow.
+在某些情况下，你需要创建的快捷方式并不对应单个 HTTP 请求，而是需要执行不同的工作流。
 
 <a id="multi-shortcut"></a>
-### Multi-Shortcut
+### 多重快捷方式
 
-A *multi-shortcut* combines multiple shortcuts into one. When the multi-shortcut is executed it will trigger all of the shortcuts that are linked to it in sequence.
+*多重快捷方式*将多个快捷方式组合成一个。当多重快捷方式被执行时，它将按顺序触发所有与之关联的快捷方式。
 
 <a id="browser-shortcut"></a>
-### Browser Shortcut
+### 浏览器快捷方式
 
-A *browser shortcut* is similar to a regular HTTP shortcut in that it corresponds to a single URL, but instead of making an HTTP request directly to that URL inside the app, it will open the URL in your device's browser instead.
+*浏览器快捷方式*与常规 HTTP 快捷方式类似，因为它对应一个 URL，但它不会在应用内直接向该 URL 发起 HTTP 请求，而是在设备的浏览器中打开该 URL。
 
 <a id="mqtt-shortcut"></a>
-### MQTT Shortcut
+### MQTT 快捷方式
 
-An *MQTT shortcut* lets you send one or multiple messages to an MQTT server, using the [MQTT protocol](https://en.wikipedia.org/wiki/MQTT). Each message consists of the topic that the message should be published to, and its payload.
+*MQTT 快捷方式*允许你使用 [MQTT 协议](https://en.wikipedia.org/wiki/MQTT)向 MQTT 服务器发送一条或多条消息。每条消息由消息应发布到的主题及其有效载荷组成。
 
-You'll need to know the MQTT server's URL, which is specified using the "tcp://"-Scheme, so, if your server is running on 192.168.0.42 at port 1234, then the URL you'd use is "tcp://192.168.0.42:1234".
+你需要知道 MQTT 服务器的 URL，它使用 "tcp://" 协议方案指定，因此，如果你的服务器运行在 192.168.0.42 的 1234 端口上，那么你使用的 URL 就是 "tcp://192.168.0.42:1234"。
 
-Optionally, you can also configure a username and password if the server requires authentication.
+如果服务器需要认证，你还可以配置用户名和密码。
 
 <a id="wake-on-lan"></a>
-### Wake-on-LAN Shortcut
+### 网络唤醒快捷方式
 
-A *wake-on-lan shortcut* can be used to wake up a computer or other device on your network. Check online whether your computer (and specifically its network card) supports this, how to enable it and how to find out its MAC address.
+*网络唤醒快捷方式*可用于唤醒网络上的电脑或其他设备。请在网上确认你的电脑（特别是其网卡）是否支持此功能、如何启用它以及如何查找其 MAC 地址。
 
 <a id="scripting-shortcut"></a>
-### Scripting Shortcut
+### 脚本快捷方式
 
-A *scripting shortcut* allows you to run arbitrary JavaScript code, also known as [scripting](scripting.md).
-
+*脚本快捷方式*允许你运行任意 JavaScript 代码，也称为[脚本编写](scripting.md)。

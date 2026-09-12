@@ -1,11 +1,11 @@
 <a id="examples"></a>
-# Scripting Examples
+# 脚本编写示例
 
-This page lists some examples for typical use-cases of the code execution feature.
+本页列出了代码执行功能的一些典型用例示例。
 
-### Generate values for use in the request
+### 生成请求中使用的值
 
-Sometimes you need to generate a value, for example the current date, or a random number, to be used in your request. You can do this by generating the value and then storing it into a variable that you then use in your request. Here's an example:
+有时你需要生成一个值，例如当前日期或随机数，以便在请求中使用。你可以通过生成该值，然后将其存储到一个变量中，再在请求中使用该变量来实现。下面是一个示例：
 
 ```js
 const randomNumber = Math.floor(Math.random() * 10);
@@ -15,38 +15,38 @@ const currentDate = (new Date()).toDateString();
 setVariable('today', currentDate);
 ```
 
-### Parse a JSON response
+### 解析 JSON 响应
 
-Here's an example on how to parse the response of your shortcut, and display the result or store it into a variable for later user.
+下面是一个示例，展示如何解析快捷方式的响应，并显示结果或将其存储到变量中以供日后使用。
 
 ```js
 const temperature = JSON.parse(response.body).temperature;
-showDialog(`The current temperature is ${temperature}°C`, 'Temperature');
+showDialog(`当前温度是 ${temperature}°C`, '温度');
 
 setVariable('temperature', temperature);
 ```
 
-### Change icon and label based on response
+### 根据响应更改图标和标签
 
-This example shows how the shortcut icon and label can be changed based on the received response. The example assumes that the server returns 'OK' if the request was a success.
+此示例展示了如何根据收到的响应更改快捷方式的图标和标签。该示例假设如果请求成功，服务器会返回 'OK'。
 
 ```js
 if (response.body == 'OK') {
   renameShortcut('', 'Success');
-  changeIcon('', 'freepik_check'); // changes the icon of the current shortcut to a green checkmark
+  changeIcon('', 'freepik_check'); // 将当前快捷方式的图标更改为绿色对勾
 } else {
   renameShortcut('', 'Failure');
-  changeIcon('', 'freepik_close'); // changes the icon of the current shortcut to a red cross
+  changeIcon('', 'freepik_close'); // 将当前快捷方式的图标更改为红色叉号
 }
 ```
 
-### Use different address when away or at home
+### 外出或在家时使用不同的地址
 
-This example shows how you can set up a shortcut to use a different address depending on whether you are currently connected to your home wifi network.
+此示例展示了如何设置快捷方式，根据你当前是否连接到家庭 Wi-Fi 网络来使用不同的地址。
 
-The example assumes that you have set up a static global variable named "base_url", which is used in your shortcut's URL field, and that your home wifi is called "Home Sweet Home".
+该示例假设你已设置一个名为 "base_url" 的静态全局变量，该变量用于快捷方式的 URL 字段，并且你的家庭 Wi-Fi 名为 "Home Sweet Home"。
 
-The following code snippet can then be used in your "Run before Execution" block of the Scripting screen:
+然后可以在脚本编写屏幕的"执行前运行"块中使用以下代码片段：
 
 ```js
 const baseUrlHome = "http://192.168.1.123";
@@ -63,39 +63,39 @@ if (getWifiSSID() == "Home Sweet Home") {
 }
 ```
 
-### Ask for confirmation before execution shortcut
+### 执行快捷方式前要求确认
 
-This example shows how you can show a custom confirmation message before the shortcut executes and only execute it if the user confirms by clicking 'OK'.
+此示例展示了如何在快捷方式执行前显示自定义确认消息，并仅在用户点击"确定"确认时才执行。
 
 ```js
-if (!confirm('Should I do the thing?')) {
-  showToast('Not doing the thing.');
+if (!confirm('我要做这件事吗？')) {
+  showToast('不做这件事。');
   abort();
 }
 ```
 
-Or you might want to bypass the confirmation step if you are in your home network:
+或者，如果你在家庭网络中，可能希望绕过确认步骤：
 
 ```js
 if (getWifiSSID() != 'My Home Network') {
-  if (!confirm('Should I do the thing?')) {
-    showToast('Not doing the thing.');
+  if (!confirm('我要做这件事吗？')) {
+    showToast('不做这件事。');
     abort();
   }
 }
 ```
 
-### Read the response out loud
+### 大声朗读响应
 
-This example shows how you can have the received response be read out loud (using text-to-speech). The example assumes that the response is in plain-text (i.e., not HTML, JSON, ...).
+此示例展示了如何让收到的响应被大声朗读（使用文本转语音）。该示例假设响应是纯文本（即不是 HTML、JSON 等）。
 
 ```js
 speak(response.body);
 ```
 <a id="split-color"></a>
-### Show a color picker and split the result into R, G, and B
+### 显示颜色选择器并将结果拆分为 R、G、B
 
-This example shows how you can open a color picker dialog, then separate the selected color into its red, green and blue components and convert them to a number from 0 to 255. It assumes that you created variables "red", "green" and "blue", into which the result is stored such that you can use it in your shortcut, e.g., in query parameters within the URL.
+此示例展示了如何打开颜色选择器对话框，然后将所选颜色分离为红、绿、蓝分量，并将它们转换为 0 到 255 的数字。它假设你已创建变量 "red"、"green" 和 "blue"，结果存储在这些变量中，以便你可以在快捷方式中使用它们，例如在 URL 中的查询参数里。
 
 ```js
 const myColor = promptColor();
@@ -109,4 +109,3 @@ setVariable("red", red);
 setVariable("green", green);
 setVariable("blue", blue);
 ```
-

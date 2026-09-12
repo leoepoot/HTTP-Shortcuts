@@ -1,53 +1,54 @@
-# Import & Export
+# 导入与导出
 
-The app allows you to export all of your shortcuts and variables into a zip file, which you can either store on your device directly or share into another app to send or upload it somewhere. You'll find these options by opening the dropdown menu on the app's main screen and selecting "Import / Export".
+该应用允许你将所有快捷方式和变量导出到一个 zip 文件中，你可以将其直接存储在设备上，或分享到另一个应用中以发送或上传到其他地方。你可以通过打开应用主屏幕上的下拉菜单并选择"导入 / 导出"来找到这些选项。
 
-On the same screen you'll also find the option to import shortcuts from a file, either from the file system or from a URL.
+在同一屏幕上，你还可以找到从文件导入快捷方式的选项，可以从文件系统或 URL 导入。
 
-You can also export a single shortcut by long pressing on it and selecting the "Export" option from the context menu.
+你还可以通过长按单个快捷方式并从上下文菜单中选择"导出"选项来导出它。
 
-## Global Variables
+## 全局变量
 
-When exporting shortcuts, the app will automatically also export all of the global variables that are used by those shortcuts. If these global variables contain sensitive or device-specific information, you can configure them such that their value will be excluded from the export. This option can be found in the global variable editor.
+导出快捷方式时，应用也会自动导出这些快捷方式使用的所有全局变量。如果这些全局变量包含敏感信息或设备特定信息，你可以配置它们，使其值不包含在导出中。此选项可以在全局变量编辑器中找到。
 
 <a id="sync"></a>
-## Automatic Import / Export
+## 自动导入 / 导出
 
-The Import / Export Screen includes the option "Automatic Import / Export". With this feature, you can configure the app to periodically export all of your shortcuts or to import from a specific source. This is mainly useful to create periodic backups, or to sync configuration between devices by setting up one device to periodically export and all other devices to periodically import. The same as with the regular import and export feature, this feature reads or writes a zip file which contains all of your shortcuts, variables, categories, etc. It can optionally be protected with a password. As a source or destination, you can choose a file on your local file system or a URL on a web server, see below for details.
+导入 / 导出屏幕包含"自动导入 / 导出"选项。使用此功能，你可以将应用配置为定期导出所有快捷方式，或从特定来源导入。这主要用于创建定期备份，或通过设置一台设备定期导出、所有其他设备定期导入来在设备之间同步配置。与常规导入和导出功能相同，此功能读取或写入一个包含所有快捷方式、变量、分类等的 zip 文件。它可以选择使用密码保护。作为来源或目标，你可以选择本地文件系统上的文件或 Web 服务器上的 URL，详见下文。
 
-The feature can be configured to run daily or weekly, though there is no guarantee on when exactly the import or export will run. It can also be triggered manually from this screen.
+该功能可以配置为每天或每周运行，但不保证导入或导出的确切运行时间。也可以从该屏幕手动触发。
 
-### Import Strategies
+### 导入策略
 
-When setting up automatic import, the first option you see is "Import Strategy".
+设置自动导入时，你看到的第一个选项是"导入策略"。
 
-The default strategy is "Merge with existing data". This strategy behaves the same way as the normal import feature, in that it will try to merge the imported data with the already existing data. This way, if you already have shortcuts, variables etc., they will be preserved and only modified if the imported data also includes them.
+默认策略是"与现有数据合并"。此策略的行为与正常导入功能相同，即它会尝试将导入的数据与已存在的数据合并。这样，如果你已有快捷方式、变量等，它们将被保留，只有在导入数据也包含它们时才会被修改。
 
-The other strategy is "Replace existing data". This should be used with care, as it can lead to loss of data. When automatic import is active with this strategy, the creation and editing of shortcuts, variables, etc. is disabled. Instead, whenever the automatic import runs, all local data will be deleted and replaced with the data from the import. This is mainly useful if you want your device to match the state of another one, where the other one is configured to use automatic export.
+另一种策略是"替换现有数据"。使用此策略应谨慎，因为它可能导致数据丢失。当自动导入以此策略运行时，快捷方式、变量等的创建和编辑将被禁用。相反，每当自动导入运行时，所有本地数据都将被删除并替换为导入中的数据。这主要用于希望你的设备与另一台设备的状态匹配，而另一台设备被配置为使用自动导出的情况。
 
-### Using the local file system
+### 使用本地文件系统
 
-To use the local file system, select a directory and then provide the name of the file that should be used. For import, if no file name is provided, the app will use the most recently modified zip file in the directory. If no suitable file can be found, import will fail.
+要使用本地文件系统，请选择一个目录，然后提供应使用的文件名。对于导入，如果未提供文件名，应用将使用目录中最近修改的 zip 文件。如果找不到合适的文件，导入将失败。
 
-You may include the placeholders `%Y`, `%M`, and `%D` in the file name, which will be replaced with the current year, month, or day, respectively.
+你可以在文件名中包含占位符 `%Y`、`%M` 和 `%D`，它们将分别替换为当前的年、月、日。
 
-### Using a web server
+### 使用 Web 服务器
 
-You can provide a URL to a web server, where you want to import to or export from. This can be a WebDAV server, or any other server that accepts GET or PUT HTTP requests to read or write files. Optionally, you can provide a username and password, which will be used for Basic Auth to authenticate with the server.
+你可以提供 Web 服务器的 URL，指定要导入到或从其导出的位置。这可以是 WebDAV 服务器，或任何接受 GET 或 PUT HTTP 请求来读取或写入文件的服务器。可选地，你可以提供用户名和密码，用于向服务器进行基本身份验证。
 
-You may include the placeholders `%Y`, `%M`, and `%D` in the URL, which will be replaced with the current year, month, or day, respectively.
+你可以在 URL 中包含占位符 `%Y`、`%M` 和 `%D`，它们将分别替换为当前的年、月、日。
 
 <a id="remote-edit"></a>
-## Remote Editing
+## 远程编辑
 
-On the Import / Export Screen you'll also find the "Edit on Computer" option. It allows you to temporarily upload all of your shortcuts to a remote server and then conveniently edit them from a computer via the [Web Editor](https://http-shortcuts.rmy.ch/editor), and then download the changes back into the app. This way you can avoid doing tedious amounts of typing on your phone.
+在导入 / 导出屏幕上，你还可以找到"在电脑上编辑"选项。它允许你临时将所有快捷方式上传到远程服务器，然后通过 [Web 编辑器](https://http-shortcuts.rmy.ch/editor) 从电脑上方便地编辑它们，然后将更改下载回应用。这样，你就不必在手机上进行繁琐的大量输入。
 
 <a id="import-deep-linking"></a>
-## Hosting Templates for Easy Importing
-If you want to share your shortcuts as a template or as part of a tutorial, you can allow others to easily import them by uploading the exported zip file somewhere on your website (or any publicly accessible host) and then constructing a deep-link URL using the following format:
+## 托管模板以便轻松导入
+
+如果你想将快捷方式作为模板或教程的一部分分享，可以通过将导出的 zip 文件上传到你的网站（或任何可公开访问的主机）上的某个位置，然后使用以下格式构建深层链接 URL，来让他人轻松导入它们：
 
 ```
 https://http-shortcuts.rmy.ch/import?url=[URL]
 ```
 
-where `[URL]` is a URL-encoded version of the URL where your exported file can be downloaded from. You can then include this deep-link URL on your website so that people can click on it to immediately import your shortcuts into their app.
+其中 `[URL]` 是可下载导出文件的 URL 的 URL 编码版本。然后你可以将此深层链接 URL 包含在你的网站上，以便人们点击它即可立即将你的快捷方式导入到他们的应用中。

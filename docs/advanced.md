@@ -1,147 +1,149 @@
-# Advanced Features
+# 高级功能
 
-This page is a collection of some less commonly used or more advanced use cases, as well as some of the app's more hidden features.
+本页汇集了一些不太常用或更高级的用例，以及应用中一些较为隐藏的功能。
 
 <a id="headless-mode"></a>
-## Run shortcuts in "headless mode"
+## 以"无头模式"运行快捷方式
 
-Normally, executing an HTTP shortcut consists of sending a request, waiting for the response, and then processing the response. However, in some cases, the response isn't all that important, e.g., if you already know that it will be empty or consist of a generic success message. In these cases, you can configure your shortcut to run in a fire-and-forget manner, called "headless mode", meaning that the shortcut will not wait for the response and finish immediately after sending the HTTP request.
+通常，执行 HTTP 快捷方式包括发送请求、等待响应，然后处理响应。但在某些情况下，响应并不那么重要，例如，如果你已经知道它将是空的或只是一条通用的成功消息。在这些情况下，你可以将快捷方式配置为以"发射后不管"的方式运行，称为"无头模式"，这意味着快捷方式不会等待响应，而是在发送 HTTP 请求后立即结束。
 
-Headless mode is automatically enabled for a shortcut if all of the following conditions are met:
-- In the "Response Handling" settings, both "On Success" and "On Failure" are set to "Show nothing (run silently)", or the "Display Type" is set to "Toast Popup" or "Notification", which requires the app to have the Notification permission
-- In the "Scripting" settings, the "Run on Success" and "Run on Failure" fields are empty
-- The shortcut does not make use of file parameters of file request bodies
-- The "Wait for connection when offline" checkbox is not ticked
-- The "Require specific Wi-Fi" checkbox is not ticked
-- Battery Saver and Data Saver modes are disabled, or the app is excluded from them
-- The shortcut does not use any variables with large values (i.e., multiple KB)
+如果满足以下所有条件，快捷方式将自动启用无头模式：
+- 在"响应处理"设置中，"成功时"和"失败时"都设置为"什么都不显示（静默运行）"，或者"显示类型"设置为"吐司弹窗"或"通知"，这要求应用拥有通知权限
+- 在"脚本编写"设置中，"成功时运行"和"失败时运行"字段为空
+- 快捷方式未使用文件参数或文件请求体
+- 未勾选"离线时等待连接"复选框
+- 未勾选"要求特定 Wi-Fi"复选框
+- 省电模式和流量节省模式已禁用，或者应用已被排除在它们之外
+- 快捷方式未使用任何具有较大值（即多 KB）的变量
 
-On some devices, headless mode does not work reliably, which is why you also have the option to completely disable this feature. To do so, look for *Troubleshooting* in the app's main menu and then on that screen disable the *Performance Optimizations*.
+在某些设备上，无头模式无法可靠工作，因此你也可以选择完全禁用此功能。为此，请在应用主菜单中查找 *故障排除*，然后在该屏幕上禁用 *性能优化*。
 
 <a id="share-text"></a>
-## Share text into a shortcut
+## 将文本分享到快捷方式
 
-You might want to be able to share a piece of text (e.g. the URL of the current page in a browser) from an app and use it as part of an HTTP request. You can do this with the use of [global variables](variables.md).
+你可能希望能够从某个应用中分享一段文本（例如浏览器中当前页面的 URL），并将其作为 HTTP 请求的一部分。你可以使用[全局变量](variables.md)来实现。
 
-When you create or edit a global variable, you'll find a checkbox labelled "Allow Receiving Value from Share Dialog". Enable this and save your changes. From now on you can share text from another app into the HTTP Shortcuts app, and it will use the shared text as the value of that variable, in whatever place you used the variable.
+创建或编辑全局变量时，你会发现一个标记为"允许从分享对话框接收值"的复选框。启用并保存更改。从现在起，你可以将文本从另一个应用分享到 HTTP Shortcuts 应用，它会将分享的文本用作该变量的值，无论你在何处使用了该变量。
 
-If you use this variable in multiple shortcuts, you will be prompted to choose which shortcut should be executed.
+如果你在多个快捷方式中使用了此变量，系统会提示你选择要执行哪个快捷方式。
 
-If you are on Android 11 or newer, you can enhance this by enabling a shortcut as a Direct Share target. You will find the checkbox for this in its "Trigger & Execution Settings". When this is enabled, the shortcut will appear in the Direct Share sheet, making it easier to quickly share text with that specific shortcut.
+如果你使用的是 Android 11 或更高版本，可以通过将快捷方式启用为直接分享目标来增强此功能。你可以在其"触发器和执行设置"中找到此复选框。启用后，该快捷方式将出现在直接分享面板中，从而更轻松地快速将文本分享到该特定快捷方式。
 
-Note that the value that you share will not be stored, but will only be used temporarily for the execution of the shortcut, meaning that the next time you execute the shortcut that global variable will still have its previous value.
+请注意，你分享的值不会被存储，只会临时用于快捷方式的执行，这意味着下次执行快捷方式时，该全局变量仍将保留其以前的值。
 
-See also the [variables documentation](variables.md#sharing) for more information.
+另请参阅[变量文档](variables.md#sharing)了解更多信息。
 
 <a id="share-files"></a>
-## Share files into a shortcut
+## 将文件分享到快捷方式
 
-If you want to share a file, you can do so by opening the *Request Body / Parameters* section in the shortcut editor and there either set the *Request Body Type* to *File (Picker)* or set it to *Parameters (form-data)* and then add a parameter of type *Single File* or *Multiple Files*. After that save your changes. You should now be able to share files into the HTTP Shortcuts app (the option is called "Send to...") and it will allow you to pick the shortcut as a target. This will execute the shortcut and it will use the content of the shared file as the request body or as a form parameter.
+如果你想分享文件，可以在快捷方式编辑器中打开 *请求体 / 参数* 部分，然后将 *请求体类型* 设置为 *文件（选择器）*，或者将其设置为 *参数（form-data）*，然后添加类型为 *单个文件* 或 *多个文件* 的参数。之后保存更改。现在你应该能够将文件分享到 HTTP Shortcuts 应用（该选项称为"发送到..."），它将允许你选择快捷方式作为目标。这将执行快捷方式，并将共享文件的内容用作请求体或表单参数。
 
-If you have multiple shortcuts that use files in their body, you'll be prompted to select which shortcut should receive the shared file.
+如果你有多个在请求体中使用文件的快捷方式，系统会提示你选择哪个快捷方式应接收共享文件。
 
-If you are on Android 11 or newer, you can enhance this by enabling a shortcut as a Direct Share target. You will find the checkbox for this in its "Trigger & Execution Settings". When this is enabled, the shortcut will appear in the Direct Share sheet, making it easier to quickly share files with that specific shortcut.
+如果你使用的是 Android 11 或更高版本，可以通过将快捷方式启用为直接分享目标来增强此功能。你可以在其"触发器和执行设置"中找到此复选框。启用后，该快捷方式将出现在直接分享面板中，从而更轻松地快速将文件分享到该特定快捷方式。
 
 <a id="deep-link"></a>
-## Trigger shortcut via deep-link
+## 通过深层链接触发快捷方式
 
-Each shortcut has an associated deep-link URL. You can use this URL to trigger the shortcut from outside the app, by invoking that URL. This is particularly useful if you want to trigger a shortcut by scanning a QR code or an NFC tag. Simply use the shortcut's deep-link URL as the payload for the QR code or NFC tag.
+每个快捷方式都有一个关联的深层链接 URL。你可以使用此 URL 从应用外部触发快捷方式，方式是调用该 URL。如果你想通过扫描二维码或 NFC 标签来触发快捷方式，这特别有用。只需将快捷方式的深层链接 URL 用作二维码或 NFC 标签的有效载荷即可。
 
-You can get a shortcut's deep-link URL by long-pressing the shortcut in the app's main screen and selecting "Show Info". This will open a dialog window which shows you the URL.
+你可以通过在应用主屏幕中长按快捷方式并选择"显示信息"来获取快捷方式的深层链接 URL。这将打开一个对话框窗口，向你显示该 URL。
 
-It is also possible to pass additional values to that shortcut, to temporarily set the values of variables used by those shortcuts (similar to how the ["Share into"](#share-text) feature works). Simply append them as query parameters, so e.g. if you have a variable called "myVariable" and you want to invoke a shortcut that uses it, you can do so and pass the value "Hello World" to it via a URL that might look like this:
+也可以向该快捷方式传递额外的值，以临时设置这些快捷方式使用的变量值（类似于["分享到"](#share-text)功能的工作方式）。只需将它们作为查询参数附加即可，例如，如果你有一个名为"myVariable"的变量，并且想调用一个使用它的快捷方式，你可以通过如下 URL 将值"Hello World"传递给它：
 
 ```
 http-shortcuts://f943652a-5f4b-47d9-a4dd-6588292e63dd?myVariable=Hello%20World
 ```
 
-This works with both local and global variables.
+这适用于局部变量和全局变量。
 
-> Make sure to properly URL-encode the value if it contains special characters. You'll find tools online that help you achieve this.
+> 如果值包含特殊字符，请确保对其进行正确的 URL 编码。你可以在网上找到帮助你完成此操作的工具。
 
 <a id="secondary-launcher"></a>
-## Trigger shortcut via secondary launcher app
+## 通过辅助启动器应用触发快捷方式
 
-In some cases you might not be able to use home screen shortcuts. In this case, as a workaround, the app supports a secondary launcher app, through which shortcuts can be triggered.
+在某些情况下，你可能无法使用主屏幕快捷方式。在这种情况下，作为一种变通方案，应用支持一个辅助启动器应用，通过它可以触发快捷方式。
 
-To enable this secondary launcher app, open the editor for one of your shortcuts and go to the "Trigger & Execution Settings" screen. There you'll find an "Allow triggering via secondary launcher app" checkbox. Enable this and save your changes. After this you should find the secondary launcher app in your device's list of apps under the name "Trigger shortcut".
+要启用此辅助启动器应用，请打开其中一个快捷方式的编辑器，然后转到"触发器和执行设置"屏幕。在那里你会找到一个"允许通过辅助启动器应用触发"复选框。启用并保存更改。之后，你应该能在设备的应用列表中找到名为"触发快捷方式"的辅助启动器应用。
 
-If you enable this for multiple shortcuts you'll be prompted to select the shortcut you want to trigger every time you open this secondary app.
+如果你为多个快捷方式启用了此功能，每次打开此辅助应用时都会提示你选择要触发的快捷方式。
 
-Unfortunately, due to technical limitations on Android, it is not possible to change the name or icon of this secondary launcher app.
+遗憾的是，由于 Android 上的技术限制，无法更改此辅助启动器应用的名称或图标。
 
 <a id="quick-settings-tile"></a>
-## Trigger shortcut via quick settings tile
+## 通过快速设置磁贴触发快捷方式
 
-On most Android devices you can pull down the status bar to reveal the quick settings area, e.g. to quickly toggle Wi-Fi or enable "Do not disturb" mode. You can edit this area and choose the tiles that are relevant to you and rearrange them. When you do you'll notice that there's also an HTTP Shortcuts tile called "Trigger shortcut". This tile allows you to quickly trigger a shortcut from anywhere.
+在大多数 Android 设备上，你可以下拉状态栏以显示快速设置区域，例如快速切换 Wi-Fi 或启用"勿扰"模式。你可以编辑此区域，选择与你相关的磁贴并重新排列它们。这样做时，你会注意到还有一个名为"触发快捷方式"的 HTTP Shortcuts 磁贴。此磁贴允许你从任何地方快速触发快捷方式。
 
-To enable a shortcut to be accessible via this quick settings tile, open the editor for it and go to the "Trigger & Execution Settings" screen. There you'll find an "Allow triggering via Quick Settings Tile" checkbox. Enable this and save your changes.
+要使快捷方式可通过此快速设置磁贴访问，请打开其编辑器并转到"触发器和执行设置"屏幕。在那里你会找到一个"允许通过快速设置磁贴触发"复选框。启用并保存更改。
 
-If you enable this for multiple shortcuts you'll be prompted to select the shortcut you want to trigger every time.
+如果你为多个快捷方式启用了此功能，每次都会提示你选择要触发的快捷方式。
 
 <a id="app-launcher"></a>
-## Trigger shortcut via app launcher
+## 通过应用启动器触发快捷方式
 
-Similar to the quick settings tile, another quick way to trigger a shortcut is via the app launcher, i.e., by long-pressing the HTTP Shortcut app's main app icon on the home screen. This will open a menu which shows all the shortcuts which have been enabled to support this.
+与快速设置磁贴类似，另一种快速触发快捷方式的方法是通过应用启动器，即在主屏幕上长按 HTTP Shortcut 应用的主应用图标。这将打开一个菜单，其中显示所有已启用支持此功能的快捷方式。
 
-To enable a shortcut to be accessible via the app launcher, open the editor for it and go to the "Trigger & Execution Settings" screen. There you'll find a "Show as app shortcut on launcher" checkbox. Enable this and save your changes.
+要使快捷方式可通过应用启动器访问，请打开其编辑器并转到"触发器和执行设置"屏幕。在那里你会找到一个"在启动器上显示为应用快捷方式"复选框。启用并保存更改。
 
-Please note that there is a limited number of shortcuts that can be shown on the app launcher. In most cases this limit is set to 5 but the exact number depends on your device's manufacturer.
+请注意，应用启动器上可以显示的快捷方式数量有限。在大多数情况下，此限制为 5，但确切数量取决于你设备的制造商。
 
 <a id="install-as-app"></a>
-## Install shortcuts as apps
-For certain automation setups, it is not possible to directly target a shortcut. As a solution for those situations, you have the option to generate and install a lightweight app that triggers a particular shortcut when launched. You will find this option in the context menu when long-pressing on a shortcut in the app.
+## 将快捷方式安装为应用
 
-Please note that these apps are essentially just a link to the original shortcut and as such still require the HTTP Shortcuts app itself to remain installed and the shortcut for which they were generated to exist. If you change the shortcut's name or icon, the installed app will not update automatically, but you can reinstall it to get the update. Uninstalling the generated app is safe and will not impact the original shortcut itself.
+对于某些自动化设置，无法直接定位快捷方式。作为这些情况的解决方案，你可以选择生成并安装一个轻量级应用，该应用在启动时触发特定的快捷方式。你可以在应用中长按快捷方式时出现的上下文菜单中找到此选项。
+
+请注意，这些应用本质上只是指向原始快捷方式的链接，因此仍需要安装 HTTP Shortcuts 应用本身，并且生成它们的快捷方式必须存在。如果你更改了快捷方式的名称或图标，已安装的应用不会自动更新，但你可以重新安装它以获取更新。卸载生成的应用是安全的，不会影响原始快捷方式本身。
 
 <a id="integrate-with-tasker"></a>
-## Integrating with Tasker
+## 与 Tasker 集成
 
-### Trigger a shortcut from Tasker
-You can use [Tasker](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm) to trigger a shortcut. To pass a value from Tasker to HTTP Shortcuts you need to add a local variable to your shortcut, or create a global variable of type *Static Variable* and add it to your shortcut. Afterwards, create a global variable with the same name in Tasker. Make sure to do so *before* you select the shortcut from Tasker. All of Tasker's global variables that have matching local or global variables in HTTP Shortcuts are automatically passed over.
+### 从 Tasker 触发快捷方式
+你可以使用 [Tasker](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm) 来触发快捷方式。要将值从 Tasker 传递到 HTTP Shortcuts，你需要向快捷方式添加一个局部变量，或者创建一个类型为 *静态变量* 的全局变量并将其添加到快捷方式。然后，在 Tasker 中创建一个同名的全局变量。请确保在从 Tasker 选择快捷方式 *之前* 完成此操作。所有在 HTTP Shortcuts 中具有匹配局部或全局变量的 Tasker 全局变量都会自动传递过来。
 
-You can use the [setResult()](scripting.md#set-result) function (part of the [Scripting feature](scripting.md)) to pass data back to Tasker.
+你可以使用 [setResult()](scripting.md#set-result) 函数（属于[脚本编写功能](scripting.md)的一部分）将数据传回 Tasker。
 
-### Trigger a Tasker task from a shortcut
+### 从快捷方式触发 Tasker 任务
 
-See the [triggerTaskerTask documentation](scripting.md#trigger-tasker-task) for details about triggering a Tasker task.
+有关触发 Tasker 任务的详细信息，请参阅 [triggerTaskerTask 文档](scripting.md#trigger-tasker-task)。
 
 <a id="integrate-with-macrodroid"></a>
-## Integrate with MacroDroid
-The [MacroDroid](https://play.google.com/store/apps/details?id=com.arlosoft.macrodroid) app can be used to trigger a shortcut via its "Applications > Tasker/Locale Plugin > HTTP Shortcuts > Execute HTTP Shortcut" action.
+## 与 MacroDroid 集成
 
-If you want to pass values from MacroDroid to your shortcut, you need to define a local variable in your shortcut and a local variable with the same name in MacroDroid. You need to do this before you create the action in MacroDroid.
+[MacroDroid](https://play.google.com/store/apps/details?id=com.arlosoft.macrodroid) 应用可通过其"应用 > Tasker/Locale 插件 > HTTP Shortcuts > 执行 HTTP 快捷方式"操作来触发快捷方式。
 
-You can use the [setResult()](scripting.md#set-result) function (part of the [Scripting feature](scripting.md)) to pass data back to MacroDroid.
+如果你想将值从 MacroDroid 传递到快捷方式，需要在快捷方式中定义一个局部变量，并在 MacroDroid 中定义一个同名的局部变量。你需要在 MacroDroid 中创建操作之前完成此操作。
+
+你可以使用 [setResult()](scripting.md#set-result) 函数（属于[脚本编写功能](scripting.md)的一部分）将数据传回 MacroDroid。
 
 <a id="certificate-pinning"></a>
-## Certificate pinning
+## 证书固定
 
-When you use HTTPS, your requests will be sent over a secure connection. "Secure" here mainly means that the connection is encrypted and that the app will check that the server it connects to has a valid SSL certificate. In some cases, you might want this check to be more restrictive, i.e., it should not only check that the certificate is valid but that it is a specific certificate. Most likely you will not need this, but if you think you do, I suggest you read more about the topic online first. Note that this is different from validating [self-signed certificates](#self-signed-certificates).
+当你使用 HTTPS 时，你的请求将通过安全连接发送。这里的"安全"主要意味着连接是加密的，并且应用会检查它连接的服务器是否具有有效的 SSL 证书。在某些情况下，你可能希望此检查更具限制性，即它不仅应检查证书是否有效，还应检查它是否是特定的证书。你很可能不需要这个，但如果你认为需要，我建议你先在网上阅读更多关于该主题的信息。请注意，这与验证[自签名证书](#self-signed-certificates)不同。
 
-The HTTP Shortcuts supports basic certificate pinning. You'll find the option for it on the Settings screen. Each entry you add here consists of a hostname pattern and the certificate fingerprint. The hostname pattern defines for which domain name(s) the pinning should be used. The following formats are supported:
+HTTP Shortcuts 支持基本的证书固定。你可以在设置屏幕上找到该选项。你在此处添加的每个条目都由主机名模式和证书指纹组成。主机名模式定义了应对哪些域名使用固定。支持以下格式：
 
-- Exact matching host names. E.g. `example.com` would match only that domain itself, no subdomains
-- Wildcard for all subdomains (but not subdomains of those subdomains). Use the asterisks character for this. E.g. `*.example.com` would match `foo.example.com` and `bar.example.com`, but not `example.com` or `foo.bar.example.com`
-- Wildcard for all subdomains and arbitrarily many subdomains of those. Use two asterisks characters for this. E.g. `**.example.com` would match `example.com`, `foo.example.com` as well as `foo.bar.example.com`
+- 精确匹配主机名。例如，`example.com` 仅匹配该域名本身，不匹配子域名
+- 匹配所有子域名（但不包括那些子域名的子域名）的通配符。使用星号字符实现。例如，`*.example.com` 会匹配 `foo.example.com` 和 `bar.example.com`，但不匹配 `example.com` 或 `foo.bar.example.com`
+- 匹配所有子域名以及任意多级子域名的通配符。使用两个星号字符实现。例如，`**.example.com` 会匹配 `example.com`、`foo.example.com` 以及 `foo.bar.example.com`
 
-The fingerprint has to be either the SHA-1 or SHA-256 fingerprint of your server's certificate, e.g. `7B:50:2C:...:3F:5E`. One easy way to get this fingerprint (although, technically not secure, so you better know what you're doing) is to enter the wrong value first and find the correct value in the error message you get back after executing a shortcut that uses it.
+指纹必须是你服务器证书的 SHA-1 或 SHA-256 指纹，例如 `7B:50:2C:...:3F:5E`。获取此指纹的一种简单方法（虽然技术上不安全，所以你最好知道自己在做什么）是先输入错误的值，然后在执行使用它的快捷方式后收到的错误消息中找到正确的值。
 
-Once you have configured a certificate pinning this way, all HTTP shortcuts that connect to a domain that matches its pattern will verify that the server's certificate matches the specified fingerprint. If this check fails, and error is displayed instead. To ensure that your hostname pattern actually matches, you can just temporarily modify the fingerprint and verify that the request fails, then change it back and verify that it now succeeds.
+一旦你以这种方式配置了证书固定，所有连接到与其模式匹配的域名的 HTTP 快捷方式都会验证服务器的证书是否与指定的指纹匹配。如果此检查失败，则会显示错误。为了确保你的主机名模式确实匹配，你可以临时修改指纹并验证请求是否失败，然后将其改回并验证请求现在是否成功。
 
 <a id="self-signed-certificates"></a>
-## Using self-signed certificates
+## 使用自签名证书
 
-By default, HTTP requests to a server that uses a self-signed certificate will fail, as the trust chain can not be verified. In order to make such requests work, edit your shortcut and look for the "Advanced Technical Settings" section at the bottom. In there you will find the "Host Verification" option. Change it from "Secure Default" to "Check Certificate Fingerprint only" and then copy the SHA-1 or SHA-256 fingerprint of your certificate into the text field below. This will disable the normal host verification and instead only check the fingerprint of the certificate presented by the server. In either case your connection will be encrypted.
+默认情况下，向使用自签名证书的服务器发送的 HTTP 请求会失败，因为信任链无法验证。为了使此类请求正常工作，请编辑你的快捷方式，找到底部的"高级技术设置"部分。在其中你会找到"主机验证"选项。将其从"安全默认值"更改为"仅检查证书指纹"，然后将你证书的 SHA-1 或 SHA-256 指纹复制到下方的文本字段中。这将禁用正常的主机验证，仅检查服务器提供的证书的指纹。无论哪种情况，你的连接都将被加密。
 
 <a id="tables"></a>
-## Displaying responses as a table
+## 将响应显示为表格
 
-If your HTTP response body is a JSON array (or a JSON object with a single field which is a JSON array), you have the option to display it as a table instead of as raw JSON. To enable this, open the "Response Handling" screen from the shortcut editor. There, make sure that "Display Type" is set to "Fullscreen Window", then click the "Display Settings" button. On the screen that opens, set the "Response Type" to "JSON" and enable the "Display JSON array as table" checkbox (it's enabled by default).
+如果你的 HTTP 响应体是 JSON 数组（或具有单个字段为 JSON 数组的 JSON 对象），你可以选择将其显示为表格而不是原始 JSON。要启用此功能，请从快捷方式编辑器打开"响应处理"屏幕。在那里，确保"显示类型"设置为"全屏窗口"，然后单击"显示设置"按钮。在打开的屏幕上，将"响应类型"设置为"JSON"，并启用"将 JSON 数组显示为表格"复选框（默认启用）。
 
-You can also use this feature to display a custom table, by setting the "On Success" setting to "Show a custom message" instead of "Show the response", and then putting your custom JSON table into the "Message" field, e.g. via a [variable](variables.md) which is then set via the [setVariable](scripting.md#set-variable) Scripting function.
+你还可以使用此功能显示自定义表格，方法是将"成功时"设置为"显示自定义消息"而不是"显示响应"，然后将你的自定义 JSON 表格放入"消息"字段，例如通过[变量](variables.md)，然后通过 [setVariable](scripting.md#set-variable) 脚本函数设置。
 
-Here's an example code snippet that generates a JSON array from a JS list, such that it could then be displayed as a table:
+以下是一个示例代码片段，它从 JS 列表生成 JSON 数组，以便可以将其显示为表格：
 
 ```js
 const myList = [

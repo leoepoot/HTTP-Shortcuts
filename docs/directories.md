@@ -1,12 +1,11 @@
-# (Mounted) Directories
+# （已挂载的）目录
 
-Some features in the app allow interaction with your device's file system. For example, you can configure your shortcuts to store the response into a file (via the "Response Handling" screen). For this, the app needs write access to a directory, which is where the "(Mounted) Directories" screen comes in. Here, you can *mount* a directory, i.e., create a connection to a specific existing directory on your device and grant the app the permission to read and write files in it.
+应用中的某些功能允许与设备的文件系统进行交互。例如，你可以将快捷方式配置为将响应存储到文件中（通过"响应处理"屏幕）。为此，应用需要对某个目录的写入权限，这就是"（已挂载的）目录"屏幕的作用所在。在这里，你可以*挂载*一个目录，即创建到设备上某个特定现有目录的连接，并授予应用在其中读写文件的权限。
 
-You can revoke access by deleting the directory from this screen. This will not affect the real directory or its contents, only the connection to it.
+你可以通过从此屏幕删除目录来撤销访问权限。这不会影响实际目录或其内容，只会影响到它的连接。
 
-Mounted directories can be used for the following:
-- Store the response of an HTTP request into a file. This can be configured on the "Response Handling" screen when editing a shortcut.
-- Use a file as the body of an HTTP request
-- Use a file as a form parameter in an HTTP request
-- [Read and write files](scripting.md#read-write-files) using the Scripting feature.
-
+已挂载的目录可用于以下用途：
+- 将 HTTP 请求的响应存储到文件中。这可以在编辑快捷方式时在"响应处理"屏幕上配置。
+- 使用文件作为 HTTP 请求的请求体
+- 使用文件作为 HTTP 请求中的表单参数
+- 使用脚本功能[读写文件](scripting.md#read-write-files)。

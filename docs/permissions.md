@@ -1,72 +1,92 @@
-# Permissions
-This page lists all the permissions that the app makes use of and what it uses them for.
+# 权限
 
-## have full network access
-Needed to make HTTP requests over the network (duh). See the [Privacy Policy](privacy-policy.md) for details on what data is sent over the network.
+本页列出了应用所使用的所有权限及其用途。
 
-## install shortcuts
-Needed to install shortcuts on the home screen.
+## 拥有完整的网络访问权限
 
-## uninstall shortcuts
-Needed to remove shortcuts from the home screen when a shortcut is deleted.
+用于通过网络发送 HTTP 请求（这还用说）。有关通过网络发送哪些数据的详细信息，请参阅[隐私政策](privacy-policy.md)。
 
-## view Wi-Fi connections
-Needed to inspect the current Wi-Fi network's name, as well as prompting the user to select a different network to connect to in case they configured a shortcut to only use a specific network.
+## 安装快捷方式
 
-## view network connections
-Needed to determine whether a suitable network connection is available to make HTTP requests.
+用于在主屏幕上安装快捷方式。
 
-## change network state
-Needed for shortcuts that force traffic through a specific network (Wi-Fi or cellular). Never used of there are no shortcuts configured to make use of this feature.
+## 卸载快捷方式
 
-## connect and disconnect from Wi-Fi
-Needed for prompting the user to select a different network to connect to in case they configured a shortcut to only use a specific network. The app never switches the Wi-Fi network without the user's input.
+用于在删除快捷方式时从主屏幕移除快捷方式。
 
-## access approximate location only in the foreground
-See next section.
+## 查看 Wi-Fi 连接
 
-## access precise location only in the foreground
-This is used for 2 specific features only, both of which are non-essential and completely optional to use:
+用于检查当前 Wi-Fi 网络的名称，以及在用户将快捷方式配置为仅使用特定网络时提示用户选择要连接的其他网络。
 
-- Checking the SSID of the Wi-Fi that the device is currently connected to. This allows a shortcut to only run on a specific network, and it allows the use of the [`getWifiSsid()`](scripting.md#get-wifi-ssid) function in Scripting. Neither of these two features make direct use of the device's physical location information and only access the SSID.
-- Using the [`getLocation()`](scripting.md#get-location) function for Scripting, which allows to programmatically look up the device's current location.
+## 查看网络连接
 
-Unless configured so explicitly by the user through the use of [Scripting](scripting.md) or [Variables](variables.md), the Wi-Fi or location information never leaves the device and is only stored in memory, never persisted to disk.
+用于确定是否有合适的网络连接可用于发送 HTTP 请求。
 
-## control vibration
-Used by the [`vibrate()`][scripting.md#vibrate) function, which allows the device to vibrate via Scripting.
+## 更改网络状态
 
-## run foreground service
-Used to perform cleanup tasks, such as deleting obsolete cache files after a shortcut was run.
+用于强制流量通过特定网络（Wi-Fi 或蜂窝网络）的快捷方式。如果没有配置使用此功能的快捷方式，则永远不会使用。
 
-## This app can appear on top of other apps
-Under some circumstances, this is needed for 3rd party integrations such as Tasker to work properly. Apart from that, the app works perfectly fine without this permission, so it does not need to be granted.
+## 连接和断开 Wi-Fi
 
-## show notifications
-Used for displaying a notification while a shortcut is running, or while the app is interacting with Tasker
+用于在用户将快捷方式配置为仅使用特定网络时提示用户选择要连接的其他网络。应用永远不会在没有用户输入的情况下切换 Wi-Fi 网络。
 
-## ask to ignore battery optimizations
-This is not needed for normal operation, but you might encounter problems with periodically running shortcuts not running reliably when it is not granted.
+## 仅在前台访问大致位置
+
+请参阅下一节。
+
+## 仅在前台访问精确位置
+
+此权限仅用于 2 个特定功能，这两个功能都不是必需的，并且完全可选：
+
+- 检查设备当前连接的 Wi-Fi 的 SSID。这允许快捷方式仅在特定网络上运行，并允许在脚本编写中使用 [`getWifiSsid()`](scripting.md#get-wifi-ssid) 函数。这两个功能都不直接使用设备的物理位置信息，只访问 SSID。
+- 在脚本编写中使用 [`getLocation()`](scripting.md#get-location) 函数，该函数允许以编程方式查找设备的当前位置。
+
+除非用户通过使用[脚本编写](scripting.md)或[变量](variables.md)明确配置，否则 Wi-Fi 或位置信息永远不会离开设备，仅存储在内存中，永远不会持久化到磁盘。
+
+## 控制振动
+
+由 [`vibrate()`](scripting.md#vibrate) 函数使用，该函数允许通过脚本编写使设备振动。
+
+## 运行前台服务
+
+用于执行清理任务，例如在运行快捷方式后删除过时的缓存文件。
+
+## 此应用可以显示在其他应用之上
+
+在某些情况下，这对于 Tasker 等第三方集成正常工作是必需的。除此之外，应用在没有此权限的情况下也能正常工作，因此不需要授予它。
+
+## 显示通知
+
+用于在快捷方式运行时或应用与 Tasker 交互时显示通知。
+
+## 请求忽略电池优化
+
+这对于正常运行不是必需的，但如果未授予，你可能会遇到定期运行的快捷方式无法可靠运行的问题。
 
 ## net.dinglisch.android.tasker.PERMISSION_RUN_TASKS
-Used by the [`triggerTaskerTask()`](scripting.md#trigger-tasker-task) function to allow triggering Tasker tasks from Scripting.
+
+由 [`triggerTaskerTask()`](scripting.md#trigger-tasker-task) 函数使用，允许从脚本编写中触发 Tasker 任务。
 
 ## com.termux.permission.RUN_COMMAND
-Used by the [`runTermuxCommand()`](scripting.md#run-termux-command) function to allow running commands in the Termux app from Scripting. This permission needs to be granted explicitly by the user if they wish to make use of this feature.
+
+由 [`runTermuxCommand()`](scripting.md#run-termux-command) 函数使用，允许从脚本编写中在 Termux 应用中运行命令。如果用户希望使用此功能，需要明确授予此权限。
 
 ## com.wireguard.android.permission.CONTROL_TUNNELS
-Used by the [`setWireguardTunnelState()`](scripting.md#set-wireguard-tunnel-state) function to allow enabling or disabling a Wireguard tunnel from Scripting. This permission needs to be granted explicitly by the user if they wish to make use of this feature.
 
-## use biometric hardware / use fingerprint hardware
-There are two features, which require this permission:
-- The app allows to configure a shortcut in a way that it requires biometric confirmation before running, for extra security.
-- The app can be locked to prevent editing of shortcuts, variables, and settings. The app may then be unlocked via biometrics, such as a fingerprint.
+由 [`setWireguardTunnelState()`](scripting.md#set-wireguard-tunnel-state) 函数使用，允许从脚本编写中启用或禁用 Wireguard 隧道。如果用户希望使用此功能，需要明确授予此权限。
 
-Both of these features are non-essential for using the app.
+## 使用生物识别硬件 / 使用指纹硬件
 
-## prevent phone from sleeping
-Used to perform cleanup tasks, such as deleting obsolete cache files after a shortcut was run.
+有两个功能需要此权限：
+- 应用允许以运行前需要生物识别确认的方式配置快捷方式，以提高安全性。
+- 应用可以被锁定，以防止编辑快捷方式、变量和设置。然后可以通过生物识别（如指纹）解锁应用。
 
-## run at startup
-Used for making sure that scheduled tasks (such as periodic shortcut execution and cleanup) can be re-scheduled when the device restarts.
+这两个功能对于使用应用都不是必需的。
 
+## 防止手机休眠
+
+用于执行清理任务，例如在运行快捷方式后删除过时的缓存文件。
+
+## 在启动时运行
+
+用于确保在设备重启时可以重新安排定时任务（如定期执行快捷方式和清理）。
