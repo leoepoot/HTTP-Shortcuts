@@ -2,6 +2,7 @@ package ch.rmy.android.http_shortcuts.scripting.actions.types
 
 import android.content.Context
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import androidx.documentfile.provider.DocumentFile
 import ch.rmy.android.framework.extensions.logInfo
@@ -92,6 +93,237 @@ constructor(
                         out.write(content)
                     }
             }
+            function("listFiles") { args ->
+                logInfo("directory.listFiles() called")
+                val dirPath = args.getString(0) ?: ""
+                val dirFile = if (dirPath.isEmpty()) {
+                    directoryHandle.getRootDirectory()
+                } else {
+                    directoryHandle.findFile(dirPath)
+                }
+                if (dirFile == null || !dirFile.isDirectory) {
+                    executionContext.throwException(
+                        ActionException {
+                            "Directory \"$dirPath\" not found"
+                        },
+                    )
+                }
+                dirFile.listFiles().map { file ->
+                    executionContext.scriptingEngine.buildJsObject {
+                        property("name", file.name)
+                        property("type", file.type)
+                        property("size", file.length())
+                        property("mtime", file.lastModified())
+                        property("isDirectory", file.isDirectory)
+                        property("isFile", file.isFile)
+                    }
+                }
+            }
+            function("exists") { args ->
+                logInfo("directory.exists() called")
+                val filePath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No file path parameter provided to 'exists'"
+                        },
+                    )
+                directoryHandle.findFile(filePath) != null
+            }
+            function("isDirectory") { args ->
+                logInfo("directory.isDirectory() called")
+                val filePath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No file path parameter provided to 'isDirectory'"
+                        },
+                    )
+                directoryHandle.findFile(filePath)?.isDirectory
+            }
+            function("isFile") { args ->
+                logInfo("directory.isFile() called")
+                val filePath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No file path parameter provided to 'isFile'"
+                        },
+                    )
+                directoryHandle.findFile(filePath)?.isFile
+            }
+            function("fileSize") { args ->
+                logInfo("directory.fileSize() called")
+                val filePath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No file path parameter provided to 'fileSize'"
+                        },
+                    )
+                directoryHandle.findFile(filePath)?.length()
+            }
+            function("lastModified") { args ->
+                logInfo("directory.lastModified() called")
+                val filePath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No file path parameter provided to 'lastModified'"
+                        },
+                    )
+                directoryHandle.findFile(filePath)?.lastModified()
+            }
+            function("delete") { args ->
+                logInfo("directory.delete() called")
+                val filePath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No file path parameter provided to 'delete'"
+                        },
+                    )
+                val file = directoryHandle.findFile(filePath)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "File \"$filePath\" not found"
+                        },
+                    )
+                file.delete()
+            }
+            function("mkdir") { args ->
+                logInfo("directory.mkdir() called")
+                val dirPath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No directory path parameter provided to 'mkdir'"
+                        },
+                    )
+                directoryHandle.findOrCreateDirectory(dirPath) != null
+            }
+            function("rename") { args ->
+                logInfo("directory.rename() called")
+                val filePath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No file path parameter provided to 'rename'"
+                        },
+                    )
+                val newName = args.getString(1)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No new name parameter provided to 'rename'"
+                        },
+                    )
+                val file = directoryHandle.findFile(filePath)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "File \"$filePath\" not found"
+                        },
+                    )
+                file.renameTo(newName)
+            }
+            function("copy") { args ->
+                logInfo("directory.copy() called")
+                val srcPath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No source path parameter provided to 'copy'"
+                        },
+                    )
+                val destPath = args.getString(1)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No destination path parameter provided to 'copy'"
+                        },
+                    )
+                val srcFile = directoryHandle.findFile(srcPath)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "File \"$srcPath\" not found"
+                        },
+                    )
+                if (srcFile.isDirectory) {
+                    executionContext.throwException(
+                        ActionException {
+                            "Copying directories is not supported"
+                        },
+                    )
+                }
+                val destUri = directoryHandle.getFileUriForWriting(destPath)
+                contentResolver.openInputStream(srcFile.uri)!!
+                    .use { input ->
+                        contentResolver.openOutputStream(destUri, "wt")!!
+                            .use { output ->
+                                input.copyTo(output)
+                            }
+                    }
+            }
+            function("move") { args ->
+                logInfo("directory.move() called")
+                val srcPath = args.getString(0)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No source path parameter provided to 'move'"
+                        },
+                    )
+                val destPath = args.getString(1)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "No destination path parameter provided to 'move'"
+                        },
+                    )
+                val srcFile = directoryHandle.findFile(srcPath)
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "File \"$srcPath\" not found"
+                        },
+                    )
+                if (srcFile.isDirectory) {
+                    executionContext.throwException(
+                        ActionException {
+                            "Moving directories is not supported"
+                        },
+                    )
+                }
+                var moved = false
+                val srcParentPath = srcPath.substringBeforeLast('/', "")
+                val parentFile = if (srcParentPath.isEmpty()) {
+                    directoryHandle.getRootDirectory()
+                } else {
+                    directoryHandle.findFile(srcParentPath)
+                }
+                val destParentPath = destPath.substringBeforeLast('/', "")
+                val destParentFile = if (destParentPath.isEmpty()) {
+                    directoryHandle.getRootDirectory()
+                } else {
+                    directoryHandle.findFile(destParentPath)
+                }
+                if (parentFile != null && destParentFile != null) {
+                    try {
+                        val movedUri = DocumentsContract.moveDocument(
+                            contentResolver,
+                            srcFile.uri,
+                            parentFile.uri,
+                            destParentFile.uri,
+                        )
+                        if (movedUri != null) {
+                            val newName = destPath.substringAfterLast('/')
+                            if (newName != srcFile.name) {
+                                DocumentFile.fromSingleUri(context, movedUri)?.renameTo(newName)
+                            }
+                            moved = true
+                        }
+                    } catch (_: Exception) {
+                        moved = false
+                    }
+                }
+                if (!moved) {
+                    val destUri = directoryHandle.getFileUriForWriting(destPath)
+                    contentResolver.openInputStream(srcFile.uri)!!
+                        .use { input ->
+                            contentResolver.openOutputStream(destUri, "wt")!!
+                                .use { output ->
+                                    input.copyTo(output)
+                                }
+                        }
+                    srcFile.delete()
+                }
+            }
         }
     }
 
@@ -133,6 +365,16 @@ constructor(
                             "File \"$filePath\" not found in directory \"${workingDirectory.name}\""
                         },
                     )
+
+            override fun findFile(filePath: String): DocumentFile? =
+                directory.findFileFromPath(filePath)
+
+            override fun findOrCreateDirectory(filePath: String): DocumentFile? =
+                directory.findOrCreateDirectoryFromPath(filePath)
+
+            override fun getRootDirectory(): DocumentFile? = directory
+
+            override fun isReadOnly(): Boolean = false
         }
     }
 
@@ -140,7 +382,7 @@ constructor(
         object : DirectoryHandle {
             override fun getFileUriForReading(filePath: String): Uri =
                 executionContext.fileUploadResult?.getFiles()
-                    ?.find { it.id == filePath || it.fileName == it.id }
+                    ?.find { it.id == filePath || it.fileName == filePath }
                     ?.data
                     ?: executionContext.throwException(
                         ActionException {
@@ -154,6 +396,22 @@ constructor(
                         "Selected files are readonly"
                     },
                 )
+
+            override fun findFile(filePath: String): DocumentFile? =
+                executionContext.fileUploadResult?.getFiles()
+                    ?.find { it.id == filePath || it.fileName == filePath }
+                    ?.let { DocumentFile.fromSingleUri(context, it.data) }
+
+            override fun findOrCreateDirectory(filePath: String): DocumentFile? =
+                executionContext.throwException(
+                    ActionException {
+                        "Selected files are readonly"
+                    },
+                )
+
+            override fun getRootDirectory(): DocumentFile? = null
+
+            override fun isReadOnly(): Boolean = true
         }
 
     private fun DocumentFile.findFileFromPath(filePath: String): DocumentFile? {
@@ -188,6 +446,19 @@ constructor(
         return fileHandle
     }
 
+    private fun DocumentFile.findOrCreateDirectoryFromPath(filePath: String): DocumentFile? {
+        var fileHandle: DocumentFile = this
+        filePath.split('/').forEach { fileName ->
+            if (fileName == "." || fileName == "..") {
+                return null
+            }
+            fileHandle = fileHandle.findFile(fileName)
+                ?: fileHandle.createDirectory(fileName)
+                ?: return null
+        }
+        return fileHandle
+    }
+
     private fun determineMimeType(fileName: String): String =
         File(fileName).extension.takeUnlessEmpty()?.let { extension ->
             MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
@@ -198,6 +469,14 @@ constructor(
         fun getFileUriForReading(filePath: String): Uri
 
         fun getFileUriForWriting(filePath: String): Uri
+
+        fun findFile(filePath: String): DocumentFile?
+
+        fun findOrCreateDirectory(filePath: String): DocumentFile?
+
+        fun getRootDirectory(): DocumentFile?
+
+        fun isReadOnly(): Boolean
     }
 
     data class Params(

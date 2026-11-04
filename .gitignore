@@ -3,3 +3,6 @@ venv
 processed-docs/
 crowdin.yml
 store_listings
+
+# macOS
+.DS_Store

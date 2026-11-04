@@ -11,15 +11,16 @@ internal class QuickJsFunctionConverter(
 ) {
     fun convert(function: JsFunction): JSCallFunction {
         return object : JSCallFunction {
-            override fun call(vararg args: Any): Any {
+            override fun call(vararg args: Any): Any? {
                 val args = JsFunctionArgsImpl(args.map { QuickJsValueWrapper(it) })
                 val result = function.invoke(args)
                 return convertResult(result)
             }
 
-            private fun convertResult(result: Any?): Any =
+            private fun convertResult(result: Any?): Any? =
                 when (result) {
-                    Unit, null -> "[[[no result]]]"
+                    Unit -> "[[[no result]]]"
+                    null -> null
                     is JsObject -> (result as QuickJsObject).toJSObject()
                     is List<*> -> {
                         jsContext.createNewJSArray()

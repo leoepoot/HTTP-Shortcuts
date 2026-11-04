@@ -239,13 +239,13 @@ constructor(
             object : JsFunction {
                 override fun invoke(args: JsFunctionArgs): Any? {
                     val actionTypeName = args.getString(0)
-                        ?: return null
+                        ?: return NO_RESULT
                     val data = args.getJsFunctionArgs(1)
-                        ?: return null
+                        ?: return NO_RESULT
                     logInfo("Running action of type: $actionTypeName")
 
                     val actionType = actionFactory.getType(actionTypeName)
-                        ?: return null
+                        ?: return NO_RESULT
                     val runnable = actionType.getActionRunnable(data)
 
                     return try {
@@ -270,7 +270,7 @@ constructor(
                             ?: NO_RESULT
                     } catch (e: CancellationException) {
                         lastException = e
-                        null
+                        NO_RESULT
                     } catch (e: Throwable) {
                         lastException = if (e is RuntimeException && e.cause != null) e.cause else e
                         throw e
