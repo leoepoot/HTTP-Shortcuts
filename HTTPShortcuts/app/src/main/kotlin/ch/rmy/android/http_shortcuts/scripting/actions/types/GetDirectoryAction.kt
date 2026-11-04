@@ -2,7 +2,6 @@ package ch.rmy.android.http_shortcuts.scripting.actions.types
 
 import android.content.Context
 import android.net.Uri
-import android.provider.DocumentsContract
 import android.webkit.MimeTypeMap
 import androidx.documentfile.provider.DocumentFile
 import ch.rmy.android.framework.extensions.logInfo
@@ -114,8 +113,6 @@ constructor(
                         property("type", file.type)
                         property("size", file.length())
                         property("mtime", file.lastModified())
-                        property("isDirectory", file.isDirectory)
-                        property("isFile", file.isFile)
                     }
                 }
             }
@@ -157,7 +154,12 @@ constructor(
                             "No file path parameter provided to 'fileSize'"
                         },
                     )
-                directoryHandle.findFile(filePath)?.length()
+                val file = directoryHandle.findFile(filePath)
+                when {
+                    file == null -> null
+                    file.isDirectory -> 0L
+                    else -> file.length()
+                }
             }
             function("lastModified") { args ->
                 logInfo("directory.lastModified() called")
@@ -183,7 +185,11 @@ constructor(
                             "File \"$filePath\" not found"
                         },
                     )
-                file.delete()
+                if (file.isDirectory && file.listFiles().isNotEmpty()) {
+                    false
+                } else {
+                    file.delete()
+                }
             }
             function("mkdir") { args ->
                 logInfo("directory.mkdir() called")
@@ -217,18 +223,18 @@ constructor(
                     )
                 file.renameTo(newName)
             }
-            function("copy") { args ->
-                logInfo("directory.copy() called")
+            function("copyToDir") { args ->
+                logInfo("directory.copyToDir() called")
                 val srcPath = args.getString(0)
                     ?: executionContext.throwException(
                         ActionException {
-                            "No source path parameter provided to 'copy'"
+                            "No source path parameter provided to 'copyToDir'"
                         },
                     )
-                val destPath = args.getString(1)
+                val destDirPath = args.getString(1)
                     ?: executionContext.throwException(
                         ActionException {
-                            "No destination path parameter provided to 'copy'"
+                            "No destination directory parameter provided to 'copyToDir'"
                         },
                     )
                 val srcFile = directoryHandle.findFile(srcPath)
@@ -244,7 +250,26 @@ constructor(
                         },
                     )
                 }
-                val destUri = directoryHandle.getFileUriForWriting(destPath)
+                val destDir = if (destDirPath.isEmpty()) {
+                    directoryHandle.getRootDirectory()
+                } else {
+                    directoryHandle.findFile(destDirPath)
+                }
+                if (destDir == null || !destDir.isDirectory) {
+                    executionContext.throwException(
+                        ActionException {
+                            "Destination directory \"$destDirPath\" not found"
+                        },
+                    )
+                }
+                val srcName = srcFile.name
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "Source file has no name"
+                        },
+                    )
+                val destFilePath = if (destDirPath.isEmpty()) srcName else "$destDirPath/$srcName"
+                val destUri = directoryHandle.getFileUriForWriting(destFilePath)
                 contentResolver.openInputStream(srcFile.uri)!!
                     .use { input ->
                         contentResolver.openOutputStream(destUri, "wt")!!
@@ -252,19 +277,20 @@ constructor(
                                 input.copyTo(output)
                             }
                     }
+                Unit
             }
-            function("move") { args ->
-                logInfo("directory.move() called")
+            function("moveToDir") { args ->
+                logInfo("directory.moveToDir() called")
                 val srcPath = args.getString(0)
                     ?: executionContext.throwException(
                         ActionException {
-                            "No source path parameter provided to 'move'"
+                            "No source path parameter provided to 'moveToDir'"
                         },
                     )
-                val destPath = args.getString(1)
+                val destDirPath = args.getString(1)
                     ?: executionContext.throwException(
                         ActionException {
-                            "No destination path parameter provided to 'move'"
+                            "No destination directory parameter provided to 'moveToDir'"
                         },
                     )
                 val srcFile = directoryHandle.findFile(srcPath)
@@ -280,49 +306,35 @@ constructor(
                         },
                     )
                 }
-                var moved = false
-                val srcParentPath = srcPath.substringBeforeLast('/', "")
-                val parentFile = if (srcParentPath.isEmpty()) {
+                val destDir = if (destDirPath.isEmpty()) {
                     directoryHandle.getRootDirectory()
                 } else {
-                    directoryHandle.findFile(srcParentPath)
+                    directoryHandle.findFile(destDirPath)
                 }
-                val destParentPath = destPath.substringBeforeLast('/', "")
-                val destParentFile = if (destParentPath.isEmpty()) {
-                    directoryHandle.getRootDirectory()
-                } else {
-                    directoryHandle.findFile(destParentPath)
+                if (destDir == null || !destDir.isDirectory) {
+                    executionContext.throwException(
+                        ActionException {
+                            "Destination directory \"$destDirPath\" not found"
+                        },
+                    )
                 }
-                if (parentFile != null && destParentFile != null) {
-                    try {
-                        val movedUri = DocumentsContract.moveDocument(
-                            contentResolver,
-                            srcFile.uri,
-                            parentFile.uri,
-                            destParentFile.uri,
-                        )
-                        if (movedUri != null) {
-                            val newName = destPath.substringAfterLast('/')
-                            if (newName != srcFile.name) {
-                                DocumentFile.fromSingleUri(context, movedUri)?.renameTo(newName)
+                val srcName = srcFile.name
+                    ?: executionContext.throwException(
+                        ActionException {
+                            "Source file has no name"
+                        },
+                    )
+                val destFilePath = if (destDirPath.isEmpty()) srcName else "$destDirPath/$srcName"
+                val destUri = directoryHandle.getFileUriForWriting(destFilePath)
+                contentResolver.openInputStream(srcFile.uri)!!
+                    .use { input ->
+                        contentResolver.openOutputStream(destUri, "wt")!!
+                            .use { output ->
+                                input.copyTo(output)
                             }
-                            moved = true
-                        }
-                    } catch (_: Exception) {
-                        moved = false
                     }
-                }
-                if (!moved) {
-                    val destUri = directoryHandle.getFileUriForWriting(destPath)
-                    contentResolver.openInputStream(srcFile.uri)!!
-                        .use { input ->
-                            contentResolver.openOutputStream(destUri, "wt")!!
-                                .use { output ->
-                                    input.copyTo(output)
-                                }
-                        }
-                    srcFile.delete()
-                }
+                srcFile.delete()
+                Unit
             }
         }
     }
