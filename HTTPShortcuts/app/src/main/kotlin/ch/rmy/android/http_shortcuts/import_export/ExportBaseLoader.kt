@@ -49,7 +49,6 @@ import ch.rmy.android.http_shortcuts.import_export.models.ExportSection
 import ch.rmy.android.http_shortcuts.import_export.models.ExportShortcut
 import ch.rmy.android.http_shortcuts.import_export.models.ExportVariable
 import ch.rmy.android.http_shortcuts.import_export.models.ExportWorkingDirectory
-import ch.rmy.android.http_shortcuts.usecases.GetUsedWorkingDirectoryIdsUseCase
 import java.time.Instant
 import javax.inject.Inject
 import kotlin.collections.filter
@@ -67,7 +66,6 @@ constructor(
     private val globalVariableRepository: GlobalVariableRepository,
     private val certificatePinRepository: CertificatePinRepository,
     private val workingDirectoryRepository: WorkingDirectoryRepository,
-    private val getUsedWorkingDirectoryIds: GetUsedWorkingDirectoryIdsUseCase,
     private val deviceLocalPreferences: DeviceLocalPreferences,
 ) {
     suspend fun getBase(
@@ -96,7 +94,6 @@ constructor(
             }
 
         val appConfig = appConfigRepository.getAppConfig()
-        val relevantWorkingDirectoryIds = getUsedWorkingDirectoryIds(shortcuts, appConfig)
 
         val requestHeadersByShortcutId = requestHeaderRepository.getRequestHeadersForShortcuts(shortcuts)
         val requestParametersByShortcutId = requestParameterRepository.getRequestParametersForShortcuts(shortcuts)
@@ -359,9 +356,6 @@ constructor(
                     )
                 },
             workingDirectories = workingDirectoryRepository.getWorkingDirectories()
-                .filter {
-                    it.id in relevantWorkingDirectoryIds
-                }
                 .takeUnlessEmpty()
                 ?.map { directory ->
                     ExportWorkingDirectory(
