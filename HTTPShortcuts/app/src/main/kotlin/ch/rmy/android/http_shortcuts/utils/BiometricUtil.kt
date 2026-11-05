@@ -18,8 +18,9 @@ constructor(
 ) {
     suspend fun prompt(
         title: String,
-        subtitle: String,
-        negativeButtonText: String,
+        subtitle: String = "",
+        negativeButtonText: String = "取消",
+        description: String = "",
     ): Result =
         withContext(Dispatchers.Main) {
             activityProvider.withActivity { activity ->
@@ -51,15 +52,17 @@ constructor(
                         },
                     )
 
-                    biometricPrompt.authenticate(
-                        BiometricPrompt.PromptInfo.Builder()
-                            .setTitle(title)
-                            .setSubtitle(subtitle)
-                            .setConfirmationRequired(false)
-                            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                            .setNegativeButtonText(negativeButtonText)
-                            .build(),
-                    )
+                    val promptInfoBuilder = BiometricPrompt.PromptInfo.Builder()
+                        .setTitle(title)
+                        .setSubtitle(subtitle)
+                        .setConfirmationRequired(false)
+                        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                        .setNegativeButtonText(negativeButtonText)
+                    if (description.isNotEmpty()) {
+                        promptInfoBuilder.setDescription(description)
+                    }
+
+                    biometricPrompt.authenticate(promptInfoBuilder.build())
                 }
             }
         }
@@ -68,7 +71,7 @@ constructor(
         try {
             activityProvider.withActivity { activity ->
                 BiometricManager.from(activity)
-                    .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
+                    .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
             }
         } catch (e: NoActivityAvailableException) {
             false

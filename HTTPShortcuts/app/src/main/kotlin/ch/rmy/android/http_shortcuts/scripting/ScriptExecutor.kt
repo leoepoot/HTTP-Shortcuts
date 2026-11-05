@@ -14,6 +14,7 @@ import ch.rmy.android.http_shortcuts.http.ErrorResponse
 import ch.rmy.android.http_shortcuts.http.FileUploadManager
 import ch.rmy.android.http_shortcuts.http.ShortcutResponse
 import ch.rmy.android.http_shortcuts.scripting.actions.ActionFactory
+import ch.rmy.android.http_shortcuts.utils.BiometricUtil
 import ch.rmy.android.http_shortcuts.variables.VariableManager
 import ch.rmy.android.scripting.JsFunction
 import ch.rmy.android.scripting.JsFunctionArgs
@@ -35,6 +36,7 @@ constructor(
     private val actionFactory: ActionFactory,
     private val responseObjectFactory: ResponseObjectFactory,
     private val codeTransformer: CodeTransformer,
+    private val biometricUtil: BiometricUtil,
 ) {
     private val scriptingEngine: ScriptingEngine by lazy(LazyThreadSafetyMode.NONE) {
         scriptingEngineFactory.create()
@@ -64,6 +66,7 @@ constructor(
         runWithExceptionHandling {
             registerShortcut(shortcut, category)
             registerFiles(fileUploadResult)
+            registerBio()
             registerActions(
                 shortcutId = shortcut.id,
                 variableManager = variableManager,
@@ -184,6 +187,47 @@ constructor(
                 ?: emptyList<JsObject>(),
         )
     }
+
+    private fun registerBio() {
+        scriptingEngine.registerObject(
+            "bio",
+            scriptingEngine.buildJsObject {
+                function("canAuth") { _ ->
+                    runBlocking {
+                        biometricUtil.canUseBiometrics()
+                    }
+                }
+                function("auth") { args ->
+                    val title = args.getString(0)
+                        ?: return@function buildBioResult(error = "No title parameter provided to 'bio.auth'")
+                    val subtitle = args.getString(1) ?: ""
+                    val negativeButtonText = args.getString(2) ?: "取消"
+                    val description = args.getString(3) ?: ""
+                    runBlocking {
+                        try {
+                            when (biometricUtil.prompt(title, subtitle, negativeButtonText, description)) {
+                                BiometricUtil.Result.SUCCESS -> buildBioResult(success = true)
+                                BiometricUtil.Result.NEGATIVE_BUTTON -> buildBioResult(canceled = true)
+                            }
+                        } catch (_: CancellationException) {
+                            buildBioResult(canceled = true)
+                        } catch (e: BiometricUtil.BiometricException) {
+                            buildBioResult(error = e.message)
+                        } catch (e: Exception) {
+                            buildBioResult(error = e.message ?: "Unknown error")
+                        }
+                    }
+                }
+            },
+        )
+    }
+
+    private fun buildBioResult(success: Boolean = false, canceled: Boolean = false, error: String? = null): JsObject =
+        scriptingEngine.buildJsObject {
+            property("success", success)
+            property("canceled", canceled)
+            property("error", error)
+        }
 
     private fun registerAbort(engine: ScriptingEngine) {
         engine.evaluateScript(

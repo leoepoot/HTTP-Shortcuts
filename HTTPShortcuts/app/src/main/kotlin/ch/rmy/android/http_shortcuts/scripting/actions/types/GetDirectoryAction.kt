@@ -126,12 +126,12 @@ constructor(
                     )
                 directoryHandle.findFile(filePath) != null
             }
-            function("isDirectory") { args ->
-                logInfo("directory.isDirectory() called")
+            function("isDir") { args ->
+                logInfo("directory.isDir() called")
                 val filePath = args.getString(0)
                     ?: executionContext.throwException(
                         ActionException {
-                            "No file path parameter provided to 'isDirectory'"
+                            "No file path parameter provided to 'isDir'"
                         },
                     )
                 directoryHandle.findFile(filePath)?.isDirectory
@@ -161,12 +161,12 @@ constructor(
                     else -> file.length()
                 }
             }
-            function("lastModified") { args ->
-                logInfo("directory.lastModified() called")
+            function("mtime") { args ->
+                logInfo("directory.mtime() called")
                 val filePath = args.getString(0)
                     ?: executionContext.throwException(
                         ActionException {
-                            "No file path parameter provided to 'lastModified'"
+                            "No file path parameter provided to 'mtime'"
                         },
                     )
                 directoryHandle.findFile(filePath)?.lastModified()
