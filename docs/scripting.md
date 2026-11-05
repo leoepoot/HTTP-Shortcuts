@@ -240,7 +240,7 @@ dir.appendFile('someFile.txt', [72, 101, 108, 108, 111]);
 |`size`|文件大小（字节），目录通常为 `0`|number|
 |`mtime`|最后修改时间，毫秒时间戳|number|
 
-> 注意：返回项不包含 `isDirectory` 或 `isFile` 字段，如需判断类型请使用 [`isDirectory`](#isdirectory) 或 [`isFile`](#isfile) 函数。
+> 注意：返回项不包含 `isDir` 或 `isFile` 字段，如需判断类型请使用 [`isDir`](#isdir) 或 [`isFile`](#isfile) 函数。
 
 如果指定的路径不存在或不是目录，会抛出异常。
 
@@ -265,15 +265,15 @@ if (dir.exists('someFile.txt')) {
 }
 ```
 
-#### isDirectory
+#### isDir
 
 检查指定路径是否为目录。如果路径存在且是目录，返回 `true`；如果路径存在但是文件，返回 `false`；如果路径不存在，返回 `null`。
 
 ```js
 const dir = getDirectory('myMountedDirectory');
-const isDir = dir.isDirectory('someDir'); // true
-const isDir2 = dir.isDirectory('someFile.txt'); // false
-const isDir3 = dir.isDirectory('notExist'); // null
+const isDir = dir.isDir('someDir'); // true
+const isDir2 = dir.isDir('someFile.txt'); // false
+const isDir3 = dir.isDir('notExist'); // null
 ```
 
 #### isFile
@@ -295,13 +295,13 @@ const size = dir.fileSize('someFile.txt'); // 例如 1024
 const dirSize = dir.fileSize('someDir'); // 0
 ```
 
-#### lastModified
+#### mtime
 
 获取指定路径文件或目录的最后修改时间，以毫秒时间戳返回。如果路径不存在，返回 `null`。你可以将其转换为 `Date` 对象。
 
 ```js
 const dir = getDirectory('myMountedDirectory');
-const mtime = dir.lastModified('someFile.txt');
+const mtime = dir.mtime('someFile.txt');
 if (mtime !== null) {
   const date = new Date(mtime);
   console.log(date.toISOString());
@@ -376,7 +376,7 @@ if (!dir.exists(archiveDir)) {
   dir.mkdir(archiveDir);
 }
 for (const file of files) {
-  if (!dir.isDirectory(file.name) && file.name.endsWith('.log')) {
+  if (!dir.isDir(file.name) && file.name.endsWith('.log')) {
     if (dir.fileSize(file.name) > 1024 * 1024) {
       dir.moveToDir(file.name, archiveDir);
     }
@@ -394,7 +394,7 @@ const dir = getDirectory();
 const fileContent = dir.readFile(selectedFiles[0].id);
 ```
 
-> 已选文件是只读的。在这种模式下，只有 `readFile()`、`exists()`、`isDirectory()`、`isFile()`、`fileSize()` 和 `lastModified()` 可以使用。`writeFile()`、`appendFile()`、`listFiles()`、`delete()`、`mkdir()`、`rename()`、`copyToDir()` 和 `moveToDir()` 都会抛出异常。
+> 已选文件是只读的。在这种模式下，只有 `readFile()`、`exists()`、`isDir()`、`isFile()`、`fileSize()` 和 `mtime()` 可以使用。`writeFile()`、`appendFile()`、`listFiles()`、`delete()`、`mkdir()`、`rename()`、`copyToDir()` 和 `moveToDir()` 都会抛出异常。
 
 <a id="user-interaction"></a>
 ## 用户交互
@@ -671,6 +671,54 @@ const code = scanBarcode();
 ```
 
 扫描本身由外部应用完成，特别是 [QR Droid](https://play.google.com/store/apps/details?id=la.droid.qr)、[Barcode Scanner](https://play.google.com/store/apps/details?id=com.google.zxing.client.android) 或 [Binary Eye](https://play.google.com/store/apps/details?id=de.markusfisch.android.binaryeye)，这意味着你需要安装该应用才能使用此功能。这也意味着 HTTP Shortcuts 应用本身不需要直接访问你的相机。
+
+<a id="biometric-authentication"></a>
+### 生物特征认证（bio）
+
+`bio` 对象提供了调用系统生物特征认证（指纹、人脸等）的能力，可用于在执行敏感操作前要求用户进行二次确认。该功能仅用于防误触或非主动触发场景下的二次确认，**不能作为强鉴权手段**，因为脚本本身可以被用户自由编辑。
+
+#### bio.canAuth()
+
+检查当前设备是否支持生物特征认证且已注册至少一种生物特征（指纹或人脸）。返回布尔值。
+
+```js
+if (bio.canAuth()) {
+  // 设备支持生物认证
+}
+```
+
+#### bio.auth(title, subtitle?, negativeButtonText?, description?)
+
+弹出系统生物认证对话框，阻塞脚本执行直到用户完成认证或取消。返回一个对象，包含以下字段：
+
+|字段|描述|类型|
+|---|---|---|
+|`success`|认证成功时为 `true`|boolean|
+|`canceled`|用户点击取消按钮时为 `true`|boolean|
+|`error`|认证失败（如指纹多次错误被系统锁定）时为错误信息字符串，否则为 `null`|string \| null|
+
+> 该函数在任何情况下都不会抛出异常，始终返回上述对象。
+
+参数说明：
+
+|参数|描述|是否必填|默认值|
+|---|---|---|---|
+|`title`|对话框标题|是|—|
+|`subtitle`|对话框副标题|否|空字符串|
+|`negativeButtonText`|取消按钮的文字|否|`"取消"`|
+|`description`|对话框中的描述文字|否|空字符串|
+
+```js
+const result = bio.auth("验证身份", "请确认删除操作", "取消", "此操作不可恢复");
+
+if (result.success) {
+  // 用户认证成功，执行敏感操作
+} else if (result.canceled) {
+  // 用户取消
+} else {
+  // 认证失败，result.error 包含错误信息
+}
+```
 
 <a id="modify-shortcuts"></a>
 ## 修改快捷方式
