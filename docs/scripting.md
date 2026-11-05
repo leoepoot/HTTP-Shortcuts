@@ -199,27 +199,189 @@ myMeta 现在可能是这样的：
 
 
 <a id="read-write-files"></a>
-### 读写文件
+### 目录与文件操作
 
-如果你想读取现有文件或将数据写入文件，首先需要挂载包含该文件的目录。这可以通过["（已挂载的）目录"屏幕](directories.md)完成。挂载目录后，你可以使用 `getDirectory()` 函数获取其句柄。将挂载目录的名称作为第一个参数传入。然后，该句柄允许你使用 `readFile()`、`writeFile()` 和 `appendFile()` 函数读写文件。
+如果你想读取现有文件或将数据写入文件，首先需要挂载包含该文件的目录。这可以通过["（已挂载的）目录"屏幕](directories.md)完成。挂载目录后，你可以使用 `getDirectory()` 函数获取其句柄。将挂载目录的名称作为第一个参数传入。然后，该句柄允许你使用下列各项函数对目录中的文件和子目录进行操作。
 
-对于 `readFile()`，将你想要读取的文件的名称或路径作为第一个参数传入，相对于挂载目录。该文件必须存在，否则会引发错误。作为可选的第二个参数，你可以传入用于读取文件的编码，默认为 UTF-8。文件的全部内容作为字符串返回。
+下面所有函数中的路径参数均相对于挂载目录，使用 `/` 作为分隔符，可以包含多级子目录（例如 `subdir/file.txt`）。
+
+#### readFile
+
+将你想要读取的文件的名称或路径作为第一个参数传入，相对于挂载目录。该文件必须存在，否则会引发错误。作为可选的第二个参数，你可以传入用于读取文件的编码，默认为 UTF-8。文件的全部内容作为字符串返回。
 
 ```js
 const dir = getDirectory('myMountedDirectory');
 const fileContent = dir.readFile('someDir/someFile.txt');
+const gbkContent = dir.readFile('someFile.txt', 'GBK');
 ```
 
-对于 `writeFile()` 和 `appendFile()`，将你想要写入的文件的名称或路径作为第一个参数传入，相对于挂载目录。如果文件或其路径上的目录尚不存在，它会自动创建。
+#### writeFile 与 appendFile
+
+将你想要写入的文件的名称或路径作为第一个参数传入，相对于挂载目录。如果文件或其路径上的目录尚不存在，它会自动创建。
 
 > 对于 `writeFile()`，如果文件已存在，其内容将被替换，不会有警告！对于 `appendFile()`，新内容将被追加，现有文件内容将被保留。
 
-作为第二个参数，传入你想要写入文件的内容。如果它是数组、`Uint8Array` 或 `Int8Array`，它将被作为字节写入。否则，它将被作为字符串写入，使用 UTF-8 编码。
+作为第二个参数，传入你想要写入文件的内容。如果它是数组、`Uint8Array` 或 `Int8Array`，它将被作为字节写入。否则，它将被作为字符串写入，使用 UTF-8 编码。这两个函数没有返回值。
 
 ```js
 const dir = getDirectory('myMountedDirectory');
 dir.writeFile('someFile.txt', 'New file content');
 dir.appendFile('someFile.txt', [72, 101, 108, 108, 111]);
+```
+
+#### listFiles
+
+列出目录中的文件和子目录。作为可选的第一个参数，传入相对于挂载目录的子目录路径；省略则列出挂载目录本身。返回值是一个对象数组，每个对象包含以下字段：
+
+|字段|描述|类型|
+|---|---|---|
+|`name`|文件或目录的名称|string|
+|`type`|文件的 MIME 类型，目录可能为 `null`|string \| null|
+|`size`|文件大小（字节），目录通常为 `0`|number|
+|`mtime`|最后修改时间，毫秒时间戳|number|
+
+> 注意：返回项不包含 `isDirectory` 或 `isFile` 字段，如需判断类型请使用 [`isDirectory`](#isdirectory) 或 [`isFile`](#isfile) 函数。
+
+如果指定的路径不存在或不是目录，会抛出异常。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+const files = dir.listFiles();
+const subFiles = dir.listFiles('someDir');
+
+for (const file of files) {
+  console.log(file.name + ' (' + file.size + ' bytes)');
+}
+```
+
+#### exists
+
+检查指定路径的文件或目录是否存在。将名称或路径作为第一个参数传入。存在时返回 `true`，否则返回 `false`。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+if (dir.exists('someFile.txt')) {
+  // 文件存在
+}
+```
+
+#### isDirectory
+
+检查指定路径是否为目录。如果路径存在且是目录，返回 `true`；如果路径存在但是文件，返回 `false`；如果路径不存在，返回 `null`。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+const isDir = dir.isDirectory('someDir'); // true
+const isDir2 = dir.isDirectory('someFile.txt'); // false
+const isDir3 = dir.isDirectory('notExist'); // null
+```
+
+#### isFile
+
+检查指定路径是否为文件。如果路径存在且是文件，返回 `true`；如果路径存在但是目录，返回 `false`；如果路径不存在，返回 `null`。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+const isFile = dir.isFile('someFile.txt'); // true
+```
+
+#### fileSize
+
+获取指定路径文件的大小（字节）。如果路径不存在，返回 `null`；如果路径是目录，返回 `0`。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+const size = dir.fileSize('someFile.txt'); // 例如 1024
+const dirSize = dir.fileSize('someDir'); // 0
+```
+
+#### lastModified
+
+获取指定路径文件或目录的最后修改时间，以毫秒时间戳返回。如果路径不存在，返回 `null`。你可以将其转换为 `Date` 对象。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+const mtime = dir.lastModified('someFile.txt');
+if (mtime !== null) {
+  const date = new Date(mtime);
+  console.log(date.toISOString());
+}
+```
+
+#### delete
+
+删除指定路径的文件或目录。如果是文件或空目录，删除成功返回 `true`；如果是非空目录，不会删除，返回 `false`。如果路径不存在，会抛出异常。
+
+> 注意：非空目录不会被删除。如果需要删除非空目录，请先逐个删除其中的内容。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+dir.delete('someFile.txt'); // true
+dir.delete('emptyDir'); // true
+dir.delete('nonEmptyDir'); // false（非空目录，不删除）
+```
+
+#### mkdir
+
+创建目录。将目录路径作为第一个参数传入。支持递归创建多级目录（例如 `a/b/c`）。如果目录已存在，同样返回 `true`。创建成功返回 `true`，失败返回 `false`。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+dir.mkdir('newDir');
+dir.mkdir('a/b/c'); // 递归创建
+```
+
+#### rename
+
+重命名文件或目录。将原路径作为第一个参数，新名称作为第二个参数。新名称不能包含路径分隔符 `/`，只能是同级目录下的新名称。重命名成功返回 `true`，失败返回 `false`。如果原路径不存在或缺少参数，会抛出异常。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+dir.rename('old.txt', 'new.txt');
+```
+
+#### copyToDir
+
+将文件复制到指定目录，复制后保留原文件名。将源文件路径作为第一个参数，目标目录路径作为第二个参数。目标目录必须已存在；如果目标目录不存在或不是目录，会抛出异常。不支持复制目录，否则会抛出异常。复制完成后返回 `undefined`。
+
+> `destDir` 必须是已存在的目录。如需复制后改名，请先 `copyToDir` 再 `rename`。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+dir.copyToDir('someFile.txt', 'backup'); // 复制到 backup 目录
+dir.copyToDir('sub/file.txt', ''); // 复制到挂载目录根目录
+```
+
+#### moveToDir
+
+将文件移动到指定目录，移动后保留原文件名。将源文件路径作为第一个参数，目标目录路径作为第二个参数。目标目录必须已存在；如果目标目录不存在或不是目录，会抛出异常。不支持移动目录，否则会抛出异常。移动完成后源文件将被删除，返回 `undefined`。
+
+> `destDir` 必须是已存在的目录。如需移动后改名，请先 `moveToDir` 再 `rename`。
+
+```js
+const dir = getDirectory('myMountedDirectory');
+dir.moveToDir('someFile.txt', 'archive'); // 移动到 archive 目录
+dir.moveToDir('sub/file.txt', ''); // 移动到挂载目录根目录
+```
+
+#### 综合示例
+
+批量整理文件，将大于 1MB 的日志文件移动到归档目录：
+
+```js
+const dir = getDirectory('myMountedDirectory');
+const files = dir.listFiles();
+const archiveDir = 'archive';
+if (!dir.exists(archiveDir)) {
+  dir.mkdir(archiveDir);
+}
+for (const file of files) {
+  if (!dir.isDirectory(file.name) && file.name.endsWith('.log')) {
+    if (dir.fileSize(file.name) > 1024 * 1024) {
+      dir.moveToDir(file.name, archiveDir);
+    }
+  }
+}
 ```
 
 <a id="read-selected-files"></a>
@@ -232,7 +394,7 @@ const dir = getDirectory();
 const fileContent = dir.readFile(selectedFiles[0].id);
 ```
 
-> 无法写入已选文件。
+> 已选文件是只读的。在这种模式下，只有 `readFile()`、`exists()`、`isDirectory()`、`isFile()`、`fileSize()` 和 `lastModified()` 可以使用。`writeFile()`、`appendFile()`、`listFiles()`、`delete()`、`mkdir()`、`rename()`、`copyToDir()` 和 `moveToDir()` 都会抛出异常。
 
 <a id="user-interaction"></a>
 ## 用户交互
