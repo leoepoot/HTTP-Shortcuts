@@ -4,8 +4,6 @@ object WidgetConstants {
     val ICON_SCALE_OPTIONS = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
     val FONT_SIZE_OPTIONS = listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
 
-    const val CORNER_RADIUS_DP = 28f
-
     val TITLE_SIZE_OPTIONS = listOf(12f, 14f, 16f)
     const val DEFAULT_TITLE_SIZE = 14f
 

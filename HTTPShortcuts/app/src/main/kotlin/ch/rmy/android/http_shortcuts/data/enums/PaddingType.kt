@@ -6,16 +6,16 @@ import ch.rmy.android.http_shortcuts.R
 
 @Stable
 enum class PaddingType(val value: String, val paddingDp: Int, @StringRes val labelRes: Int) {
-    COMPACT("compact", 4, R.string.label_widget_padding_compact),
-    STANDARD("standard", 8, R.string.label_widget_padding_standard),
-    LOOSE("loose", 16, R.string.label_widget_padding_loose),
+    COMPACT("compact", 16, R.string.label_widget_padding_compact),
+    STANDARD("standard", 20, R.string.label_widget_padding_standard),
+    LOOSE("loose", 28, R.string.label_widget_padding_loose),
     ;
 
     override fun toString() =
         value
 
     companion object {
-        val DEFAULT = STANDARD
+        val DEFAULT = COMPACT
 
         fun parse(value: String): PaddingType? =
             entries.find { it.value == value }

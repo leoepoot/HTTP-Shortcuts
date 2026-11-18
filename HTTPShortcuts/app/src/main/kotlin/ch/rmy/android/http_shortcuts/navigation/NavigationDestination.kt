@@ -480,42 +480,18 @@ sealed interface NavigationDestination {
     }
 
     object ShortcutWidget : NavigationDestination {
-        private const val ARG_SHORTCUT_ID = "shortcut_id"
-        private const val ARG_SHORTCUT_NAME = "shortcut_name"
-        private const val ARG_SHORTCUT_ICON = "shortcut_icon"
-        private const val ARG_SHORTCUT_DESCRIPTION = "shortcut_description"
         private const val ARG_WIDGET_ID = "widget_id"
 
         override val path = "shortcutWidget"
 
         override val arguments =
             listOf(
-                stringArg(ARG_SHORTCUT_ID),
-                stringArg(ARG_SHORTCUT_NAME),
-                stringArg(ARG_SHORTCUT_ICON),
-                stringArg(ARG_SHORTCUT_DESCRIPTION),
                 optionalIntArg(ARG_WIDGET_ID),
             )
 
-        fun buildRequest(shortcutId: ShortcutId, shortcutName: String, shortcutIcon: ShortcutIcon, shortcutDescription: String, widgetId: Int?) = buildNavigationRequest {
-            pathPart(shortcutId)
-            pathPart(shortcutName)
-            pathPart(shortcutIcon)
-            pathPart(shortcutDescription)
+        fun buildRequest(widgetId: Int?) = buildNavigationRequest {
             parameter(ARG_WIDGET_ID, widgetId)
         }
-
-        fun extractShortcutId(bundle: Bundle): ShortcutId =
-            bundle.getEncodedString(ARG_SHORTCUT_ID)!!
-
-        fun extractShortcutName(bundle: Bundle): String =
-            bundle.getEncodedString(ARG_SHORTCUT_NAME)!!
-
-        fun extractShortcutIcon(bundle: Bundle): ShortcutIcon =
-            ShortcutIcon.fromName(bundle.getEncodedString(ARG_SHORTCUT_ICON))
-
-        fun extractShortcutDescription(bundle: Bundle): String =
-            bundle.getEncodedString(ARG_SHORTCUT_DESCRIPTION)!!
 
         fun extractWidgetId(bundle: Bundle): Int? =
             bundle.getInt(ARG_WIDGET_ID, -1).takeUnless { it == -1 }

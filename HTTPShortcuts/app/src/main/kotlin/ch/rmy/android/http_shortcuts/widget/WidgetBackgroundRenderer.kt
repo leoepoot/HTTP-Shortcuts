@@ -1,135 +1,95 @@
 package ch.rmy.android.http_shortcuts.widget
 
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.util.TypedValue
+import android.os.Build
 import android.view.View
-import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
+import kotlin.math.abs
 
 object WidgetBackgroundRenderer {
 
-    private const val DEFAULT_WIDGET_WIDTH_DP = 110
-    private const val DEFAULT_WIDGET_HEIGHT_DP = 110
+    private val CORNER_RADIUS_DRAWABLES = listOf(
+        8 to R.drawable.bg_widget_rounded_8,
+        12 to R.drawable.bg_widget_rounded_12,
+        16 to R.drawable.bg_widget_rounded_16,
+        20 to R.drawable.bg_widget_rounded_20,
+    )
 
-    private fun RemoteViews.clearBackgroundImageTint(@IdRes id: Int) {
-        setColorStateList(id, "setImageTintList", null)
-    }
+    private const val FALLBACK_CORNER_RADIUS_DP = 16f
 
     fun applyBackground(
         context: Context,
         views: RemoteViews,
-        widgetId: Int,
-        @IdRes containerId: Int,
         @IdRes backgroundImageViewId: Int,
         background: WidgetBackgroundType?,
     ) {
         when (background) {
             null,
             is WidgetBackgroundType.None,
-            -> {
-                views.clearBackgroundImageTint(backgroundImageViewId)
-                views.setViewVisibility(backgroundImageViewId, View.GONE)
-                views.setInt(containerId, "setBackgroundResource", 0)
-            }
+            -> applyNoBackground(views, backgroundImageViewId)
 
-            is WidgetBackgroundType.Color -> {
-                applyColorBackground(context, views, widgetId, containerId, backgroundImageViewId, background.color)
-            }
+            is WidgetBackgroundType.Color ->
+                applyColorBackground(context, views, backgroundImageViewId, background.color)
 
-            is WidgetBackgroundType.Image -> {
-                applyImageBackground(context, views, widgetId, containerId, backgroundImageViewId, background.fileName)
-            }
+            is WidgetBackgroundType.Image ->
+                applyImageBackground(context, views, backgroundImageViewId, background.fileName)
         }
     }
 
-    private fun applyColorBackground(
-        context: Context,
-        views: RemoteViews,
-        widgetId: Int,
-        @IdRes containerId: Int,
-        @IdRes backgroundImageViewId: Int,
-        @ColorInt color: Int,
-    ) {
-        views.setImageViewResource(backgroundImageViewId, R.drawable.bg_widget_rounded)
+    private fun applyNoBackground(views: RemoteViews, @IdRes id: Int) {
+        views.setViewVisibility(id, View.GONE)
+        views.setInt(id, "setBackgroundResource", 0)
+        views.setInt(id, "setImageResource", 0)
+        clearBackgroundTint(views, id)
+    }
+
+    private fun applyColorBackground(context: Context, views: RemoteViews, @IdRes id: Int, @ColorInt color: Int) {
+        views.setViewVisibility(id, View.VISIBLE)
+        views.setInt(id, "setImageResource", 0)
+        views.setInt(id, "setBackgroundResource", getRoundedBackgroundResId(context))
         val tintApplied = views.setColorStateListSafely(
-            ImageView::class.java,
-            backgroundImageViewId,
-            "setImageTintList",
+            View::class.java,
+            id,
+            "setBackgroundTintList",
             ColorStateList.valueOf(color),
         )
-        if (tintApplied) {
-            views.setViewVisibility(backgroundImageViewId, View.VISIBLE)
-            views.setInt(containerId, "setBackgroundResource", 0)
-        } else {
-            applyRoundedBitmapBackground(context, views, widgetId, containerId, backgroundImageViewId, color)
+        if (!tintApplied) {
+            views.setInt(id, "setBackgroundColor", color)
         }
     }
 
-    private fun applyRoundedBitmapBackground(
-        context: Context,
-        views: RemoteViews,
-        widgetId: Int,
-        @IdRes containerId: Int,
-        @IdRes backgroundImageViewId: Int,
-        @ColorInt color: Int,
-    ) {
-        views.clearBackgroundImageTint(backgroundImageViewId)
-        val (widthPx, heightPx) = getWidgetSizePx(context, widgetId)
-        val radiusPx = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            WidgetConstants.CORNER_RADIUS_DP,
-            context.resources.displayMetrics,
-        )
-        val bitmap = WidgetImageUtil.getRoundedColorBitmap(context, color, widthPx, heightPx, radiusPx)
-        if (bitmap != null) {
-            views.setViewVisibility(backgroundImageViewId, View.VISIBLE)
-            views.setImageViewBitmap(backgroundImageViewId, bitmap)
-            views.setInt(containerId, "setBackgroundResource", 0)
-        } else {
-            views.setViewVisibility(backgroundImageViewId, View.GONE)
-            views.setInt(containerId, "setBackgroundColor", color)
-        }
-    }
-
-    private fun applyImageBackground(
-        context: Context,
-        views: RemoteViews,
-        widgetId: Int,
-        @IdRes containerId: Int,
-        @IdRes backgroundImageViewId: Int,
-        fileName: String,
-    ) {
-        views.clearBackgroundImageTint(backgroundImageViewId)
+    private fun applyImageBackground(context: Context, views: RemoteViews, @IdRes id: Int, fileName: String) {
+        clearBackgroundTint(views, id)
         val bitmap = WidgetImageUtil.getBackgroundBitmap(context, fileName)
-        if (bitmap != null) {
-            views.setViewVisibility(backgroundImageViewId, View.VISIBLE)
-            views.setImageViewBitmap(backgroundImageViewId, bitmap)
-            views.setInt(containerId, "setBackgroundResource", 0)
-        } else {
-            applyRoundedBitmapBackground(context, views, widgetId, containerId, backgroundImageViewId, Color.DKGRAY)
+        if (bitmap == null) {
+            views.setViewVisibility(id, View.GONE)
+            return
         }
+        views.setViewVisibility(id, View.VISIBLE)
+        views.setInt(id, "setBackgroundResource", getRoundedBackgroundResId(context))
+        views.setBooleanSafely(View::class.java, id, "setClipToOutline", true)
+        views.setImageViewBitmap(id, bitmap)
     }
 
-    private fun getWidgetSizePx(context: Context, widgetId: Int): Pair<Int, Int> {
-        val metrics = context.resources.displayMetrics
-        val options = try {
-            AppWidgetManager.getInstance(context).getAppWidgetOptions(widgetId)
-        } catch (_: Exception) {
-            null
+    private fun clearBackgroundTint(views: RemoteViews, @IdRes id: Int) {
+        views.setColorStateList(id, "setBackgroundTintList", null)
+    }
+
+    private fun getRoundedBackgroundResId(context: Context): Int {
+        val density = context.resources.displayMetrics.density
+        val systemRadiusDp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val px = context.resources.getDimensionPixelSize(
+                android.R.dimen.system_app_widget_inner_radius,
+            )
+            px / density
+        } else {
+            FALLBACK_CORNER_RADIUS_DP
         }
-        val widthDp = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)?.takeIf { it > 0 }
-            ?: DEFAULT_WIDGET_WIDTH_DP
-        val heightDp = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0)?.takeIf { it > 0 }
-            ?: DEFAULT_WIDGET_HEIGHT_DP
-        val widthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, widthDp.toFloat(), metrics).toInt().coerceAtLeast(1)
-        val heightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, heightDp.toFloat(), metrics).toInt().coerceAtLeast(1)
-        return widthPx to heightPx
+        return CORNER_RADIUS_DRAWABLES.minBy { abs(it.first - systemRadiusDp) }.second
     }
 }

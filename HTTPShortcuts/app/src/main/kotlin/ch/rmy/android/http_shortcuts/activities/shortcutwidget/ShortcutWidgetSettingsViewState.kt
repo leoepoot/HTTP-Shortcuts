@@ -1,10 +1,11 @@
 package ch.rmy.android.http_shortcuts.activities.shortcutwidget
 
 import androidx.compose.runtime.Stable
+import ch.rmy.android.http_shortcuts.activities.variablewidget.models.SelectableShortcut
+import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
-import ch.rmy.android.http_shortcuts.icons.ShortcutIcon
 
 @Stable
 data class ShortcutWidgetSettingsViewState(
@@ -12,9 +13,8 @@ data class ShortcutWidgetSettingsViewState(
     val showIcon: Boolean,
     val labelColor: Int,
     val iconScale: Float,
-    val shortcutName: String,
-    val shortcutDescription: String,
-    val shortcutIcon: ShortcutIcon,
+    val selectableShortcuts: List<SelectableShortcut>,
+    val selectedShortcutId: ShortcutId?,
     val background: WidgetBackgroundType?,
     val titleSize: Int,
     val titleColor: Int,

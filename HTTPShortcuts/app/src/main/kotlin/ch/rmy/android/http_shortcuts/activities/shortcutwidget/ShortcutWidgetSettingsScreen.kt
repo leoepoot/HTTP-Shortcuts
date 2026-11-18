@@ -1,9 +1,7 @@
 package ch.rmy.android.http_shortcuts.activities.shortcutwidget
 
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ch.rmy.android.http_shortcuts.R
@@ -12,16 +10,9 @@ import ch.rmy.android.http_shortcuts.components.ColorPickerDialog
 import ch.rmy.android.http_shortcuts.components.SimpleScaffold
 import ch.rmy.android.http_shortcuts.components.ToolbarIcon
 import ch.rmy.android.http_shortcuts.components.bindViewModel
-import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
-import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
-import ch.rmy.android.http_shortcuts.icons.ShortcutIcon
 
 @Composable
 fun ShortcutWidgetSettingsScreen(
-    shortcutId: ShortcutId,
-    shortcutName: String,
-    shortcutIcon: ShortcutIcon,
-    shortcutDescription: String,
     widgetId: Int?,
 ) {
     val (viewModel, state) = bindViewModel<
@@ -29,7 +20,7 @@ fun ShortcutWidgetSettingsScreen(
         ShortcutWidgetSettingsViewState,
         ShortcutWidgetSettingsViewModel,
         >(
-        ShortcutWidgetSettingsViewModel.InitData(shortcutId, shortcutName, shortcutIcon, shortcutDescription, widgetId),
+        ShortcutWidgetSettingsViewModel.InitData(widgetId),
     )
 
     BackHandler(state != null) {
@@ -50,6 +41,7 @@ fun ShortcutWidgetSettingsScreen(
     ) { viewState ->
         ShortcutWidgetSettingsContent(
             viewState = viewState,
+            onShortcutSelected = viewModel::onShortcutSelected,
             onShowLabelChanged = viewModel::onShowLabelChanged,
             onShowIconChanged = viewModel::onShowIconChanged,
             onLabelColorButtonClicked = viewModel::onLabelColorButtonClicked,

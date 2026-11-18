@@ -8,14 +8,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,34 +28,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.rmy.android.framework.utils.FilePickerUtil
 import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.components.Checkbox
 import ch.rmy.android.http_shortcuts.components.ColorPickerDialog
+import ch.rmy.android.http_shortcuts.components.FontSize
 import ch.rmy.android.http_shortcuts.components.OrderedOptionsSlider
 import ch.rmy.android.http_shortcuts.components.SelectionField
 import ch.rmy.android.http_shortcuts.components.SettingsButton
 import ch.rmy.android.http_shortcuts.components.SettingsGroup
-import ch.rmy.android.http_shortcuts.components.ShortcutIcon
 import ch.rmy.android.http_shortcuts.components.Spacing
 import ch.rmy.android.http_shortcuts.components.VerticalSpacer
+import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 import ch.rmy.android.http_shortcuts.icons.EditImageContract
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import java.io.File
 
 private val ICON_SCALE_OPTIONS = arrayOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
 private val TITLE_SIZE_OPTIONS = WidgetConstants.TITLE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
@@ -66,6 +57,7 @@ private val TITLE_SIZE_OPTIONS = WidgetConstants.TITLE_SIZE_OPTIONS.map { it.toI
 @Composable
 fun ShortcutWidgetSettingsContent(
     viewState: ShortcutWidgetSettingsViewState,
+    onShortcutSelected: (ShortcutId?) -> Unit,
     onShowLabelChanged: (Boolean) -> Unit,
     onShowIconChanged: (Boolean) -> Unit,
     onLabelColorButtonClicked: () -> Unit,
@@ -94,12 +86,40 @@ fun ShortcutWidgetSettingsContent(
         uri?.let { cropImage.launch(EditImageContract.Input(it)) }
     }
 
+    if (viewState.selectableShortcuts.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.empty_state_shortcut_widget),
+                textAlign = TextAlign.Center,
+                fontSize = FontSize.MEDIUM,
+                lineHeight = FontSize.BIG,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Spacing.MEDIUM),
+            )
+        }
+        return
+    }
+
+    val selectedShortcut = viewState.selectableShortcuts.find { it.shortcutId == viewState.selectedShortcutId }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
     ) {
-        WidgetPreview(viewState)
+        SelectionField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Spacing.MEDIUM),
+            title = stringResource(R.string.label_shortcut_widget_select_shortcut),
+            selectedKey = viewState.selectedShortcutId,
+            items = viewState.selectableShortcuts.map { it.shortcutId to it.name },
+            onItemSelected = onShortcutSelected,
+        )
 
         HorizontalDivider()
 
@@ -192,8 +212,8 @@ fun ShortcutWidgetSettingsContent(
                 title = stringResource(R.string.label_widget_subtitle_source),
                 source = viewState.subtitleSource,
                 onSourceChanged = onSubtitleSourceChanged,
-                shortcutName = viewState.shortcutName,
-                shortcutDescription = viewState.shortcutDescription,
+                shortcutName = selectedShortcut?.name,
+                shortcutDescription = selectedShortcut?.description,
             )
 
             if (viewState.subtitleSource == WidgetTextSource.CUSTOM) {
@@ -236,100 +256,6 @@ fun ShortcutWidgetSettingsContent(
         }
 
         VerticalSpacer(Spacing.MEDIUM)
-    }
-}
-
-@Composable
-private fun WidgetPreview(viewState: ShortcutWidgetSettingsViewState) {
-    val titleText = when (viewState.titleSource) {
-        WidgetTextSource.SHORTCUT_NAME -> viewState.shortcutName
-        WidgetTextSource.CUSTOM -> viewState.titleText.ifEmpty { "—" }
-        else -> "—"
-    }
-    val subtitleText = when (viewState.subtitleSource) {
-        WidgetTextSource.SHORTCUT_NAME -> viewState.shortcutName
-        WidgetTextSource.SHORTCUT_DESCRIPTION -> viewState.shortcutDescription
-        WidgetTextSource.CUSTOM -> viewState.subtitleText
-    }
-
-    val backgroundColor = when (val bg = viewState.background) {
-        is WidgetBackgroundType.Color -> Color(bg.color)
-        else -> colorResource(R.color.widget_preview_background)
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Spacing.SMALL)
-            .sizeIn(minHeight = 140.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            modifier = Modifier
-                .sizeIn(minWidth = 180.dp, minHeight = 140.dp)
-                .clip(RoundedCornerShape(28.dp)),
-        ) {
-            WidgetPreviewBackground(viewState.background, backgroundColor)
-            Column(
-                modifier = Modifier
-                    .matchParentSize()
-                    .padding(viewState.padding.paddingDp.dp),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-            if (viewState.showIcon) {
-                ShortcutIcon(
-                    viewState.shortcutIcon,
-                    size = (44.dp * viewState.iconScale).coerceAtLeast(24.dp),
-                )
-            } else {
-                Spacer(modifier = Modifier.size(1.dp))
-            }
-
-            Column {
-                if (viewState.showLabel) {
-                    Text(
-                        text = titleText,
-                        color = Color(viewState.titleColor),
-                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { viewState.titleSize.toSp() },
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                if (subtitleText.isNotEmpty()) {
-                    Text(
-                        text = subtitleText,
-                        color = Color(WidgetConstants.DEFAULT_SUBTITLE_COLOR),
-                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) {
-                            (viewState.titleSize - WidgetConstants.SUBTITLE_SIZE_SMALL_OFFSET).toInt().toSp()
-                        },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-        }
-        }
-    }
-}
-
-@Composable
-private fun BoxScope.WidgetPreviewBackground(background: WidgetBackgroundType?, fallbackColor: Color) {
-    val context = LocalContext.current
-    when (background) {
-        is WidgetBackgroundType.Image -> {
-            AsyncImage(
-                model = File(context.filesDir, background.fileName),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize(),
-                imageLoader = remember(context) { ImageLoader(context) },
-            )
-        }
-        else -> {
-            Box(modifier = Modifier.matchParentSize().background(fallbackColor))
-        }
     }
 }
 
@@ -501,3 +427,4 @@ private fun Modifier.borderIfSelected(selected: Boolean): Modifier =
     } else {
         this
     }
+    

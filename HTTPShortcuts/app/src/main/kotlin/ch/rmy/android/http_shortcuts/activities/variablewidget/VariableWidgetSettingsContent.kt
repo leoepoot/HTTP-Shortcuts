@@ -8,14 +8,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,13 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -58,9 +50,6 @@ import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.icons.EditImageContract
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import java.io.File
 
 private val TITLE_SIZE_OPTIONS = WidgetConstants.TITLE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
 private val VALUE_SIZE_OPTIONS = WidgetConstants.VALUE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
@@ -121,10 +110,6 @@ fun VariableWidgetSettingsContent(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
     ) {
-        WidgetPreview(viewState)
-
-        HorizontalDivider()
-
         SettingsGroup(title = stringResource(R.string.label_widget_section_appearance)) {
             BackgroundSelector(
                 background = viewState.background,
@@ -284,128 +269,6 @@ fun VariableWidgetSettingsContent(
         )
 
         VerticalSpacer(Spacing.MEDIUM)
-    }
-}
-
-@Composable
-private fun WidgetPreview(viewState: VariableWidgetSettingsViewState) {
-    val backgroundColor = when (val bg = viewState.background) {
-        is WidgetBackgroundType.Color -> Color(bg.color)
-        else -> colorResource(R.color.widget_preview_background)
-    }
-    val showSubtitle = viewState.subtitleText.isNotEmpty()
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Spacing.SMALL)
-            .sizeIn(minHeight = 160.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            modifier = Modifier
-                .sizeIn(minWidth = 200.dp, minHeight = 160.dp)
-                .clip(RoundedCornerShape(WidgetConstants.CORNER_RADIUS_DP.dp)),
-        ) {
-            WidgetPreviewBackground(viewState.background, backgroundColor)
-            Column(
-                modifier = Modifier
-                    .matchParentSize()
-                    .padding(viewState.padding.paddingDp.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                if (viewState.title.isNotEmpty()) {
-                    Text(
-                        text = viewState.title,
-                        color = Color(viewState.titleColor),
-                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { viewState.titleSize.toSp() },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                    )
-                } else {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-                if (showSubtitle && viewState.subtitlePosition == SubtitlePosition.TOP_END) {
-                    Text(
-                        text = viewState.subtitleText,
-                        color = Color(WidgetConstants.DEFAULT_SUBTITLE_COLOR),
-                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) {
-                            (viewState.titleSize - WidgetConstants.SUBTITLE_SIZE_SMALL_OFFSET).toInt().toSp()
-                        },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                if (showSubtitle && viewState.subtitlePosition == SubtitlePosition.BOTTOM_END) {
-                    Text(
-                        text = viewState.subtitleText,
-                        color = Color(WidgetConstants.DEFAULT_SUBTITLE_COLOR),
-                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) {
-                            (viewState.titleSize - WidgetConstants.SUBTITLE_SIZE_SMALL_OFFSET).toInt().toSp()
-                        },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                    )
-                } else {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    Text(
-                        text = viewState.variableValue?.ifEmpty { "—" } ?: "?",
-                        color = Color(viewState.valueColor),
-                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { viewState.valueSize.toSp() },
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    if (viewState.unit.isNotEmpty()) {
-                        Text(
-                            text = viewState.unit,
-                            color = Color(WidgetConstants.DEFAULT_SUBTITLE_COLOR),
-                            fontSize = with(androidx.compose.ui.platform.LocalDensity.current) {
-                                (viewState.valueSize - WidgetConstants.SUBTITLE_SIZE_OFFSET).toInt().toSp()
-                            },
-                            modifier = Modifier.padding(start = Spacing.TINY),
-                        )
-                    }
-                }
-            }
-        }
-        }
-    }
-}
-
-@Composable
-private fun BoxScope.WidgetPreviewBackground(background: WidgetBackgroundType?, fallbackColor: Color) {
-    val context = LocalContext.current
-    when (background) {
-        is WidgetBackgroundType.Image -> {
-            AsyncImage(
-                model = File(context.filesDir, background.fileName),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize(),
-                imageLoader = remember(context) { ImageLoader(context) },
-            )
-        }
-        else -> {
-            Box(modifier = Modifier.matchParentSize().background(fallbackColor))
-        }
     }
 }
 

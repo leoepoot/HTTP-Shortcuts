@@ -4,19 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/widget_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:visibility="gone" />
+
     <FrameLayout
         android:id="@+id/widget_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp">
-
-        <ImageView
-            android:id="@+id/widget_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/widget_icon"

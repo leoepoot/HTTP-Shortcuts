@@ -4,13 +4,15 @@ import android.app.Application
 import android.graphics.Color
 import android.net.Uri
 import ch.rmy.android.framework.viewmodel.BaseViewModel
+import ch.rmy.android.http_shortcuts.activities.variablewidget.models.SelectableShortcut
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
+import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutRepository
 import ch.rmy.android.http_shortcuts.data.domains.widgets.ShortcutWidgetsRepository
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
+import ch.rmy.android.http_shortcuts.data.models.Shortcut
 import ch.rmy.android.http_shortcuts.extensions.labelColorInt
-import ch.rmy.android.http_shortcuts.icons.ShortcutIcon
 import ch.rmy.android.http_shortcuts.navigation.NavigationDestination
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
 import ch.rmy.android.http_shortcuts.widget.WidgetImageUtil
@@ -23,38 +25,32 @@ class ShortcutWidgetSettingsViewModel
 constructor(
     application: Application,
     private val shortcutWidgetsRepository: ShortcutWidgetsRepository,
+    private val shortcutRepository: ShortcutRepository,
 ) : BaseViewModel<ShortcutWidgetSettingsViewModel.InitData, ShortcutWidgetSettingsViewState>(application) {
 
-    private val shortcutId: ShortcutId
-        get() = initData.shortcutId
-    private val shortcutName: String
-        get() = initData.shortcutName
-    private val shortcutDescription: String
-        get() = initData.shortcutDescription
-    private val shortcutIcon: ShortcutIcon
-        get() = initData.shortcutIcon
-
-    data class InitData(
-        val shortcutId: ShortcutId,
-        val shortcutName: String,
-        val shortcutIcon: ShortcutIcon,
-        val shortcutDescription: String,
-        val widgetId: Int?,
-    )
+    private lateinit var shortcuts: List<Shortcut>
 
     override suspend fun initialize(data: InitData): ShortcutWidgetSettingsViewState {
         val widget = data.widgetId
             ?.let {
                 shortcutWidgetsRepository.getShortcutWidgetById(it)
             }
+
+        shortcuts = shortcutRepository.getShortcuts()
+        val selectableShortcuts = shortcuts.map { it.toSelectableShortcut() }
+        val selectedShortcutId = widget
+            ?.let { widgetShortcut ->
+                shortcuts.find { it.id == widgetShortcut.shortcutId }?.id
+            }
+            ?: shortcuts.firstOrNull()?.id
+
         return ShortcutWidgetSettingsViewState(
             showLabel = widget?.showLabel != false,
             showIcon = widget?.showIcon != false,
             labelColor = widget?.labelColorInt() ?: Color.WHITE,
             iconScale = widget?.iconScale ?: 1f,
-            shortcutIcon = shortcutIcon,
-            shortcutName = shortcutName,
-            shortcutDescription = shortcutDescription,
+            selectableShortcuts = selectableShortcuts,
+            selectedShortcutId = selectedShortcutId,
             background = widget?.background,
             titleSize = widget?.titleSize?.toInt() ?: WidgetConstants.DEFAULT_TITLE_SIZE.toInt(),
             titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR,
@@ -64,6 +60,19 @@ constructor(
             subtitleText = widget?.subtitleText ?: "",
             padding = widget?.padding ?: PaddingType.DEFAULT,
         )
+    }
+
+    private fun Shortcut.toSelectableShortcut() =
+        SelectableShortcut(
+            shortcutId = id,
+            name = name,
+            description = description,
+        )
+
+    fun onShortcutSelected(shortcutId: ShortcutId?) = runAction {
+        updateViewState {
+            copy(selectedShortcutId = shortcutId)
+        }
     }
 
     fun onLabelColorButtonClicked() = runAction {
@@ -111,7 +120,6 @@ constructor(
         val fileName = WidgetImageUtil.saveImageFromUri(
             context = getApplication(),
             imageUri = uri,
-            cornerRadiusDp = WidgetConstants.CORNER_RADIUS_DP,
         ) ?: skipAction()
         val newBackground = WidgetBackgroundType.Image(fileName)
         cleanupOldImageIfNeeded(viewState.background, newBackground)
@@ -181,6 +189,7 @@ constructor(
     }
 
     fun onCreateButtonClicked() = runAction {
+        val shortcutId = viewState.selectedShortcutId ?: skipAction()
         closeScreen(
             result = NavigationDestination.ShortcutWidget.Result(
                 shortcutId = shortcutId,
@@ -209,4 +218,8 @@ constructor(
     fun onBackPressed() = runAction {
         closeScreen(result = NavigationDestination.ShortcutWidget.RESULT_SHORTCUT_WIDGET_SETTINGS_CANCELLED)
     }
+
+    data class InitData(
+        val widgetId: Int?,
+    )
 }

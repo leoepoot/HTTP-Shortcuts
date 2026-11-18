@@ -2048,6 +2048,10 @@
     <string name="label_variable_widget_select_shortcut">When clicked, run shortcut</string>
     <!-- Empty state instructions, shown in the editor for variable widgets when the user hasn't created any global variables of type "Static Variable" yet. -->
     <string name="empty_state_variable_widget">With this widget you can display the value of a global variable of type \“%s\” on your home screen.\n\nYou don\'t have any such variables yet. You can create them from the app\'s main menu.</string>
+    <!-- Label: shown above dropdown menu to select the shortcut that a Shortcut Widget should be bound to -->
+    <string name="label_shortcut_widget_select_shortcut">Shortcut</string>
+    <!-- Empty state instructions, shown in the editor for shortcut widgets when the user hasn't created any shortcuts yet. -->
+    <string name="empty_state_shortcut_widget">With this widget you can place a shortcut on your home screen and trigger it with a single tap.\n\nYou don\'t have any shortcuts yet. You can create them from the app\'s main menu.</string>
     <!-- Error message, shown when app is updated after a long time and data can not be restored, instructs the user how to recover the app data -->
     <string name="error_manual_data_migration">It looks like you have not updated the app in a long while. As a result, it is not possible to automatically update your shortcuts, variables, etc. to be compatible with this version. But don\'t worry, your data is not lost. Here\'s what you can do:\n\nGo to %s and follow the instructions there.</string>
     <!-- Label on button, shown on dialog that shows when the app's data can not be automatically restored after an update, gives the user the option to export all data. Clicking the button will attempt to restore the shortcuts, variables etc. -->

@@ -279,10 +279,6 @@ fun NavigationRoot(navController: NavHostController) {
         composable(NavigationDestination.ShortcutWidget) { backStackEntry ->
             val arguments = backStackEntry.arguments!!
             ShortcutWidgetSettingsScreen(
-                shortcutId = NavigationDestination.ShortcutWidget.extractShortcutId(arguments),
-                shortcutName = NavigationDestination.ShortcutWidget.extractShortcutName(arguments),
-                shortcutIcon = NavigationDestination.ShortcutWidget.extractShortcutIcon(arguments),
-                shortcutDescription = NavigationDestination.ShortcutWidget.extractShortcutDescription(arguments),
                 widgetId = NavigationDestination.ShortcutWidget.extractWidgetId(arguments),
             )
         }

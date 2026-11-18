@@ -7,4 +7,5 @@ import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 data class SelectableShortcut(
     val shortcutId: ShortcutId,
     val name: String,
+    val description: String = "",
 )

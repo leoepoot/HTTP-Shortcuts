@@ -110,7 +110,6 @@ constructor(
         val fileName = WidgetImageUtil.saveImageFromUri(
             context = getApplication(),
             imageUri = uri,
-            cornerRadiusDp = WidgetConstants.CORNER_RADIUS_DP,
         ) ?: skipAction()
         val newBackground = WidgetBackgroundType.Image(fileName)
         cleanupOldImageIfNeeded(viewState.background, newBackground)

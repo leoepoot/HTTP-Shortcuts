@@ -49,6 +49,15 @@ fun RemoteViews.setIntSafely(clazz: Class<*>, @IdRes id: Int, methodName: String
     }
 }
 
+fun RemoteViews.setBooleanSafely(clazz: Class<*>, @IdRes id: Int, methodName: String, value: Boolean) {
+    tryOrLog {
+        val method = clazz.getMethod(methodName, Boolean::class.java)
+        if (method.isRemoteViewMethod()) {
+            setBoolean(id, methodName, value)
+        }
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.S)
 fun RemoteViews.setColorIntSafely(clazz: Class<*>, @IdRes id: Int, methodName: String, @ColorInt value: Int) {
     tryOrLog {

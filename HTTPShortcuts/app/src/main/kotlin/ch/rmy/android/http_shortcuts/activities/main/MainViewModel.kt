@@ -220,6 +220,7 @@ constructor(
                     SelectionMode.HOME_SCREEN_SHORTCUT_PLACEMENT -> Unit
                     SelectionMode.SHORTCUT_WIDGET_PLACEMENT -> {
                         initData.widgetId?.let { widgetId ->
+                            navigate(NavigationDestination.ShortcutWidget.buildRequest(widgetId))
                             setActivityResult(Activity.RESULT_CANCELED, WidgetsUtil.getIntent(widgetId))
                         }
                     }
@@ -503,30 +504,12 @@ constructor(
     private suspend fun selectShortcut(shortcutId: ShortcutId) {
         when (selectionMode) {
             SelectionMode.HOME_SCREEN_SHORTCUT_PLACEMENT -> returnForHomeScreenShortcutPlacement(shortcutId)
-            SelectionMode.SHORTCUT_WIDGET_PLACEMENT -> {
-                updateViewState {
-                    copy(highlightedShortcutId = shortcutId)
-                }
-                openShortcutWidgetSettings(shortcutId, initData.widgetId)
-            }
             SelectionMode.PLUGIN -> returnForPlugin(shortcutId)
+            SelectionMode.SHORTCUT_WIDGET_PLACEMENT,
             SelectionMode.VARIABLE_WIDGET_PLACEMENT,
             SelectionMode.NORMAL,
             -> Unit
         }
-    }
-
-    private suspend fun openShortcutWidgetSettings(shortcutId: ShortcutId, widgetId: Int?) {
-        val shortcut = getShortcutById(shortcutId) ?: return
-        navigate(
-            NavigationDestination.ShortcutWidget.buildRequest(
-                shortcutId = shortcut.id,
-                shortcutName = shortcut.name,
-                shortcutIcon = shortcut.icon,
-                shortcutDescription = shortcut.description,
-                widgetId = widgetId,
-            ),
-        )
     }
 
     private suspend fun returnForHomeScreenShortcutPlacement(shortcutId: ShortcutId) {
