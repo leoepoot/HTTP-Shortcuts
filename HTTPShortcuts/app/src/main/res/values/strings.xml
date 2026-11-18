@@ -1278,6 +1278,8 @@
     <string name="label_widget_background_color">Color</string>
     <!-- Label: Option to use an image as widget background -->
     <string name="label_widget_background_image">Image</string>
+    <!-- Title: Shown above cropper/resizer tool when picking a widget background image -->
+    <string name="title_edit_widget_background">Edit Background</string>
     <!-- Label: Compact padding option for widget -->
     <string name="label_widget_padding_compact">Compact</string>
     <!-- Label: Standard padding option for widget -->

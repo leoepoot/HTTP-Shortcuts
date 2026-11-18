@@ -1,5 +1,6 @@
 package ch.rmy.android.http_shortcuts.widget
 
+import android.content.res.ColorStateList
 import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
@@ -57,6 +58,22 @@ fun RemoteViews.setColorIntSafely(clazz: Class<*>, @IdRes id: Int, methodName: S
         }
     }
 }
+
+fun RemoteViews.setColorStateListSafely(
+    clazz: Class<*>,
+    @IdRes id: Int,
+    methodName: String,
+    value: ColorStateList,
+): Boolean =
+    tryOrLog {
+        val method = clazz.getMethod(methodName, ColorStateList::class.java)
+        if (method.isRemoteViewMethod()) {
+            setColorStateList(id, methodName, value)
+            true
+        } else {
+            false
+        }
+    } ?: false
 
 private fun Method.isRemoteViewMethod() =
     annotations.any { it.annotationClass.simpleName == "RemotableViewMethod" }

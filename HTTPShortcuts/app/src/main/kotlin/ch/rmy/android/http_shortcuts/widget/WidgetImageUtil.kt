@@ -9,6 +9,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import android.net.Uri
+import android.util.TypedValue
 import androidx.annotation.ColorInt
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
@@ -40,8 +41,13 @@ object WidgetImageUtil {
             try {
                 val scaled = scaleBitmap(bitmap)
                 try {
-                    val rounded = if (cornerRadiusDp > 0f) {
-                        applyCornerRadius(scaled, cornerRadiusDp)
+                    val cornerRadiusPx = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        cornerRadiusDp,
+                        context.resources.displayMetrics,
+                    )
+                    val rounded = if (cornerRadiusPx > 0f) {
+                        applyCornerRadius(scaled, cornerRadiusPx)
                     } else {
                         scaled
                     }
@@ -85,12 +91,12 @@ object WidgetImageUtil {
         return bitmap.scale(newWidth, newHeight, filter = true)
     }
 
-    private fun applyCornerRadius(bitmap: Bitmap, cornerRadiusDp: Float): Bitmap {
+    private fun applyCornerRadius(bitmap: Bitmap, cornerRadiusPx: Float): Bitmap {
         val output = createBitmap(bitmap.width, bitmap.height)
         val canvas = Canvas(output)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         val rect = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
-        canvas.drawRoundRect(rect, cornerRadiusDp, cornerRadiusDp, paint)
+        canvas.drawRoundRect(rect, cornerRadiusPx, cornerRadiusPx, paint)
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(bitmap, 0f, 0f, paint)
         return output

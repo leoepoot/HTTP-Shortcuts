@@ -54,6 +54,7 @@ import ch.rmy.android.http_shortcuts.components.VerticalSpacer
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
+import ch.rmy.android.http_shortcuts.icons.EditImageContract
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
 import coil3.compose.AsyncImage
 import java.io.File
@@ -78,8 +79,18 @@ fun ShortcutWidgetSettingsContent(
     onSubtitleTextChanged: (String) -> Unit,
     onPaddingChanged: (PaddingType) -> Unit,
 ) {
+    val cropImage = rememberLauncherForActivityResult(
+        EditImageContract(
+            title = stringResource(R.string.title_edit_widget_background),
+            maxSize = WidgetConstants.WIDGET_BACKGROUND_MAX_SIZE_PX,
+        ),
+    ) { result ->
+        if (result is EditImageContract.Result.Success) {
+            onBackgroundImagePicked(result.imageUri)
+        }
+    }
     val pickImage = rememberLauncherForActivityResult(FilePickerUtil.PickFile) { uri ->
-        uri?.let(onBackgroundImagePicked)
+        uri?.let { cropImage.launch(EditImageContract.Input(it)) }
     }
 
     Column(
