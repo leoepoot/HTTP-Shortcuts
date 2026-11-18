@@ -94,6 +94,8 @@ constructor(
                     }
                 }
                 views.setImageViewIcon(R.id.widget_icon, IconUtil.getIcon(context, shortcut.icon, adaptive = false))
+                views.setViewPivotX(R.id.widget_icon, 0f)
+                views.setViewPivotY(R.id.widget_icon, 0f)
                 views.setImageViewScaleX(R.id.widget_icon, shortcutWidget.iconScale)
                 views.setImageViewScaleY(R.id.widget_icon, shortcutWidget.iconScale)
             } else {

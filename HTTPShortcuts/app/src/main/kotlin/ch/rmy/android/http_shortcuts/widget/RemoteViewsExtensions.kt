@@ -2,6 +2,7 @@ package ch.rmy.android.http_shortcuts.widget
 
 import android.content.res.ColorStateList
 import android.os.Build
+import android.view.View
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
@@ -29,6 +30,14 @@ fun RemoteViews.setImageViewScaleY(@IdRes id: Int, scaleY: Float) {
 
 fun RemoteViews.setImageViewScaleType(@IdRes id: Int, scaleType: ImageView.ScaleType) {
     setIntSafely(ImageView::class.java, id, "setScaleType", scaleType.ordinal)
+}
+
+fun RemoteViews.setViewPivotX(@IdRes id: Int, pivotX: Float) {
+    setFloatSafely(View::class.java, id, "setPivotX", pivotX)
+}
+
+fun RemoteViews.setViewPivotY(@IdRes id: Int, pivotY: Float) {
+    setFloatSafely(View::class.java, id, "setPivotY", pivotY)
 }
 
 private fun RemoteViews.setFloatSafely(clazz: Class<*>, @IdRes id: Int, methodName: String, value: Float) {
