@@ -282,6 +282,7 @@ fun NavigationRoot(navController: NavHostController) {
                 shortcutId = NavigationDestination.ShortcutWidget.extractShortcutId(arguments),
                 shortcutName = NavigationDestination.ShortcutWidget.extractShortcutName(arguments),
                 shortcutIcon = NavigationDestination.ShortcutWidget.extractShortcutIcon(arguments),
+                shortcutDescription = NavigationDestination.ShortcutWidget.extractShortcutDescription(arguments),
                 widgetId = NavigationDestination.ShortcutWidget.extractWidgetId(arguments),
             )
         }

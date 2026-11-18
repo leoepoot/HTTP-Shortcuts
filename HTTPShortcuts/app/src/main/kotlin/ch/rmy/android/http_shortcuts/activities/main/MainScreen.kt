@@ -110,6 +110,14 @@ fun MainScreen(
                     showIcon = result.showIcon,
                     labelColor = result.labelColor,
                     iconScale = result.iconScale,
+                    background = result.background,
+                    titleSize = result.titleSize,
+                    titleColor = result.titleColor,
+                    titleSource = result.titleSource,
+                    titleText = result.titleText,
+                    subtitleSource = result.subtitleSource,
+                    subtitleText = result.subtitleText,
+                    padding = result.padding,
                 )
             }
             is NavigationDestination.VariableWidget.Result -> {
@@ -119,6 +127,14 @@ fun MainScreen(
                     title = result.title,
                     background = result.background,
                     shortcutId = result.shortcutId,
+                    titleSize = result.titleSize,
+                    titleColor = result.titleColor,
+                    valueSize = result.valueSize,
+                    valueColor = result.valueColor,
+                    unit = result.unit,
+                    subtitleText = result.subtitleText,
+                    subtitlePosition = result.subtitlePosition,
+                    padding = result.padding,
                 )
             }
             RESULT_SHORTCUT_WIDGET_SETTINGS_CANCELLED -> {

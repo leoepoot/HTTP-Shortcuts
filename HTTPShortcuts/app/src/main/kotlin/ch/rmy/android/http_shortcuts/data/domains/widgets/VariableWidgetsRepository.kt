@@ -4,6 +4,8 @@ import ch.rmy.android.http_shortcuts.data.Database
 import ch.rmy.android.http_shortcuts.data.domains.BaseRepository
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
+import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.models.VariableWidget
 import javax.inject.Inject
@@ -20,6 +22,14 @@ constructor(
         title: String,
         background: WidgetBackgroundType?,
         shortcutId: ShortcutId?,
+        titleSize: Float? = null,
+        titleColor: String? = null,
+        valueSize: Float? = null,
+        valueColor: String? = null,
+        unit: String? = null,
+        subtitleText: String? = null,
+        subtitlePosition: SubtitlePosition? = null,
+        padding: PaddingType? = null,
     ) = query {
         variableWidgetDao().insertOrReplace(
             VariableWidget(
@@ -29,6 +39,14 @@ constructor(
                 title = title,
                 background = background,
                 shortcutId = shortcutId,
+                titleSize = titleSize,
+                titleColor = titleColor,
+                valueSize = valueSize,
+                valueColor = valueColor,
+                unit = unit,
+                subtitleText = subtitleText,
+                subtitlePosition = subtitlePosition,
+                padding = padding,
             ),
         )
     }

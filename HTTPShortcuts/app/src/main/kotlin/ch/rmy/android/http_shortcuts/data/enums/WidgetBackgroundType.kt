@@ -11,6 +11,13 @@ sealed interface WidgetBackgroundType {
     fun serialize(): String
 
     @Stable
+    data object None : WidgetBackgroundType {
+        const val VALUE = "none"
+
+        override fun serialize() = VALUE
+    }
+
+    @Stable
     data class Color(@ColorInt val color: Int) : WidgetBackgroundType {
         override fun serialize(): String = "$PREFIX${color.colorIntWithAlphaToHexString()}"
 
@@ -38,12 +45,29 @@ sealed interface WidgetBackgroundType {
         }
     }
 
+    @Stable
+    data class Image(val fileName: String) : WidgetBackgroundType {
+        override fun serialize(): String = "$PREFIX$fileName"
+
+        override fun toString() =
+            serialize()
+
+        companion object {
+            const val PREFIX = "image="
+
+            fun deserialize(input: String): Image? =
+                input.removePrefix(PREFIX)
+                    .takeIf { it.isNotEmpty() }
+                    ?.let(::Image)
+        }
+    }
+
     companion object {
         fun parse(type: String): WidgetBackgroundType? =
             when {
-                type.startsWith(Color.PREFIX) -> {
-                    Color.deserialize(type)
-                }
+                type == None.VALUE -> None
+                type.startsWith(Color.PREFIX) -> Color.deserialize(type)
+                type.startsWith(Image.PREFIX) -> Image.deserialize(type)
                 else -> null
             }
     }

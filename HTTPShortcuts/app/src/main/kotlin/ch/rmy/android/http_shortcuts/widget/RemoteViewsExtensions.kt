@@ -26,6 +26,10 @@ fun RemoteViews.setImageViewScaleY(@IdRes id: Int, scaleY: Float) {
     setFloatSafely(ImageView::class.java, id, "setScaleY", scaleY)
 }
 
+fun RemoteViews.setImageViewScaleType(@IdRes id: Int, scaleType: ImageView.ScaleType) {
+    setIntSafely(ImageView::class.java, id, "setScaleType", scaleType.nativeInt)
+}
+
 private fun RemoteViews.setFloatSafely(clazz: Class<*>, @IdRes id: Int, methodName: String, value: Float) {
     tryOrLog {
         val method = clazz.getMethod(methodName, Float::class.java)

@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
+import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 
 @Entity(tableName = "variable_widget")
@@ -22,4 +24,20 @@ data class VariableWidget(
     val shortcutId: ShortcutId? = null,
     @ColumnInfo(name = "background")
     val background: WidgetBackgroundType? = null,
+    @ColumnInfo(name = "title_size")
+    val titleSize: Float? = null,
+    @ColumnInfo(name = "title_color")
+    val titleColor: String? = null,
+    @ColumnInfo(name = "value_size")
+    val valueSize: Float? = null,
+    @ColumnInfo(name = "value_color")
+    val valueColor: String? = null,
+    @ColumnInfo(name = "unit")
+    val unit: String? = null,
+    @ColumnInfo(name = "subtitle_text")
+    val subtitleText: String? = null,
+    @ColumnInfo(name = "subtitle_position")
+    val subtitlePosition: SubtitlePosition? = null,
+    @ColumnInfo(name = "padding")
+    val padding: PaddingType? = null,
 )

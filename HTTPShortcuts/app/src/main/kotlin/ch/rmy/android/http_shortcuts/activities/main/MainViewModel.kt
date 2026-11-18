@@ -31,8 +31,11 @@ import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableReposi
 import ch.rmy.android.http_shortcuts.data.domains.widgets.ShortcutWidgetsRepository
 import ch.rmy.android.http_shortcuts.data.dtos.ShortcutPlaceholder
 import ch.rmy.android.http_shortcuts.data.enums.CategoryAlignment
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.SelectionMode
+import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 import ch.rmy.android.http_shortcuts.data.models.Category
 import ch.rmy.android.http_shortcuts.data.models.Shortcut
 import ch.rmy.android.http_shortcuts.data.settings.DeviceLocalPreferences
@@ -520,6 +523,7 @@ constructor(
                 shortcutId = shortcut.id,
                 shortcutName = shortcut.name,
                 shortcutIcon = shortcut.icon,
+                shortcutDescription = shortcut.description,
                 widgetId = widgetId,
             ),
         )
@@ -596,10 +600,33 @@ constructor(
         showIcon: Boolean,
         labelColor: String?,
         iconScale: Float,
+        background: WidgetBackgroundType?,
+        titleSize: Int?,
+        titleColor: String?,
+        titleSource: WidgetTextSource?,
+        titleText: String,
+        subtitleSource: WidgetTextSource?,
+        subtitleText: String,
+        padding: PaddingType?,
     ) = runAction {
         logInfo("Shortcut widget settings submitted")
         val widgetId = initData.widgetId ?: skipAction()
-        shortcutWidgetsRepository.createOrUpdateShortcutWidget(widgetId, shortcutId, showLabel, showIcon, labelColor, iconScale)
+        shortcutWidgetsRepository.createOrUpdateShortcutWidget(
+            widgetId = widgetId,
+            shortcutId = shortcutId,
+            showLabel = showLabel,
+            showIcon = showIcon,
+            labelColor = labelColor,
+            iconScale = iconScale,
+            background = background,
+            titleSize = titleSize?.toFloat(),
+            titleColor = titleColor,
+            titleSource = titleSource,
+            titleText = titleText,
+            subtitleSource = subtitleSource,
+            subtitleText = subtitleText,
+            padding = padding,
+        )
         shortcutWidgetManager.updateWidgets(shortcutId)
         finish(
             intent = WidgetsUtil.getIntent(widgetId),
@@ -613,6 +640,14 @@ constructor(
         title: String,
         background: WidgetBackgroundType?,
         shortcutId: ShortcutId?,
+        titleSize: Int?,
+        titleColor: String?,
+        valueSize: Int?,
+        valueColor: String?,
+        unit: String,
+        subtitleText: String,
+        subtitlePosition: SubtitlePosition?,
+        padding: PaddingType?,
     ) = runAction {
         logInfo("Variable widget settings submitted")
         val widgetId = initData.widgetId ?: skipAction()
@@ -623,6 +658,14 @@ constructor(
             title = title,
             background = background,
             shortcutId = shortcutId,
+            titleSize = titleSize?.toFloat(),
+            titleColor = titleColor,
+            valueSize = valueSize?.toFloat(),
+            valueColor = valueColor,
+            unit = unit,
+            subtitleText = subtitleText,
+            subtitlePosition = subtitlePosition,
+            padding = padding,
         )
         variableWidgetManager.updateWidgets(variableId)
         finish(

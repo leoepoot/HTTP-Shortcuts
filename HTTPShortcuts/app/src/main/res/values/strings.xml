@@ -1262,6 +1262,64 @@
     <string name="title_configure_widget">Configure Widget</string>
     <!-- Label: Shown in widget configuration screen, clicking it allows the user to pick a color for the widget label -->
     <string name="label_widget_label_color">Label Color</string>
+    <!-- Label: Section title for widget appearance settings (background, padding) -->
+    <string name="label_widget_section_appearance">Appearance</string>
+    <!-- Label: Section title for widget icon settings -->
+    <string name="label_widget_section_icon">Icon</string>
+    <!-- Label: Section title for widget title settings -->
+    <string name="label_widget_section_title">Title</string>
+    <!-- Label: Section title for widget subtitle settings -->
+    <string name="label_widget_section_subtitle">Subtitle</string>
+    <!-- Label: Section title for legacy widget settings (label visibility) -->
+    <string name="label_widget_section_legacy">Legacy</string>
+    <!-- Label: Option to have no widget background -->
+    <string name="label_widget_background_none">None</string>
+    <!-- Label: Option to use a solid color as widget background -->
+    <string name="label_widget_background_color">Color</string>
+    <!-- Label: Option to use an image as widget background -->
+    <string name="label_widget_background_image">Image</string>
+    <!-- Label: Compact padding option for widget -->
+    <string name="label_widget_padding_compact">Compact</string>
+    <!-- Label: Standard padding option for widget -->
+    <string name="label_widget_padding_standard">Standard</string>
+    <!-- Label: Loose padding option for widget -->
+    <string name="label_widget_padding_loose">Loose</string>
+    <!-- Label: Selector for the data source of the widget title -->
+    <string name="label_widget_title_source">Title Source</string>
+    <!-- Label: Selector for the data source of the widget subtitle -->
+    <string name="label_widget_subtitle_source">Subtitle Source</string>
+    <!-- Label: Input field for custom widget title text -->
+    <string name="label_widget_custom_title">Custom Title</string>
+    <!-- Label: Input field for custom widget subtitle text -->
+    <string name="label_widget_custom_subtitle">Custom Subtitle</string>
+    <!-- Label: Slider for widget title font size -->
+    <string name="label_widget_title_size">Title Size</string>
+    <!-- Label: Button to pick widget title text color -->
+    <string name="label_widget_title_color">Title Color</string>
+    <!-- Label: Section title for widget value settings (Variable widget) -->
+    <string name="label_widget_section_value">Value</string>
+    <!-- Label: Slider for widget value font size -->
+    <string name="label_widget_value_size">Value Size</string>
+    <!-- Label: Button to pick widget value text color -->
+    <string name="label_widget_value_color">Value Color</string>
+    <!-- Label: Input field for the unit displayed after the widget value -->
+    <string name="label_widget_unit">Unit</string>
+    <!-- Label: Selector for the subtitle position on the widget -->
+    <string name="label_widget_subtitle_position">Subtitle Position</string>
+    <!-- Label: Subtitle position option - top right corner -->
+    <string name="label_widget_subtitle_position_top_end">Top Right</string>
+    <!-- Label: Subtitle position option - bottom right corner -->
+    <string name="label_widget_subtitle_position_bottom_end">Bottom Right</string>
+    <!-- Label: Option to use shortcut name as text source, %s is the shortcut name -->
+    <string name="label_widget_source_shortcut_name">Shortcut name (%s)</string>
+    <!-- Label: Option to use shortcut description as text source, %s is the description -->
+    <string name="label_widget_source_shortcut_description">Shortcut description (%s)</string>
+    <!-- Label: Option to use custom text as text source -->
+    <string name="label_widget_source_custom">Custom</string>
+    <!-- Hint: Shown below subtitle source to indicate subtitle is hidden on small widgets -->
+    <string name="label_widget_subtitle_hint">Subtitle is only shown on wider widgets and when not empty.</string>
+    <!-- Subtitle: Shown under the legacy "Show Label" checkbox to indicate it is the old behavior -->
+    <string name="label_show_widget_label_subtitle">Legacy option, replaced by Title above</string>
     <!-- Label: Name of the "Variable" widget, i.e., the widget that lets the user display the value of a global variable on the homescreen -->
     <string name="label_variable_widget">Variable Widget</string>
     <!-- Error: Generic error shown when the user enters an invalid character, e.g. for an HTTP header. %s is the placeholder for the character -->

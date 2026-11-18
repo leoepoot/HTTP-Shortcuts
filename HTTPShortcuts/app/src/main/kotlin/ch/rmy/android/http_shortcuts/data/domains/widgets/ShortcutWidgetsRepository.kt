@@ -3,6 +3,9 @@ package ch.rmy.android.http_shortcuts.data.domains.widgets
 import ch.rmy.android.http_shortcuts.data.Database
 import ch.rmy.android.http_shortcuts.data.domains.BaseRepository
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 import ch.rmy.android.http_shortcuts.data.models.ShortcutWidget
 import javax.inject.Inject
 
@@ -18,6 +21,14 @@ constructor(
         showIcon: Boolean,
         labelColor: String?,
         iconScale: Float,
+        background: WidgetBackgroundType? = null,
+        titleSize: Float? = null,
+        titleColor: String? = null,
+        titleSource: WidgetTextSource? = null,
+        titleText: String? = null,
+        subtitleSource: WidgetTextSource? = null,
+        subtitleText: String? = null,
+        padding: PaddingType? = null,
     ) = query {
         shortcutWidgetDao().insertOrReplace(
             ShortcutWidget(
@@ -27,6 +38,14 @@ constructor(
                 showIcon = showIcon,
                 labelColor = labelColor,
                 iconScale = iconScale,
+                background = background,
+                titleSize = titleSize,
+                titleColor = titleColor,
+                titleSource = titleSource,
+                titleText = titleText,
+                subtitleSource = subtitleSource,
+                subtitleText = subtitleText,
+                padding = padding,
             ),
         )
     }

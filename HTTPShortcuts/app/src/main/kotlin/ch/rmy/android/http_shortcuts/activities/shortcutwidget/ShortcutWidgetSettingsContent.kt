@@ -1,207 +1,457 @@
 package ch.rmy.android.http_shortcuts.activities.shortcutwidget
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.rmy.android.framework.utils.FilePickerUtil
 import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.components.Checkbox
+import ch.rmy.android.http_shortcuts.components.ColorPickerDialog
 import ch.rmy.android.http_shortcuts.components.OrderedOptionsSlider
+import ch.rmy.android.http_shortcuts.components.SelectionField
 import ch.rmy.android.http_shortcuts.components.SettingsButton
+import ch.rmy.android.http_shortcuts.components.SettingsGroup
 import ch.rmy.android.http_shortcuts.components.ShortcutIcon
 import ch.rmy.android.http_shortcuts.components.Spacing
 import ch.rmy.android.http_shortcuts.components.VerticalSpacer
-import ch.rmy.android.http_shortcuts.icons.ShortcutIcon as ShortcutIconModel
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
+import ch.rmy.android.http_shortcuts.widget.WidgetConstants
 
-private val ICON_SCALE_OPTIONS = arrayOf(0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f)
+private val ICON_SCALE_OPTIONS = arrayOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
+private val TITLE_SIZE_OPTIONS = WidgetConstants.TITLE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
 
 @Composable
 fun ShortcutWidgetSettingsContent(
-    showLabel: Boolean,
-    showIcon: Boolean,
-    labelColor: Color,
-    labelColorText: String,
-    iconScale: Float,
-    shortcutName: String,
-    shortcutIcon: ShortcutIconModel,
+    viewState: ShortcutWidgetSettingsViewState,
     onShowLabelChanged: (Boolean) -> Unit,
     onShowIconChanged: (Boolean) -> Unit,
     onLabelColorButtonClicked: () -> Unit,
     onIconScaleChanged: (Float) -> Unit,
+    onBackgroundSelected: (WidgetBackgroundType?) -> Unit,
+    onBackgroundImagePicked: (Uri) -> Unit,
+    onTitleSizeChanged: (Int) -> Unit,
+    onTitleColorButtonClicked: () -> Unit,
+    onTitleSourceChanged: (WidgetTextSource) -> Unit,
+    onTitleTextChanged: (String) -> Unit,
+    onSubtitleSourceChanged: (WidgetTextSource) -> Unit,
+    onSubtitleTextChanged: (String) -> Unit,
+    onPaddingChanged: (PaddingType) -> Unit,
 ) {
+    val pickImage = rememberLauncherForActivityResult(FilePickerUtil.PickFile) { uri ->
+        uri?.let(onBackgroundImagePicked)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Spacing.SMALL)
-                .sizeIn(minHeight = 120.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            WidgetPreview(
-                showLabel = showLabel,
-                showIcon = showIcon,
-                labelColor = labelColor,
-                iconScale = iconScale,
-                shortcutName = shortcutName,
-                shortcutIcon = shortcutIcon,
+        WidgetPreview(viewState)
+
+        HorizontalDivider()
+
+        SettingsGroup(title = stringResource(R.string.label_widget_section_appearance)) {
+            BackgroundSelector(
+                background = viewState.background,
+                onNoneSelected = { onBackgroundSelected(null) },
+                onColorSelected = { color -> onBackgroundSelected(WidgetBackgroundType.Color(color)) },
+                onPickImage = { pickImage.launch("image/*") },
+            )
+
+            HorizontalDivider()
+
+            PaddingSelector(
+                padding = viewState.padding,
+                onPaddingChanged = onPaddingChanged,
             )
         }
 
         HorizontalDivider()
 
-        Checkbox(
-            checked = showIcon,
-            enabled = showLabel,
-            label = stringResource(R.string.label_show_widget_icon),
-            onCheckedChange = onShowIconChanged,
-        )
+        SettingsGroup(title = stringResource(R.string.label_widget_section_icon)) {
+            Checkbox(
+                checked = viewState.showIcon,
+                label = stringResource(R.string.label_show_widget_icon),
+                onCheckedChange = onShowIconChanged,
+            )
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Spacing.SMALL),
-            modifier = Modifier.padding(Spacing.MEDIUM),
-        ) {
+            if (viewState.showIcon) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(Spacing.SMALL),
+                    modifier = Modifier.padding(Spacing.MEDIUM),
+                ) {
+                    Text(text = stringResource(R.string.label_widget_icon_size))
+                    OrderedOptionsSlider(
+                        modifier = Modifier.fillMaxWidth(),
+                        options = ICON_SCALE_OPTIONS,
+                        value = viewState.iconScale,
+                        onValueChange = onIconScaleChanged,
+                    )
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        SettingsGroup(title = stringResource(R.string.label_widget_section_title)) {
+            TextSourceSelector(
+                title = stringResource(R.string.label_widget_title_source),
+                source = viewState.titleSource,
+                onSourceChanged = onTitleSourceChanged,
+            )
+
+            if (viewState.titleSource == WidgetTextSource.CUSTOM) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Spacing.MEDIUM, vertical = Spacing.SMALL),
+                    value = viewState.titleText,
+                    onValueChange = onTitleTextChanged,
+                    label = { Text(stringResource(R.string.label_widget_custom_title)) },
+                    singleLine = true,
+                )
+            }
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(Spacing.SMALL),
+                modifier = Modifier.padding(horizontal = Spacing.MEDIUM),
+            ) {
+                Text(text = stringResource(R.string.label_widget_title_size))
+                OrderedOptionsSlider(
+                    modifier = Modifier.fillMaxWidth(),
+                    options = TITLE_SIZE_OPTIONS.map { it.toFloat() }.toTypedArray(),
+                    value = viewState.titleSize.toFloat(),
+                    onValueChange = { onTitleSizeChanged(it.toInt()) },
+                )
+            }
+
+            SettingsButton(
+                title = stringResource(R.string.label_widget_title_color),
+                subtitle = viewState.titleColorFormatted,
+                onClick = onTitleColorButtonClicked,
+            )
+        }
+
+        HorizontalDivider()
+
+        SettingsGroup(title = stringResource(R.string.label_widget_section_subtitle)) {
+            TextSourceSelector(
+                title = stringResource(R.string.label_widget_subtitle_source),
+                source = viewState.subtitleSource,
+                onSourceChanged = onSubtitleSourceChanged,
+                shortcutName = viewState.shortcutName,
+                shortcutDescription = viewState.shortcutDescription,
+            )
+
+            if (viewState.subtitleSource == WidgetTextSource.CUSTOM) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Spacing.MEDIUM, vertical = Spacing.SMALL),
+                    value = viewState.subtitleText,
+                    onValueChange = onSubtitleTextChanged,
+                    label = { Text(stringResource(R.string.label_widget_custom_subtitle)) },
+                    singleLine = true,
+                )
+            }
+
             Text(
-                text = stringResource(R.string.label_widget_icon_size),
+                text = stringResource(R.string.label_widget_subtitle_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = Spacing.MEDIUM, vertical = Spacing.SMALL),
             )
-            OrderedOptionsSlider(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                options = ICON_SCALE_OPTIONS,
-                enabled = showIcon,
-                value = iconScale,
-                onValueChange = {
-                    onIconScaleChanged(it)
-                },
-            )
-
-            VerticalSpacer(Spacing.TINY)
         }
 
         HorizontalDivider()
 
-        Checkbox(
-            checked = showLabel,
-            enabled = showIcon,
-            label = stringResource(R.string.label_show_widget_label),
-            onCheckedChange = onShowLabelChanged,
-        )
+        SettingsGroup(title = stringResource(R.string.label_widget_section_legacy)) {
+            Checkbox(
+                checked = viewState.showLabel,
+                label = stringResource(R.string.label_show_widget_label),
+                subtitle = stringResource(R.string.label_show_widget_label_subtitle),
+                onCheckedChange = onShowLabelChanged,
+            )
 
-        SettingsButton(
-            enabled = showLabel,
-            title = stringResource(R.string.label_widget_label_color),
-            subtitle = labelColorText,
-            onClick = onLabelColorButtonClicked,
-        )
+            if (viewState.showLabel) {
+                SettingsButton(
+                    title = stringResource(R.string.label_widget_label_color),
+                    subtitle = viewState.labelColorFormatted,
+                    onClick = onLabelColorButtonClicked,
+                )
+            }
+        }
 
-        HorizontalDivider()
+        VerticalSpacer(Spacing.MEDIUM)
     }
 }
 
 @Composable
-private fun WidgetPreview(
-    showLabel: Boolean,
-    showIcon: Boolean,
-    labelColor: Color,
-    iconScale: Float = 1f,
-    shortcutName: String,
-    shortcutIcon: ShortcutIconModel,
+private fun WidgetPreview(viewState: ShortcutWidgetSettingsViewState) {
+    val titleText = when (viewState.titleSource) {
+        WidgetTextSource.SHORTCUT_NAME -> viewState.shortcutName
+        WidgetTextSource.CUSTOM -> viewState.titleText.ifEmpty { "—" }
+    }
+    val subtitleText = when (viewState.subtitleSource) {
+        WidgetTextSource.SHORTCUT_NAME -> viewState.shortcutName
+        WidgetTextSource.SHORTCUT_DESCRIPTION -> viewState.shortcutDescription
+        WidgetTextSource.CUSTOM -> viewState.subtitleText
+    }
+
+    val backgroundColor = when (val bg = viewState.background) {
+        is WidgetBackgroundType.Color -> Color(android.graphics.Color.parseColor(bg.color))
+        else -> colorResource(R.color.widget_preview_background)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Spacing.SMALL)
+            .sizeIn(minHeight = 140.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            modifier = Modifier
+                .background(backgroundColor, RoundedCornerShape(28.dp))
+                .sizeIn(minWidth = 180.dp, minHeight = 140.dp)
+                .padding(viewState.padding.paddingDp.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            if (viewState.showIcon) {
+                ShortcutIcon(
+                    viewState.shortcutIcon,
+                    size = (44.dp * viewState.iconScale).coerceAtLeast(24.dp),
+                )
+            } else {
+                Spacer(modifier = Modifier.size(1.dp))
+            }
+
+            Column {
+                if (viewState.showLabel) {
+                    Text(
+                        text = titleText,
+                        color = Color(viewState.titleColor),
+                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { viewState.titleSize.toSp() },
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                if (subtitleText.isNotEmpty()) {
+                    Text(
+                        text = subtitleText,
+                        color = Color(WidgetConstants.DEFAULT_SUBTITLE_COLOR),
+                        fontSize = with(androidx.compose.ui.platform.LocalDensity.current) {
+                            (viewState.titleSize - WidgetConstants.SUBTITLE_SIZE_SMALL_OFFSET).toInt().toSp()
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BackgroundSelector(
+    background: WidgetBackgroundType?,
+    onNoneSelected: () -> Unit,
+    onColorSelected: (String) -> Unit,
+    onPickImage: () -> Unit,
+) {
+    val isColor = background is WidgetBackgroundType.Color
+    val isImage = background is WidgetBackgroundType.Image
+    var colorDialogVisible by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Spacing.MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.SMALL),
+    ) {
+        BackgroundOption(
+            label = stringResource(R.string.label_widget_background_none),
+            selected = background == null,
+            onClick = onNoneSelected,
+        )
+        BackgroundOption(
+            label = stringResource(R.string.label_widget_background_color),
+            selected = isColor,
+            color = if (isColor) Color(android.graphics.Color.parseColor((background as WidgetBackgroundType.Color).color)) else null,
+            onClick = { colorDialogVisible = true },
+        )
+        BackgroundOption(
+            label = stringResource(R.string.label_widget_background_image),
+            selected = isImage,
+            onClick = onPickImage,
+        )
+    }
+
+    if (colorDialogVisible) {
+        ColorPickerDialog(
+            withAlpha = true,
+            onColorSelected = { color ->
+                colorDialogVisible = false
+                onColorSelected(String.format("#%08x", color))
+            },
+            onDismissRequested = { colorDialogVisible = false },
+        )
+    }
+}
+
+@Composable
+private fun BackgroundOption(
+    label: String,
+    selected: Boolean,
+    color: Color? = null,
+    onClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .background(colorResource(R.color.widget_preview_background), RoundedCornerShape(Spacing.TINY))
-            .sizeIn(minWidth = 100.dp, minHeight = 120.dp)
-            .padding(Spacing.SMALL),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Spacing.SMALL, Alignment.CenterVertically),
+        modifier = Modifier
+            .clickableWithRipple(onClick)
+            .padding(Spacing.SMALL),
     ) {
-        if (showIcon) {
-            ShortcutIcon(
-                shortcutIcon,
-                size = 44.dp * iconScale,
-            )
-            VerticalSpacer(22.dp * (1f - iconScale))
-        }
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    color ?: Color.Gray.copy(alpha = 0.3f),
+                    RoundedCornerShape(8.dp),
+                )
+                .borderIfSelected(selected),
+        )
+        VerticalSpacer(Spacing.TINY)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 1,
+        )
+    }
+}
 
-        if (showLabel) {
-            Text(
-                shortcutName,
-                color = labelColor,
-                minLines = if (showIcon) 2 else 1,
-                maxLines = if (showIcon) 2 else 4,
-                textAlign = TextAlign.Center,
-                overflow = TextOverflow.Ellipsis,
+@Composable
+private fun PaddingSelector(
+    padding: PaddingType,
+    onPaddingChanged: (PaddingType) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Spacing.MEDIUM, vertical = Spacing.SMALL),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.SMALL),
+    ) {
+        PaddingType.entries.forEach { type ->
+            PaddingOption(
+                label = stringResource(type.labelRes),
+                selected = padding == type,
+                onClick = { onPaddingChanged(type) },
             )
         }
     }
 }
 
-@Preview
 @Composable
-private fun WidgetPreview_Preview1() {
-    WidgetPreview(
-        showLabel = true,
-        showIcon = true,
-        labelColor = Color.White,
-        shortcutName = "Shortcut",
-        shortcutIcon = ShortcutIconModel.NoIcon,
+private fun PaddingOption(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .weight(1f)
+            .clickableWithRipple(onClick)
+            .padding(Spacing.SMALL),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+@Composable
+private fun TextSourceSelector(
+    title: String,
+    source: WidgetTextSource,
+    onSourceChanged: (WidgetTextSource) -> Unit,
+    shortcutName: String? = null,
+    shortcutDescription: String? = null,
+) {
+    val items = buildList {
+        add(WidgetTextSource.SHORTCUT_NAME to stringResource(R.string.label_widget_source_shortcut_name, shortcutName ?: ""))
+        if (shortcutDescription != null) {
+            add(WidgetTextSource.SHORTCUT_DESCRIPTION to stringResource(R.string.label_widget_source_shortcut_description, shortcutDescription.ifEmpty { "—" }))
+        }
+        add(WidgetTextSource.CUSTOM to stringResource(R.string.label_widget_source_custom))
+    }
+
+    SelectionField(
+        title = title,
+        selectedKey = source,
+        items = items,
+        onItemSelected = onSourceChanged,
     )
 }
 
-@Preview
-@Composable
-private fun WidgetPreview_Preview2() {
-    WidgetPreview(
-        showLabel = true,
-        showIcon = true,
-        iconScale = 0.5f,
-        labelColor = Color.Red,
-        shortcutName = "Shortcut with a rather long text",
-        shortcutIcon = ShortcutIconModel.NoIcon,
+private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier =
+    this.then(
+        Modifier.clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = ripple(),
+            onClick = onClick,
+        )
     )
-}
 
-@Preview
-@Composable
-private fun WidgetPreview_Preview3() {
-    WidgetPreview(
-        showLabel = false,
-        showIcon = true,
-        labelColor = Color.White,
-        shortcutName = "Shortcut",
-        shortcutIcon = ShortcutIconModel.NoIcon,
-    )
-}
-
-@Preview
-@Composable
-private fun WidgetPreview_Preview4() {
-    WidgetPreview(
-        showLabel = true,
-        showIcon = false,
-        labelColor = Color.White,
-        shortcutName = "Shortcut",
-        shortcutIcon = ShortcutIconModel.NoIcon,
-    )
-}
+private fun Modifier.borderIfSelected(selected: Boolean): Modifier =
+    if (selected) {
+        this.then(
+            Modifier.border(
+                width = 3.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(8.dp),
+            )
+        )
+    } else {
+        this
+    }
+    

@@ -4,11 +4,11 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.graphics.Color
+import android.util.TypedValue
+import android.util.TypedValue.COMPLEX_UNIT_SP
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.RemoteViews
-import androidx.core.util.TypedValueCompat
 import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.activities.ExecuteActivity
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
@@ -16,7 +16,9 @@ import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableRepository
 import ch.rmy.android.http_shortcuts.data.domains.variables.VariableKeyOrId
 import ch.rmy.android.http_shortcuts.data.domains.widgets.VariableWidgetsRepository
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.ShortcutTriggerType
+import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.models.GlobalVariable
 import ch.rmy.android.http_shortcuts.data.models.VariableWidget
@@ -36,8 +38,31 @@ constructor(
         title: String,
         background: WidgetBackgroundType?,
         shortcutId: ShortcutId?,
+        titleSize: Float? = null,
+        titleColor: String? = null,
+        valueSize: Float? = null,
+        valueColor: String? = null,
+        unit: String? = null,
+        subtitleText: String? = null,
+        subtitlePosition: SubtitlePosition? = null,
+        padding: PaddingType? = null,
     ) {
-        variableWidgetsRepository.createOrUpdateVariableWidget(widgetId, globalVariableId, fontSize, title, background, shortcutId)
+        variableWidgetsRepository.createOrUpdateVariableWidget(
+            widgetId = widgetId,
+            variableId = globalVariableId,
+            fontSize = fontSize,
+            title = title,
+            background = background,
+            shortcutId = shortcutId,
+            titleSize = titleSize,
+            titleColor = titleColor,
+            valueSize = valueSize,
+            valueColor = valueColor,
+            unit = unit,
+            subtitleText = subtitleText,
+            subtitlePosition = subtitlePosition,
+            padding = padding,
+        )
     }
 
     suspend fun updateAllWidgets() {
@@ -83,60 +108,81 @@ constructor(
                         )
                     }
             } else {
-                // There's no way to remove a click action, so instead we just set a dummy intent that won't be handled by anything
                 val intent = Intent("http-shortcuts-dummy-action")
                 PendingIntent.getBroadcast(context, variableWidget.widgetId, intent, PendingIntent.FLAG_IMMUTABLE)
             }
 
             views.setOnClickPendingIntent(R.id.widget_base, pendingIntent)
 
-            val background = variableWidget.background
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && background is WidgetBackgroundType.Color) {
-                views.setColorIntSafely(
-                    clazz = FrameLayout::class.java,
-                    id = R.id.widget_container,
-                    methodName = "setBackgroundColor",
-                    value = background.color,
-                )
-            } else {
-                views.setIntSafely(
-                    clazz = FrameLayout::class.java,
-                    id = R.id.widget_container,
-                    methodName = "setBackgroundResource",
-                    value = R.drawable.variable_widget_background,
-                )
-            }
+            WidgetBackgroundRenderer.applyBackground(
+                context = context,
+                views = views,
+                containerId = R.id.widget_container,
+                backgroundImageViewId = R.id.widget_background,
+                background = variableWidget.background,
+            )
 
-            val text = globalVariable?.value?.ifEmpty { "-" } ?: "???"
-            val fontSize = variableWidget.fontSize.toFloat()
+            val paddingDp = (variableWidget.padding ?: PaddingType.DEFAULT).paddingDp
+            val paddingPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingDp.toFloat(), context.resources.displayMetrics).toInt()
+            views.setViewPadding(R.id.widget_container, paddingPx, paddingPx, paddingPx, paddingPx)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val items = RemoteViews.RemoteCollectionItems.Builder()
-                    .setHasStableIds(true)
-                    .setViewTypeCount(1)
-                    .addItem(
-                        0,
-                        RemoteViews(context.packageName, R.layout.variable_widget_content).also { innerViews ->
-                            configureTextView(innerViews, fontSize, text)
-                            innerViews.setOnClickFillInIntent(R.id.widget_content_container, Intent())
-                        },
-                    )
-                    .build()
-                views.setRemoteAdapter(R.id.widget_list, items)
-                views.setPendingIntentTemplate(R.id.widget_list, pendingIntent)
-            } else {
-                configureTextView(views, fontSize, text)
-            }
-
-            if (variableWidget.title.isNotEmpty()) {
+            val title = variableWidget.title
+            if (title.isNotEmpty()) {
                 views.setViewVisibility(R.id.widget_title, View.VISIBLE)
-                views.setTextViewText(R.id.widget_title, variableWidget.title)
-
-                val titleFontSize = fontSize * 0.75f
-                views.setTextSize(R.id.widget_title, titleFontSize)
-                views.setLineHeight(R.id.widget_title, TypedValueCompat.dpToPx(titleFontSize, context.resources.displayMetrics).toInt())
+                views.setTextViewText(R.id.widget_title, title)
+                val titleSize = variableWidget.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE
+                views.setTextViewTextSize(R.id.widget_title, COMPLEX_UNIT_SP, titleSize)
+                val titleColor = variableWidget.titleColor?.let { parseColorSafe(it) }
+                    ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR
+                views.setTextColor(R.id.widget_title, titleColor)
             } else {
                 views.setViewVisibility(R.id.widget_title, View.GONE)
+            }
+
+            val value = globalVariable?.value?.ifEmpty { "-" } ?: "???"
+            views.setTextViewText(R.id.widget_value, value)
+            val valueSize = variableWidget.valueSize ?: WidgetConstants.DEFAULT_VALUE_SIZE
+            views.setTextViewTextSize(R.id.widget_value, COMPLEX_UNIT_SP, valueSize)
+            val valueColor = variableWidget.valueColor?.let { parseColorSafe(it) }
+                ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR
+            views.setTextColor(R.id.widget_value, valueColor)
+
+            val unit = variableWidget.unit
+            if (!unit.isNullOrEmpty()) {
+                views.setViewVisibility(R.id.widget_unit, View.VISIBLE)
+                views.setTextViewText(R.id.widget_unit, unit)
+                val unitSize = valueSize - WidgetConstants.SUBTITLE_SIZE_OFFSET
+                views.setTextViewTextSize(R.id.widget_unit, COMPLEX_UNIT_SP, maxOf(unitSize, 8f))
+            } else {
+                views.setViewVisibility(R.id.widget_unit, View.GONE)
+            }
+
+            val subtitleText = variableWidget.subtitleText
+            val widgetWidth = getWidgetWidth(variableWidget.widgetId)
+            val showSubtitle = !subtitleText.isNullOrEmpty() && widgetWidth > 160
+            val subtitlePosition = variableWidget.subtitlePosition ?: SubtitlePosition.DEFAULT
+
+            if (showSubtitle) {
+                val subtitleSize = valueSize - WidgetConstants.SUBTITLE_SIZE_SMALL_OFFSET
+                when (subtitlePosition) {
+                    SubtitlePosition.TOP_END -> {
+                        views.setViewVisibility(R.id.widget_subtitle_top, View.VISIBLE)
+                        views.setViewVisibility(R.id.widget_subtitle_bottom, View.GONE)
+                        views.setTextViewText(R.id.widget_subtitle_top, subtitleText!!)
+                        views.setTextViewTextSize(R.id.widget_subtitle_top, COMPLEX_UNIT_SP, maxOf(subtitleSize, 8f))
+                        views.setTextColor(R.id.widget_subtitle_top, WidgetConstants.DEFAULT_SUBTITLE_COLOR)
+                    }
+                    SubtitlePosition.BOTTOM_END -> {
+                        views.setViewVisibility(R.id.widget_subtitle_top, View.GONE)
+                        views.setViewVisibility(R.id.widget_subtitle_bottom, View.VISIBLE)
+                        views.setTextViewText(R.id.widget_subtitle_bottom, subtitleText!!)
+                        views.setTextViewTextSize(R.id.widget_subtitle_bottom, COMPLEX_UNIT_SP, maxOf(subtitleSize, 8f))
+                        views.setTextColor(R.id.widget_subtitle_bottom, WidgetConstants.DEFAULT_SUBTITLE_COLOR)
+                    }
+                }
+            } else {
+                views.setViewVisibility(R.id.widget_subtitle_top, View.GONE)
+                views.setViewVisibility(R.id.widget_subtitle_bottom, View.GONE)
             }
 
             AppWidgetManager.getInstance(context)
@@ -144,10 +190,19 @@ constructor(
         }
     }
 
-    private fun configureTextView(remoteViews: RemoteViews, fontSize: Float, text: String) {
-        remoteViews.setTextViewText(R.id.widget_text, text)
-        remoteViews.setTextSize(R.id.widget_text, fontSize)
-        remoteViews.setLineHeight(R.id.widget_text, TypedValueCompat.dpToPx(fontSize, context.resources.displayMetrics).toInt())
+    private fun getWidgetWidth(widgetId: Int): Int {
+        return try {
+            val options = AppWidgetManager.getInstance(context).getAppWidgetOptions(widgetId)
+            options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) ?: 0
+        } catch (_: Exception) {
+            0
+        }
+    }
+
+    private fun parseColorSafe(colorString: String): Int? = try {
+        Color.parseColor(colorString)
+    } catch (_: Exception) {
+        null
     }
 
     suspend fun deleteWidgets(widgetIds: List<Int>) {

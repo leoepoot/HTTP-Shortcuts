@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 
 @Entity(tableName = "widget")
 data class ShortcutWidget(
@@ -20,4 +23,20 @@ data class ShortcutWidget(
     val showIcon: Boolean,
     @ColumnInfo(name = "icon_scale")
     val iconScale: Float,
+    @ColumnInfo(name = "background")
+    val background: WidgetBackgroundType? = null,
+    @ColumnInfo(name = "title_size")
+    val titleSize: Float? = null,
+    @ColumnInfo(name = "title_color")
+    val titleColor: String? = null,
+    @ColumnInfo(name = "title_source")
+    val titleSource: WidgetTextSource? = null,
+    @ColumnInfo(name = "title_text")
+    val titleText: String? = null,
+    @ColumnInfo(name = "subtitle_source")
+    val subtitleSource: WidgetTextSource? = null,
+    @ColumnInfo(name = "subtitle_text")
+    val subtitleText: String? = null,
+    @ColumnInfo(name = "padding")
+    val padding: PaddingType? = null,
 )

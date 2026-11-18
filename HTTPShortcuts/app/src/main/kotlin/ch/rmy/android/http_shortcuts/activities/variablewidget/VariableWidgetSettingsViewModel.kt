@@ -1,6 +1,8 @@
 package ch.rmy.android.http_shortcuts.activities.variablewidget
 
 import android.app.Application
+import android.graphics.Color
+import android.net.Uri
 import ch.rmy.android.framework.viewmodel.BaseViewModel
 import ch.rmy.android.http_shortcuts.activities.variablewidget.models.SelectableShortcut
 import ch.rmy.android.http_shortcuts.activities.variablewidget.models.SelectableVariable
@@ -9,10 +11,13 @@ import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutRepository
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableRepository
 import ch.rmy.android.http_shortcuts.data.domains.widgets.VariableWidgetsRepository
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
+import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.VariableType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.models.GlobalVariable
 import ch.rmy.android.http_shortcuts.navigation.NavigationDestination
+import ch.rmy.android.http_shortcuts.widget.WidgetConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -55,6 +60,14 @@ constructor(
             background = widget?.background,
             shortcutId = widget?.shortcutId,
             selectableShortcuts = selectableShortcuts,
+            titleSize = widget?.titleSize?.toInt() ?: WidgetConstants.DEFAULT_TITLE_SIZE.toInt(),
+            titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR,
+            valueSize = widget?.valueSize?.toInt() ?: WidgetConstants.DEFAULT_VALUE_SIZE.toInt(),
+            valueColor = widget?.valueColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR,
+            unit = widget?.unit ?: "",
+            subtitleText = widget?.subtitleText ?: "",
+            subtitlePosition = widget?.subtitlePosition ?: SubtitlePosition.DEFAULT,
+            padding = widget?.padding ?: PaddingType.DEFAULT,
         )
     }
 
@@ -75,33 +88,97 @@ constructor(
 
     fun onFontSizeChanged(fontSize: Int) = runAction {
         updateViewState {
-            copy(
-                fontSize = fontSize,
-            )
+            copy(fontSize = fontSize)
         }
     }
 
     fun onTitleChanged(title: String) = runAction {
         updateViewState {
-            copy(
-                title = title,
-            )
+            copy(title = title)
         }
     }
 
     fun onBackgroundChanged(background: WidgetBackgroundType?) = runAction {
         updateViewState {
-            copy(
-                background = background,
-            )
+            copy(background = background)
+        }
+    }
+
+    fun onBackgroundImagePicked(uri: Uri) = runAction {
+        updateViewState {
+            copy(background = WidgetBackgroundType.Image(uri.toString()))
         }
     }
 
     fun onShortcutSelected(shortcutId: ShortcutId?) = runAction {
         updateViewState {
-            copy(
-                shortcutId = shortcutId,
-            )
+            copy(shortcutId = shortcutId)
+        }
+    }
+
+    fun onTitleSizeChanged(size: Int) = runAction {
+        updateViewState {
+            copy(titleSize = size)
+        }
+    }
+
+    fun onTitleColorButtonClicked() = runAction {
+        updateViewState {
+            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.TITLE)
+        }
+    }
+
+    fun onTitleColorSelected(color: Int) = runAction {
+        updateViewState {
+            copy(colorDialogVisible = false, titleColor = color, colorDialogTarget = ColorTarget.NONE)
+        }
+    }
+
+    fun onValueSizeChanged(size: Int) = runAction {
+        updateViewState {
+            copy(valueSize = size)
+        }
+    }
+
+    fun onValueColorButtonClicked() = runAction {
+        updateViewState {
+            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.VALUE)
+        }
+    }
+
+    fun onValueColorSelected(color: Int) = runAction {
+        updateViewState {
+            copy(colorDialogVisible = false, valueColor = color, colorDialogTarget = ColorTarget.NONE)
+        }
+    }
+
+    fun onUnitChanged(unit: String) = runAction {
+        updateViewState {
+            copy(unit = unit)
+        }
+    }
+
+    fun onSubtitleTextChanged(text: String) = runAction {
+        updateViewState {
+            copy(subtitleText = text)
+        }
+    }
+
+    fun onSubtitlePositionChanged(position: SubtitlePosition) = runAction {
+        updateViewState {
+            copy(subtitlePosition = position)
+        }
+    }
+
+    fun onPaddingChanged(padding: PaddingType) = runAction {
+        updateViewState {
+            copy(padding = padding)
+        }
+    }
+
+    fun onDialogDismissalRequested() = runAction {
+        updateViewState {
+            copy(colorDialogVisible = false, colorDialogTarget = ColorTarget.NONE)
         }
     }
 
@@ -114,6 +191,14 @@ constructor(
                 title = viewState.title,
                 background = viewState.background,
                 shortcutId = viewState.shortcutId,
+                titleSize = viewState.titleSize,
+                titleColor = viewState.titleColorFormatted,
+                valueSize = viewState.valueSize,
+                valueColor = viewState.valueColorFormatted,
+                unit = viewState.unit,
+                subtitleText = viewState.subtitleText,
+                subtitlePosition = viewState.subtitlePosition,
+                padding = viewState.padding,
             ),
         )
     }

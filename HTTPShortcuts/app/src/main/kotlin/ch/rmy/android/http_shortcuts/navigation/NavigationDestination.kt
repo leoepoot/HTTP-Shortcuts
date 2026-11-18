@@ -9,9 +9,12 @@ import ch.rmy.android.http_shortcuts.data.domains.categories.CategoryId
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
 import ch.rmy.android.http_shortcuts.data.domains.working_directories.WorkingDirectoryId
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.ShortcutExecutionType
+import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.VariableType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 import ch.rmy.android.http_shortcuts.icons.ShortcutIcon
 import java.io.Serializable
 
@@ -480,6 +483,7 @@ sealed interface NavigationDestination {
         private const val ARG_SHORTCUT_ID = "shortcut_id"
         private const val ARG_SHORTCUT_NAME = "shortcut_name"
         private const val ARG_SHORTCUT_ICON = "shortcut_icon"
+        private const val ARG_SHORTCUT_DESCRIPTION = "shortcut_description"
         private const val ARG_WIDGET_ID = "widget_id"
 
         override val path = "shortcutWidget"
@@ -489,13 +493,15 @@ sealed interface NavigationDestination {
                 stringArg(ARG_SHORTCUT_ID),
                 stringArg(ARG_SHORTCUT_NAME),
                 stringArg(ARG_SHORTCUT_ICON),
+                stringArg(ARG_SHORTCUT_DESCRIPTION),
                 optionalIntArg(ARG_WIDGET_ID),
             )
 
-        fun buildRequest(shortcutId: ShortcutId, shortcutName: String, shortcutIcon: ShortcutIcon, widgetId: Int?) = buildNavigationRequest {
+        fun buildRequest(shortcutId: ShortcutId, shortcutName: String, shortcutIcon: ShortcutIcon, shortcutDescription: String, widgetId: Int?) = buildNavigationRequest {
             pathPart(shortcutId)
             pathPart(shortcutName)
             pathPart(shortcutIcon)
+            pathPart(shortcutDescription)
             parameter(ARG_WIDGET_ID, widgetId)
         }
 
@@ -508,6 +514,9 @@ sealed interface NavigationDestination {
         fun extractShortcutIcon(bundle: Bundle): ShortcutIcon =
             ShortcutIcon.fromName(bundle.getEncodedString(ARG_SHORTCUT_ICON))
 
+        fun extractShortcutDescription(bundle: Bundle): String =
+            bundle.getEncodedString(ARG_SHORTCUT_DESCRIPTION)!!
+
         fun extractWidgetId(bundle: Bundle): Int? =
             bundle.getInt(ARG_WIDGET_ID, -1).takeUnless { it == -1 }
 
@@ -517,6 +526,14 @@ sealed interface NavigationDestination {
             val showLabel: Boolean,
             val showIcon: Boolean,
             val iconScale: Float,
+            val background: WidgetBackgroundType?,
+            val titleSize: Int?,
+            val titleColor: String?,
+            val titleSource: WidgetTextSource?,
+            val titleText: String,
+            val subtitleSource: WidgetTextSource?,
+            val subtitleText: String,
+            val padding: PaddingType?,
         ) : Serializable
 
         const val RESULT_SHORTCUT_WIDGET_SETTINGS_CANCELLED = "shortcut-widget-settings-cancelled"
@@ -545,6 +562,14 @@ sealed interface NavigationDestination {
             val title: String,
             val background: WidgetBackgroundType?,
             val shortcutId: ShortcutId?,
+            val titleSize: Int?,
+            val titleColor: String?,
+            val valueSize: Int?,
+            val valueColor: String?,
+            val unit: String,
+            val subtitleText: String,
+            val subtitlePosition: SubtitlePosition?,
+            val padding: PaddingType?,
         ) : Serializable
 
         const val RESULT_VARIABLE_WIDGET_SETTINGS_CANCELLED = "variable-widget-settings-cancelled"

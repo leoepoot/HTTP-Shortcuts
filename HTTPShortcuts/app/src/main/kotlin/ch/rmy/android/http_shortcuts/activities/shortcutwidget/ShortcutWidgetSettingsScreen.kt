@@ -1,5 +1,6 @@
 package ch.rmy.android.http_shortcuts.activities.shortcutwidget
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -12,6 +13,7 @@ import ch.rmy.android.http_shortcuts.components.SimpleScaffold
 import ch.rmy.android.http_shortcuts.components.ToolbarIcon
 import ch.rmy.android.http_shortcuts.components.bindViewModel
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
+import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.icons.ShortcutIcon
 
 @Composable
@@ -19,6 +21,7 @@ fun ShortcutWidgetSettingsScreen(
     shortcutId: ShortcutId,
     shortcutName: String,
     shortcutIcon: ShortcutIcon,
+    shortcutDescription: String,
     widgetId: Int?,
 ) {
     val (viewModel, state) = bindViewModel<
@@ -26,7 +29,7 @@ fun ShortcutWidgetSettingsScreen(
         ShortcutWidgetSettingsViewState,
         ShortcutWidgetSettingsViewModel,
         >(
-        ShortcutWidgetSettingsViewModel.InitData(shortcutId, shortcutName, shortcutIcon, widgetId),
+        ShortcutWidgetSettingsViewModel.InitData(shortcutId, shortcutName, shortcutIcon, shortcutDescription, widgetId),
     )
 
     BackHandler(state != null) {
@@ -46,24 +49,33 @@ fun ShortcutWidgetSettingsScreen(
         },
     ) { viewState ->
         ShortcutWidgetSettingsContent(
-            showLabel = viewState.showLabel,
-            showIcon = viewState.showIcon,
-            labelColor = Color(viewState.labelColor),
-            labelColorText = viewState.labelColorFormatted,
-            iconScale = viewState.iconScale,
-            shortcutName = viewState.shortcutName,
-            shortcutIcon = viewState.shortcutIcon,
+            viewState = viewState,
             onShowLabelChanged = viewModel::onShowLabelChanged,
             onShowIconChanged = viewModel::onShowIconChanged,
             onLabelColorButtonClicked = viewModel::onLabelColorButtonClicked,
             onIconScaleChanged = viewModel::onIconScaleChanged,
+            onBackgroundSelected = viewModel::onBackgroundSelected,
+            onBackgroundImagePicked = viewModel::onBackgroundImagePicked,
+            onTitleSizeChanged = viewModel::onTitleSizeChanged,
+            onTitleColorButtonClicked = viewModel::onTitleColorButtonClicked,
+            onTitleSourceChanged = viewModel::onTitleSourceChanged,
+            onTitleTextChanged = viewModel::onTitleTextChanged,
+            onSubtitleSourceChanged = viewModel::onSubtitleSourceChanged,
+            onSubtitleTextChanged = viewModel::onSubtitleTextChanged,
+            onPaddingChanged = viewModel::onPaddingChanged,
         )
     }
 
     if (state?.colorDialogVisible == true) {
         ColorPickerDialog(
-            initialColor = state.labelColor,
-            onColorSelected = viewModel::onLabelColorSelected,
+            initialColor = if (state.colorDialogTarget == ColorTarget.TITLE) state.titleColor else state.labelColor,
+            onColorSelected = { color ->
+                when (state.colorDialogTarget) {
+                    ColorTarget.LABEL -> viewModel.onLabelColorSelected(color)
+                    ColorTarget.TITLE -> viewModel.onTitleColorSelected(color)
+                    else -> Unit
+                }
+            },
             onDismissRequested = viewModel::onDialogDismissalRequested,
         )
     }

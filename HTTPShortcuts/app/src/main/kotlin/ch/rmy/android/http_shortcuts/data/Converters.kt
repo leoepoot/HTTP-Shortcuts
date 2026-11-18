@@ -14,6 +14,7 @@ import ch.rmy.android.http_shortcuts.data.enums.HistoryEventType
 import ch.rmy.android.http_shortcuts.data.enums.HttpMethod
 import ch.rmy.android.http_shortcuts.data.enums.IpVersion
 import ch.rmy.android.http_shortcuts.data.enums.NetworkPreference
+import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.ParameterType
 import ch.rmy.android.http_shortcuts.data.enums.ProxyType
 import ch.rmy.android.http_shortcuts.data.enums.RequestBodyType
@@ -23,6 +24,7 @@ import ch.rmy.android.http_shortcuts.data.enums.ResponseSuccessOutput
 import ch.rmy.android.http_shortcuts.data.enums.ResponseUiType
 import ch.rmy.android.http_shortcuts.data.enums.SecurityPolicy
 import ch.rmy.android.http_shortcuts.data.enums.ShortcutAuthenticationType
+import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.ShortcutClickBehavior
 import ch.rmy.android.http_shortcuts.data.enums.ShortcutExecutionType
 import ch.rmy.android.http_shortcuts.data.enums.SyncSchedule
@@ -30,6 +32,7 @@ import ch.rmy.android.http_shortcuts.data.enums.SyncTargetType
 import ch.rmy.android.http_shortcuts.data.enums.SyncType
 import ch.rmy.android.http_shortcuts.data.enums.VariableType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
+import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 import ch.rmy.android.http_shortcuts.icons.ShortcutIcon
 import java.nio.charset.Charset
 import java.time.Instant
@@ -274,6 +277,30 @@ class Converters {
     @TypeConverter
     fun serializeWidgetBackgroundType(widgetBackgroundType: WidgetBackgroundType) =
         widgetBackgroundType.serialize()
+
+    @TypeConverter
+    fun deserializePaddingType(value: String?): PaddingType? =
+        value?.let { PaddingType.parse(it) }
+
+    @TypeConverter
+    fun serializePaddingType(paddingType: PaddingType?): String? =
+        paddingType?.value
+
+    @TypeConverter
+    fun deserializeSubtitlePosition(value: String?): SubtitlePosition? =
+        value?.let { SubtitlePosition.parse(it) }
+
+    @TypeConverter
+    fun serializeSubtitlePosition(subtitlePosition: SubtitlePosition?): String? =
+        subtitlePosition?.value
+
+    @TypeConverter
+    fun deserializeWidgetTextSource(value: String?): WidgetTextSource? =
+        value?.let { WidgetTextSource.parse(it) }
+
+    @TypeConverter
+    fun serializeWidgetTextSource(widgetTextSource: WidgetTextSource?): String? =
+        widgetTextSource?.value
 
     @TypeConverter
     fun deserializeNetworkPreference(value: String?): NetworkPreference? =
