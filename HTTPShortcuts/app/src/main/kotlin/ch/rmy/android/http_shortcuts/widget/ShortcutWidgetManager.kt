@@ -75,6 +75,7 @@ constructor(
             WidgetBackgroundRenderer.applyBackground(
                 context = context,
                 views = views,
+                widgetId = shortcutWidget.widgetId,
                 containerId = R.id.widget_container,
                 backgroundImageViewId = R.id.widget_background,
                 background = shortcutWidget.background,

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -30,7 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +55,8 @@ import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
+import coil3.compose.AsyncImage
+import java.io.File
 
 private val ICON_SCALE_OPTIONS = arrayOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
 private val TITLE_SIZE_OPTIONS = WidgetConstants.TITLE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
@@ -246,14 +252,19 @@ private fun WidgetPreview(viewState: ShortcutWidgetSettingsViewState) {
             .sizeIn(minHeight = 140.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .background(backgroundColor, RoundedCornerShape(28.dp))
                 .sizeIn(minWidth = 180.dp, minHeight = 140.dp)
-                .padding(viewState.padding.paddingDp.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.SpaceBetween,
+                .clip(RoundedCornerShape(28.dp)),
         ) {
+            WidgetPreviewBackground(viewState.background, backgroundColor)
+            Column(
+                modifier = Modifier
+                    .matchParentSize()
+                    .padding(viewState.padding.paddingDp.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
             if (viewState.showIcon) {
                 ShortcutIcon(
                     viewState.shortcutIcon,
@@ -286,6 +297,25 @@ private fun WidgetPreview(viewState: ShortcutWidgetSettingsViewState) {
                     )
                 }
             }
+        }
+        }
+    }
+}
+
+@Composable
+private fun WidgetPreviewBackground(background: WidgetBackgroundType?, fallbackColor: Color) {
+    val context = LocalContext.current
+    when (background) {
+        is WidgetBackgroundType.Image -> {
+            AsyncImage(
+                model = File(context.filesDir, background.fileName),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize(),
+            )
+        }
+        else -> {
+            Box(modifier = Modifier.matchParentSize().background(fallbackColor))
         }
     }
 }

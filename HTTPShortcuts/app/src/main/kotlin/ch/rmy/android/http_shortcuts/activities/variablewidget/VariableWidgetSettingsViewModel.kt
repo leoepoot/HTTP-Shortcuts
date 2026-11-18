@@ -18,6 +18,7 @@ import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.models.GlobalVariable
 import ch.rmy.android.http_shortcuts.navigation.NavigationDestination
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
+import ch.rmy.android.http_shortcuts.widget.WidgetImageUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -99,14 +100,30 @@ constructor(
     }
 
     fun onBackgroundChanged(background: WidgetBackgroundType?) = runAction {
+        cleanupOldImageIfNeeded(viewState.background, background)
         updateViewState {
             copy(background = background)
         }
     }
 
     fun onBackgroundImagePicked(uri: Uri) = runAction {
+        val fileName = WidgetImageUtil.saveImageFromUri(
+            context = getApplication(),
+            imageUri = uri,
+            cornerRadiusDp = WidgetConstants.CORNER_RADIUS_DP,
+        ) ?: skipAction()
+        val newBackground = WidgetBackgroundType.Image(fileName)
+        cleanupOldImageIfNeeded(viewState.background, newBackground)
         updateViewState {
-            copy(background = WidgetBackgroundType.Image(uri.toString()))
+            copy(background = newBackground)
+        }
+    }
+
+    private suspend fun cleanupOldImageIfNeeded(oldBackground: WidgetBackgroundType?, newBackground: WidgetBackgroundType?) {
+        val oldFile = (oldBackground as? WidgetBackgroundType.Image)?.fileName ?: return
+        val newFile = (newBackground as? WidgetBackgroundType.Image)?.fileName
+        if (oldFile != newFile) {
+            WidgetImageUtil.deleteImage(getApplication(), oldFile)
         }
     }
 

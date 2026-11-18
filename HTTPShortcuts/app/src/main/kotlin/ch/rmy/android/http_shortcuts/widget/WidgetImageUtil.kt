@@ -9,6 +9,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import android.net.Uri
+import androidx.annotation.ColorInt
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 import ch.rmy.android.framework.extensions.logException
@@ -93,6 +94,27 @@ object WidgetImageUtil {
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(bitmap, 0f, 0f, paint)
         return output
+    }
+
+    fun getRoundedColorBitmap(
+        context: Context,
+        @ColorInt color: Int,
+        widthPx: Int,
+        heightPx: Int,
+        cornerRadiusPx: Float,
+    ): Bitmap? {
+        if (widthPx <= 0 || heightPx <= 0) return null
+        val cacheKey = "rounded_color_${color}_${widthPx}_${heightPx}_${cornerRadiusPx.toInt()}"
+        bitmapCache.get(cacheKey)?.let { return it }
+        return tryOrLog {
+            val bitmap = createBitmap(widthPx, heightPx)
+            val canvas = Canvas(bitmap)
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { this.color = color }
+            val rect = RectF(0f, 0f, widthPx.toFloat(), heightPx.toFloat())
+            canvas.drawRoundRect(rect, cornerRadiusPx, cornerRadiusPx, paint)
+            bitmapCache.put(cacheKey, bitmap)
+            bitmap
+        }
     }
 
     fun getBackgroundBitmap(context: Context, fileName: String): Bitmap? {

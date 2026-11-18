@@ -117,6 +117,7 @@ constructor(
             WidgetBackgroundRenderer.applyBackground(
                 context = context,
                 views = views,
+                widgetId = variableWidget.widgetId,
                 containerId = R.id.widget_container,
                 backgroundImageViewId = R.id.widget_background,
                 background = variableWidget.background,
