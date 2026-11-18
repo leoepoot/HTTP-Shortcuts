@@ -56,6 +56,7 @@ import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
 import ch.rmy.android.http_shortcuts.icons.EditImageContract
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
+import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import java.io.File
 
@@ -323,6 +324,7 @@ private fun BoxScope.WidgetPreviewBackground(background: WidgetBackgroundType?, 
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize(),
+                imageLoader = remember(context) { ImageLoader(context) },
             )
         }
         else -> {
