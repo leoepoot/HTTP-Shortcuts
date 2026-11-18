@@ -89,7 +89,7 @@ fun ShortcutWidgetSettingsContent(
             BackgroundSelector(
                 background = viewState.background,
                 onNoneSelected = { onBackgroundSelected(null) },
-                onColorSelected = { color -> onBackgroundSelected(WidgetBackgroundType.Color(color)) },
+                onColorSelected = { colorInt -> onBackgroundSelected(WidgetBackgroundType.Color(colorInt)) },
                 onPickImage = { pickImage.launch("image/*") },
             )
 
@@ -226,6 +226,7 @@ private fun WidgetPreview(viewState: ShortcutWidgetSettingsViewState) {
     val titleText = when (viewState.titleSource) {
         WidgetTextSource.SHORTCUT_NAME -> viewState.shortcutName
         WidgetTextSource.CUSTOM -> viewState.titleText.ifEmpty { "—" }
+        else -> "—"
     }
     val subtitleText = when (viewState.subtitleSource) {
         WidgetTextSource.SHORTCUT_NAME -> viewState.shortcutName
@@ -234,7 +235,7 @@ private fun WidgetPreview(viewState: ShortcutWidgetSettingsViewState) {
     }
 
     val backgroundColor = when (val bg = viewState.background) {
-        is WidgetBackgroundType.Color -> Color(android.graphics.Color.parseColor(bg.color))
+        is WidgetBackgroundType.Color -> Color(bg.color)
         else -> colorResource(R.color.widget_preview_background)
     }
 
@@ -293,7 +294,7 @@ private fun WidgetPreview(viewState: ShortcutWidgetSettingsViewState) {
 private fun BackgroundSelector(
     background: WidgetBackgroundType?,
     onNoneSelected: () -> Unit,
-    onColorSelected: (String) -> Unit,
+    onColorSelected: (Int) -> Unit,
     onPickImage: () -> Unit,
 ) {
     val isColor = background is WidgetBackgroundType.Color
@@ -314,7 +315,7 @@ private fun BackgroundSelector(
         BackgroundOption(
             label = stringResource(R.string.label_widget_background_color),
             selected = isColor,
-            color = if (isColor) Color(android.graphics.Color.parseColor((background as WidgetBackgroundType.Color).color)) else null,
+            color = if (isColor) Color((background as WidgetBackgroundType.Color).color) else null,
             onClick = { colorDialogVisible = true },
         )
         BackgroundOption(
@@ -329,7 +330,7 @@ private fun BackgroundSelector(
             withAlpha = true,
             onColorSelected = { color ->
                 colorDialogVisible = false
-                onColorSelected(String.format("#%08x", color))
+                onColorSelected(color)
             },
             onDismissRequested = { colorDialogVisible = false },
         )
@@ -380,6 +381,7 @@ private fun PaddingSelector(
     ) {
         PaddingType.entries.forEach { type ->
             PaddingOption(
+                modifier = Modifier.weight(1f),
                 label = stringResource(type.labelRes),
                 selected = padding == type,
                 onClick = { onPaddingChanged(type) },
@@ -390,13 +392,13 @@ private fun PaddingSelector(
 
 @Composable
 private fun PaddingOption(
+    modifier: Modifier = Modifier,
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .weight(1f)
+        modifier = modifier
             .clickableWithRipple(onClick)
             .padding(Spacing.SMALL),
         contentAlignment = Alignment.Center,
@@ -433,6 +435,7 @@ private fun TextSourceSelector(
     )
 }
 
+@Composable
 private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier =
     this.then(
         Modifier.clickable(
@@ -442,6 +445,7 @@ private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier =
         )
     )
 
+@Composable
 private fun Modifier.borderIfSelected(selected: Boolean): Modifier =
     if (selected) {
         this.then(
@@ -454,4 +458,3 @@ private fun Modifier.borderIfSelected(selected: Boolean): Modifier =
     } else {
         this
     }
-    

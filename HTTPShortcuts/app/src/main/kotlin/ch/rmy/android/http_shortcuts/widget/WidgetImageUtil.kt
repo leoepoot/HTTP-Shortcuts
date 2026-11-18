@@ -50,7 +50,7 @@ object WidgetImageUtil {
                         file.outputStream().use { outputStream ->
                             rounded.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                         }
-                        bitmapCache.put(fileName, rounded.copy(rounded.config, false))
+                        bitmapCache.put(fileName, rounded.copy(rounded.config ?: Bitmap.Config.ARGB_8888, false))
                         fileName
                     } finally {
                         if (rounded !== scaled) {

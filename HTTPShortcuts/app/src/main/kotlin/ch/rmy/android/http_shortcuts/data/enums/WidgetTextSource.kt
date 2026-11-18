@@ -13,8 +13,8 @@ enum class WidgetTextSource(val value: String) {
         value
 
     companion object {
-        const val DEFAULT_TITLE = SHORTCUT_NAME
-        const val DEFAULT_SUBTITLE = SHORTCUT_DESCRIPTION
+        val DEFAULT_TITLE = SHORTCUT_NAME
+        val DEFAULT_SUBTITLE = SHORTCUT_DESCRIPTION
 
         fun parse(value: String): WidgetTextSource? =
             entries.find { it.value == value }

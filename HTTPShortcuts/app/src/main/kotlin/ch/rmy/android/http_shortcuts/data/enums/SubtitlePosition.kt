@@ -12,7 +12,7 @@ enum class SubtitlePosition(val value: String) {
         value
 
     companion object {
-        const val DEFAULT = TOP_END
+        val DEFAULT = TOP_END
 
         fun parse(value: String): SubtitlePosition? =
             entries.find { it.value == value }
