@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -390,7 +390,7 @@ private fun WidgetPreview(viewState: VariableWidgetSettingsViewState) {
 }
 
 @Composable
-private fun WidgetPreviewBackground(background: WidgetBackgroundType?, fallbackColor: Color) {
+private fun BoxScope.WidgetPreviewBackground(background: WidgetBackgroundType?, fallbackColor: Color) {
     val context = LocalContext.current
     when (background) {
         is WidgetBackgroundType.Image -> {
