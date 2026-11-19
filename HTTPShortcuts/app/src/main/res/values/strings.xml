@@ -1310,6 +1310,8 @@
     <string name="label_widget_text_size">Size</string>
     <!-- Label: Generic label for the font weight dropdown inside the unified font style panel -->
     <string name="label_widget_text_weight">Weight</string>
+    <!-- Label: Button that opens the font style popup (color/size/weight) for a widget text element -->
+    <string name="label_widget_text_style">Text Style</string>
     <!-- Label: Option for the thinnest font weight -->
     <string name="label_font_weight_thin">Thin</string>
     <!-- Label: Option for an extra-light font weight -->

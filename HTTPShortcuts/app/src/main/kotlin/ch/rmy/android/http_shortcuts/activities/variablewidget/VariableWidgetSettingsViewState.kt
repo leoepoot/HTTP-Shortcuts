@@ -35,8 +35,6 @@ data class VariableWidgetSettingsViewState(
     val subtitleColor: Int,
     val subtitleFontWeight: FontWeight,
     val padding: PaddingType,
-    val colorDialogVisible: Boolean = false,
-    val colorDialogTarget: ColorTarget = ColorTarget.NONE,
 ) {
     val isSaveEnabled
         get() = selectedVariable != null
@@ -49,12 +47,4 @@ data class VariableWidgetSettingsViewState(
         get() = String.format("#%08x", unitColor)
     val subtitleColorFormatted
         get() = String.format("#%08x", subtitleColor)
-}
-
-enum class ColorTarget {
-    NONE,
-    TITLE,
-    VALUE,
-    UNIT,
-    SUBTITLE,
 }

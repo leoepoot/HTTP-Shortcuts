@@ -153,15 +153,9 @@ constructor(
         }
     }
 
-    fun onTitleColorButtonClicked() = runAction {
+    fun onTitleColorChanged(color: Int) = runAction {
         updateViewState {
-            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.TITLE)
-        }
-    }
-
-    fun onTitleColorSelected(color: Int) = runAction {
-        updateViewState {
-            copy(colorDialogVisible = false, titleColor = color, colorDialogTarget = ColorTarget.NONE)
+            copy(titleColor = color)
         }
     }
 
@@ -177,15 +171,9 @@ constructor(
         }
     }
 
-    fun onValueColorButtonClicked() = runAction {
+    fun onValueColorChanged(color: Int) = runAction {
         updateViewState {
-            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.VALUE)
-        }
-    }
-
-    fun onValueColorSelected(color: Int) = runAction {
-        updateViewState {
-            copy(colorDialogVisible = false, valueColor = color, colorDialogTarget = ColorTarget.NONE)
+            copy(valueColor = color)
         }
     }
 
@@ -207,15 +195,9 @@ constructor(
         }
     }
 
-    fun onUnitColorButtonClicked() = runAction {
+    fun onUnitColorChanged(color: Int) = runAction {
         updateViewState {
-            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.UNIT)
-        }
-    }
-
-    fun onUnitColorSelected(color: Int) = runAction {
-        updateViewState {
-            copy(colorDialogVisible = false, unitColor = color, colorDialogTarget = ColorTarget.NONE)
+            copy(unitColor = color)
         }
     }
 
@@ -243,27 +225,15 @@ constructor(
         }
     }
 
-    fun onSubtitleColorButtonClicked() = runAction {
+    fun onSubtitleColorChanged(color: Int) = runAction {
         updateViewState {
-            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.SUBTITLE)
-        }
-    }
-
-    fun onSubtitleColorSelected(color: Int) = runAction {
-        updateViewState {
-            copy(colorDialogVisible = false, subtitleColor = color, colorDialogTarget = ColorTarget.NONE)
+            copy(subtitleColor = color)
         }
     }
 
     fun onPaddingChanged(padding: PaddingType) = runAction {
         updateViewState {
             copy(padding = padding)
-        }
-    }
-
-    fun onDialogDismissalRequested() = runAction {
-        updateViewState {
-            copy(colorDialogVisible = false, colorDialogTarget = ColorTarget.NONE)
         }
     }
 

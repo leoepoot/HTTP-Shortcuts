@@ -37,13 +37,14 @@ import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.components.Checkbox
 import ch.rmy.android.http_shortcuts.components.ColorPickerDialog
 import ch.rmy.android.http_shortcuts.components.FontSize
-import ch.rmy.android.http_shortcuts.components.FontStylePanel
+import ch.rmy.android.http_shortcuts.components.FontStyleDialog
 import ch.rmy.android.http_shortcuts.components.OrderedOptionsSlider
 import ch.rmy.android.http_shortcuts.components.SelectionField
 import ch.rmy.android.http_shortcuts.components.SettingsButton
 import ch.rmy.android.http_shortcuts.components.SettingsGroup
 import ch.rmy.android.http_shortcuts.components.Spacing
 import ch.rmy.android.http_shortcuts.components.VerticalSpacer
+import ch.rmy.android.http_shortcuts.components.formatFontStyleSummary
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
@@ -65,14 +66,14 @@ fun ShortcutWidgetSettingsContent(
     onBackgroundSelected: (WidgetBackgroundType?) -> Unit,
     onBackgroundImagePicked: (Uri) -> Unit,
     onTitleSizeChanged: (Float) -> Unit,
-    onTitleColorButtonClicked: () -> Unit,
+    onTitleColorChanged: (Int) -> Unit,
     onTitleFontWeightChanged: (FontWeight) -> Unit,
     onTitleSourceChanged: (WidgetTextSource) -> Unit,
     onTitleTextChanged: (String) -> Unit,
     onSubtitleSourceChanged: (WidgetTextSource) -> Unit,
     onSubtitleTextChanged: (String) -> Unit,
     onSubtitleSizeChanged: (Float) -> Unit,
-    onSubtitleColorButtonClicked: () -> Unit,
+    onSubtitleColorChanged: (Int) -> Unit,
     onSubtitleFontWeightChanged: (FontWeight) -> Unit,
     onPaddingChanged: (PaddingType) -> Unit,
 ) {
@@ -109,6 +110,7 @@ fun ShortcutWidgetSettingsContent(
     }
 
     val selectedShortcut = viewState.selectableShortcuts.find { it.shortcutId == viewState.selectedShortcutId }
+    var styleDialogTarget by remember { mutableStateOf<ShortcutFontStyleTarget?>(null) }
 
     Column(
         modifier = Modifier
@@ -189,13 +191,10 @@ fun ShortcutWidgetSettingsContent(
                 )
             }
 
-            FontStylePanel(
-                color = viewState.titleColor,
-                onColorButtonClicked = onTitleColorButtonClicked,
-                size = viewState.titleSize,
-                onSizeChanged = onTitleSizeChanged,
-                weight = viewState.titleFontWeight,
-                onWeightChanged = onTitleFontWeightChanged,
+            SettingsButton(
+                title = stringResource(R.string.label_widget_text_style),
+                subtitle = formatFontStyleSummary(viewState.titleColor, viewState.titleSize, viewState.titleFontWeight),
+                onClick = { styleDialogTarget = ShortcutFontStyleTarget.TITLE },
             )
         }
 
@@ -229,13 +228,10 @@ fun ShortcutWidgetSettingsContent(
                 modifier = Modifier.padding(horizontal = Spacing.MEDIUM, vertical = Spacing.SMALL),
             )
 
-            FontStylePanel(
-                color = viewState.subtitleColor,
-                onColorButtonClicked = onSubtitleColorButtonClicked,
-                size = viewState.subtitleSize,
-                onSizeChanged = onSubtitleSizeChanged,
-                weight = viewState.subtitleFontWeight,
-                onWeightChanged = onSubtitleFontWeightChanged,
+            SettingsButton(
+                title = stringResource(R.string.label_widget_text_style),
+                subtitle = formatFontStyleSummary(viewState.subtitleColor, viewState.subtitleSize, viewState.subtitleFontWeight),
+                onClick = { styleDialogTarget = ShortcutFontStyleTarget.SUBTITLE },
             )
         }
 
@@ -258,8 +254,38 @@ fun ShortcutWidgetSettingsContent(
             }
         }
 
+        styleDialogTarget?.let { target ->
+            when (target) {
+                ShortcutFontStyleTarget.TITLE -> FontStyleDialog(
+                    title = stringResource(R.string.label_widget_section_title),
+                    color = viewState.titleColor,
+                    size = viewState.titleSize,
+                    weight = viewState.titleFontWeight,
+                    onColorChanged = onTitleColorChanged,
+                    onSizeChanged = onTitleSizeChanged,
+                    onWeightChanged = onTitleFontWeightChanged,
+                    onDismiss = { styleDialogTarget = null },
+                )
+                ShortcutFontStyleTarget.SUBTITLE -> FontStyleDialog(
+                    title = stringResource(R.string.label_widget_section_subtitle),
+                    color = viewState.subtitleColor,
+                    size = viewState.subtitleSize,
+                    weight = viewState.subtitleFontWeight,
+                    onColorChanged = onSubtitleColorChanged,
+                    onSizeChanged = onSubtitleSizeChanged,
+                    onWeightChanged = onSubtitleFontWeightChanged,
+                    onDismiss = { styleDialogTarget = null },
+                )
+            }
+        }
+
         VerticalSpacer(Spacing.MEDIUM)
     }
+}
+
+private enum class ShortcutFontStyleTarget {
+    TITLE,
+    SUBTITLE,
 }
 
 @Composable

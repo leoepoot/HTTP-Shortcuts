@@ -36,11 +36,13 @@ import ch.rmy.android.framework.utils.FilePickerUtil
 import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.components.ColorPickerDialog
 import ch.rmy.android.http_shortcuts.components.FontSize
-import ch.rmy.android.http_shortcuts.components.FontStylePanel
+import ch.rmy.android.http_shortcuts.components.FontStyleDialog
 import ch.rmy.android.http_shortcuts.components.SelectionField
+import ch.rmy.android.http_shortcuts.components.SettingsButton
 import ch.rmy.android.http_shortcuts.components.SettingsGroup
 import ch.rmy.android.http_shortcuts.components.Spacing
 import ch.rmy.android.http_shortcuts.components.VerticalSpacer
+import ch.rmy.android.http_shortcuts.components.formatFontStyleSummary
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
 import ch.rmy.android.http_shortcuts.data.enums.FontWeight
@@ -59,22 +61,23 @@ fun VariableWidgetSettingsContent(
     onBackgroundImagePicked: (Uri) -> Unit,
     onShortcutSelected: (ShortcutId?) -> Unit,
     onTitleSizeChanged: (Float) -> Unit,
-    onTitleColorButtonClicked: () -> Unit,
+    onTitleColorChanged: (Int) -> Unit,
     onTitleFontWeightChanged: (FontWeight) -> Unit,
     onValueSizeChanged: (Float) -> Unit,
-    onValueColorButtonClicked: () -> Unit,
+    onValueColorChanged: (Int) -> Unit,
     onValueFontWeightChanged: (FontWeight) -> Unit,
     onUnitChanged: (String) -> Unit,
     onUnitSizeChanged: (Float) -> Unit,
-    onUnitColorButtonClicked: () -> Unit,
+    onUnitColorChanged: (Int) -> Unit,
     onUnitFontWeightChanged: (FontWeight) -> Unit,
     onSubtitleTextChanged: (String) -> Unit,
     onSubtitlePositionChanged: (SubtitlePosition) -> Unit,
     onSubtitleSizeChanged: (Float) -> Unit,
-    onSubtitleColorButtonClicked: () -> Unit,
+    onSubtitleColorChanged: (Int) -> Unit,
     onSubtitleFontWeightChanged: (FontWeight) -> Unit,
     onPaddingChanged: (PaddingType) -> Unit,
 ) {
+    var styleDialogTarget by remember { mutableStateOf<VariableFontStyleTarget?>(null) }
     val cropImage = rememberLauncherForActivityResult(
         EditImageContract(
             title = stringResource(R.string.title_edit_widget_background),
@@ -160,26 +163,20 @@ fun VariableWidgetSettingsContent(
                 maxLines = 2,
             )
 
-            FontStylePanel(
-                color = viewState.titleColor,
-                onColorButtonClicked = onTitleColorButtonClicked,
-                size = viewState.titleSize,
-                onSizeChanged = onTitleSizeChanged,
-                weight = viewState.titleFontWeight,
-                onWeightChanged = onTitleFontWeightChanged,
+            SettingsButton(
+                title = stringResource(R.string.label_widget_text_style),
+                subtitle = formatFontStyleSummary(viewState.titleColor, viewState.titleSize, viewState.titleFontWeight),
+                onClick = { styleDialogTarget = VariableFontStyleTarget.TITLE },
             )
         }
 
         HorizontalDivider()
 
         SettingsGroup(title = stringResource(R.string.label_widget_section_value)) {
-            FontStylePanel(
-                color = viewState.valueColor,
-                onColorButtonClicked = onValueColorButtonClicked,
-                size = viewState.valueSize,
-                onSizeChanged = onValueSizeChanged,
-                weight = viewState.valueFontWeight,
-                onWeightChanged = onValueFontWeightChanged,
+            SettingsButton(
+                title = stringResource(R.string.label_widget_text_style),
+                subtitle = formatFontStyleSummary(viewState.valueColor, viewState.valueSize, viewState.valueFontWeight),
+                onClick = { styleDialogTarget = VariableFontStyleTarget.VALUE },
             )
 
             TextField(
@@ -192,13 +189,10 @@ fun VariableWidgetSettingsContent(
                 singleLine = true,
             )
 
-            FontStylePanel(
-                color = viewState.unitColor,
-                onColorButtonClicked = onUnitColorButtonClicked,
-                size = viewState.unitSize,
-                onSizeChanged = onUnitSizeChanged,
-                weight = viewState.unitFontWeight,
-                onWeightChanged = onUnitFontWeightChanged,
+            SettingsButton(
+                title = stringResource(R.string.label_widget_text_style),
+                subtitle = formatFontStyleSummary(viewState.unitColor, viewState.unitSize, viewState.unitFontWeight),
+                onClick = { styleDialogTarget = VariableFontStyleTarget.UNIT },
             )
         }
 
@@ -241,13 +235,10 @@ fun VariableWidgetSettingsContent(
                 )
             }
 
-            FontStylePanel(
-                color = viewState.subtitleColor,
-                onColorButtonClicked = onSubtitleColorButtonClicked,
-                size = viewState.subtitleSize,
-                onSizeChanged = onSubtitleSizeChanged,
-                weight = viewState.subtitleFontWeight,
-                onWeightChanged = onSubtitleFontWeightChanged,
+            SettingsButton(
+                title = stringResource(R.string.label_widget_text_style),
+                subtitle = formatFontStyleSummary(viewState.subtitleColor, viewState.subtitleSize, viewState.subtitleFontWeight),
+                onClick = { styleDialogTarget = VariableFontStyleTarget.SUBTITLE },
             )
         }
 
@@ -268,8 +259,60 @@ fun VariableWidgetSettingsContent(
             onItemSelected = onShortcutSelected,
         )
 
+        styleDialogTarget?.let { target ->
+            when (target) {
+                VariableFontStyleTarget.TITLE -> FontStyleDialog(
+                    title = stringResource(R.string.label_widget_section_title),
+                    color = viewState.titleColor,
+                    size = viewState.titleSize,
+                    weight = viewState.titleFontWeight,
+                    onColorChanged = onTitleColorChanged,
+                    onSizeChanged = onTitleSizeChanged,
+                    onWeightChanged = onTitleFontWeightChanged,
+                    onDismiss = { styleDialogTarget = null },
+                )
+                VariableFontStyleTarget.VALUE -> FontStyleDialog(
+                    title = stringResource(R.string.label_widget_section_value),
+                    color = viewState.valueColor,
+                    size = viewState.valueSize,
+                    weight = viewState.valueFontWeight,
+                    onColorChanged = onValueColorChanged,
+                    onSizeChanged = onValueSizeChanged,
+                    onWeightChanged = onValueFontWeightChanged,
+                    onDismiss = { styleDialogTarget = null },
+                )
+                VariableFontStyleTarget.UNIT -> FontStyleDialog(
+                    title = stringResource(R.string.label_widget_unit),
+                    color = viewState.unitColor,
+                    size = viewState.unitSize,
+                    weight = viewState.unitFontWeight,
+                    onColorChanged = onUnitColorChanged,
+                    onSizeChanged = onUnitSizeChanged,
+                    onWeightChanged = onUnitFontWeightChanged,
+                    onDismiss = { styleDialogTarget = null },
+                )
+                VariableFontStyleTarget.SUBTITLE -> FontStyleDialog(
+                    title = stringResource(R.string.label_widget_section_subtitle),
+                    color = viewState.subtitleColor,
+                    size = viewState.subtitleSize,
+                    weight = viewState.subtitleFontWeight,
+                    onColorChanged = onSubtitleColorChanged,
+                    onSizeChanged = onSubtitleSizeChanged,
+                    onWeightChanged = onSubtitleFontWeightChanged,
+                    onDismiss = { styleDialogTarget = null },
+                )
+            }
+        }
+
         VerticalSpacer(Spacing.MEDIUM)
     }
+}
+
+private enum class VariableFontStyleTarget {
+    TITLE,
+    VALUE,
+    UNIT,
+    SUBTITLE,
 }
 
 @Composable

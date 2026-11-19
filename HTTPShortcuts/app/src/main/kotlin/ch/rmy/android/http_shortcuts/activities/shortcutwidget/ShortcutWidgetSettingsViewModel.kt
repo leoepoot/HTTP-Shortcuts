@@ -153,19 +153,9 @@ constructor(
         }
     }
 
-    fun onTitleColorButtonClicked() = runAction {
+    fun onTitleColorChanged(color: Int) = runAction {
         updateViewState {
-            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.TITLE)
-        }
-    }
-
-    fun onTitleColorSelected(color: Int) = runAction {
-        updateViewState {
-            copy(
-                colorDialogVisible = false,
-                titleColor = color,
-                colorDialogTarget = ColorTarget.NONE,
-            )
+            copy(titleColor = color)
         }
     }
 
@@ -205,19 +195,9 @@ constructor(
         }
     }
 
-    fun onSubtitleColorButtonClicked() = runAction {
+    fun onSubtitleColorChanged(color: Int) = runAction {
         updateViewState {
-            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.SUBTITLE)
-        }
-    }
-
-    fun onSubtitleColorSelected(color: Int) = runAction {
-        updateViewState {
-            copy(
-                colorDialogVisible = false,
-                subtitleColor = color,
-                colorDialogTarget = ColorTarget.NONE,
-            )
+            copy(subtitleColor = color)
         }
     }
 

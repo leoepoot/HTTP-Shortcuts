@@ -107,10 +107,14 @@ fun FontStylePanel(
     }
 }
 
-private fun formatSize(size: Float): String =
+internal fun formatSize(size: Float): String =
     "${snapFontSize(size).roundToInt()} sp"
 
 private fun snapFontSize(value: Float): Float {
     val snapped = (value / WidgetConstants.FONT_SIZE_STEP).roundToInt() * WidgetConstants.FONT_SIZE_STEP
     return snapped.coerceIn(WidgetConstants.FONT_SIZE_MIN, WidgetConstants.FONT_SIZE_MAX)
 }
+
+@Composable
+fun formatFontStyleSummary(color: Int, size: Float, weight: FontWeight): String =
+    "${formatSize(size)} · ${stringResource(weight.labelRes)} · ${String.format("#%08x", color)}"

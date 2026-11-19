@@ -49,35 +49,23 @@ fun ShortcutWidgetSettingsScreen(
             onBackgroundSelected = viewModel::onBackgroundSelected,
             onBackgroundImagePicked = viewModel::onBackgroundImagePicked,
             onTitleSizeChanged = viewModel::onTitleSizeChanged,
-            onTitleColorButtonClicked = viewModel::onTitleColorButtonClicked,
+            onTitleColorChanged = viewModel::onTitleColorChanged,
             onTitleFontWeightChanged = viewModel::onTitleFontWeightChanged,
             onTitleSourceChanged = viewModel::onTitleSourceChanged,
             onTitleTextChanged = viewModel::onTitleTextChanged,
             onSubtitleSourceChanged = viewModel::onSubtitleSourceChanged,
             onSubtitleTextChanged = viewModel::onSubtitleTextChanged,
             onSubtitleSizeChanged = viewModel::onSubtitleSizeChanged,
-            onSubtitleColorButtonClicked = viewModel::onSubtitleColorButtonClicked,
+            onSubtitleColorChanged = viewModel::onSubtitleColorChanged,
             onSubtitleFontWeightChanged = viewModel::onSubtitleFontWeightChanged,
             onPaddingChanged = viewModel::onPaddingChanged,
         )
     }
 
-    if (state?.colorDialogVisible == true) {
+    if (state?.colorDialogVisible == true && state.colorDialogTarget == ColorTarget.LABEL) {
         ColorPickerDialog(
-            initialColor = when (state.colorDialogTarget) {
-                ColorTarget.LABEL -> state.labelColor
-                ColorTarget.TITLE -> state.titleColor
-                ColorTarget.SUBTITLE -> state.subtitleColor
-                else -> state.titleColor
-            },
-            onColorSelected = { color ->
-                when (state.colorDialogTarget) {
-                    ColorTarget.LABEL -> viewModel.onLabelColorSelected(color)
-                    ColorTarget.TITLE -> viewModel.onTitleColorSelected(color)
-                    ColorTarget.SUBTITLE -> viewModel.onSubtitleColorSelected(color)
-                    else -> Unit
-                }
-            },
+            initialColor = state.labelColor,
+            onColorSelected = viewModel::onLabelColorSelected,
             onDismissRequested = viewModel::onDialogDismissalRequested,
         )
     }

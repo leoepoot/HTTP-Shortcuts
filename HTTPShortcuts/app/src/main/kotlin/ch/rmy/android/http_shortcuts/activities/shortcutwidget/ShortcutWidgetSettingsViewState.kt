@@ -42,6 +42,4 @@ data class ShortcutWidgetSettingsViewState(
 enum class ColorTarget {
     NONE,
     LABEL,
-    TITLE,
-    SUBTITLE,
 }
