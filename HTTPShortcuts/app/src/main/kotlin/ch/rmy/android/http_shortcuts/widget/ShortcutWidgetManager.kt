@@ -111,7 +111,7 @@ constructor(
 
             if (shortcutWidget.showLabel && titleText.isNotEmpty()) {
                 views.setViewVisibility(R.id.widget_title, View.VISIBLE)
-                views.setTextViewText(R.id.widget_title, titleText)
+                views.setTextViewTextWithFontWeight(R.id.widget_title, titleText, FontWeight.fromWeight(shortcutWidget.titleFontWeight).weight)
                 val titleSize = shortcutWidget.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE
                 views.setTextViewTextSize(R.id.widget_title, COMPLEX_UNIT_SP, titleSize)
                 val titleColor = shortcutWidget.titleColor?.let { parseColorSafe(it) }
@@ -131,7 +131,7 @@ constructor(
 
             if (subtitleText.isNotEmpty()) {
                 views.setViewVisibility(R.id.widget_subtitle, View.VISIBLE)
-                views.setTextViewText(R.id.widget_subtitle, subtitleText)
+                views.setTextViewTextWithFontWeight(R.id.widget_subtitle, subtitleText, FontWeight.fromWeight(shortcutWidget.subtitleFontWeight).weight)
                 val subtitleSize = shortcutWidget.subtitleSize ?: WidgetConstants.DEFAULT_SUBTITLE_SIZE
                 views.setTextViewTextSize(R.id.widget_subtitle, COMPLEX_UNIT_SP, subtitleSize)
                 val subtitleColor = shortcutWidget.subtitleColor?.let { parseColorSafe(it) }

@@ -150,7 +150,7 @@ constructor(
             val title = variableWidget.title
             if (title.isNotEmpty()) {
                 views.setViewVisibility(R.id.widget_title, View.VISIBLE)
-                views.setTextViewText(R.id.widget_title, title)
+                views.setTextViewTextWithFontWeight(R.id.widget_title, title, titleFontWeight)
                 val titleSize = variableWidget.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE
                 views.setTextViewTextSize(R.id.widget_title, COMPLEX_UNIT_SP, titleSize)
                 val titleColor = variableWidget.titleColor?.let { parseColorSafe(it) }
@@ -162,7 +162,7 @@ constructor(
             }
 
             val value = globalVariable?.value?.ifEmpty { "-" } ?: "???"
-            views.setTextViewText(R.id.widget_value, value)
+            views.setTextViewTextWithFontWeight(R.id.widget_value, value, valueFontWeight)
             val valueSize = variableWidget.valueSize ?: WidgetConstants.DEFAULT_VALUE_SIZE
             views.setTextViewTextSize(R.id.widget_value, COMPLEX_UNIT_SP, valueSize)
             val valueColor = variableWidget.valueColor?.let { parseColorSafe(it) }
@@ -173,7 +173,7 @@ constructor(
             val unit = variableWidget.unit
             if (!unit.isNullOrEmpty()) {
                 views.setViewVisibility(R.id.widget_unit, View.VISIBLE)
-                views.setTextViewText(R.id.widget_unit, unit)
+                views.setTextViewTextWithFontWeight(R.id.widget_unit, unit, unitFontWeight)
                 val unitSize = variableWidget.unitSize ?: WidgetConstants.DEFAULT_UNIT_SIZE
                 views.setTextViewTextSize(R.id.widget_unit, COMPLEX_UNIT_SP, unitSize)
                 val unitColor = variableWidget.unitColor?.let { parseColorSafe(it) }
@@ -197,7 +197,7 @@ constructor(
                     SubtitlePosition.TOP_END -> {
                         views.setViewVisibility(R.id.widget_subtitle_top, View.VISIBLE)
                         views.setViewVisibility(R.id.widget_subtitle_bottom, View.GONE)
-                        views.setTextViewText(R.id.widget_subtitle_top, subtitleText!!)
+                        views.setTextViewTextWithFontWeight(R.id.widget_subtitle_top, subtitleText!!, subtitleFontWeight)
                         views.setTextViewTextSize(R.id.widget_subtitle_top, COMPLEX_UNIT_SP, subtitleSize)
                         views.setTextColor(R.id.widget_subtitle_top, subtitleColor)
                         views.setTextViewFontWeight(R.id.widget_subtitle_top, subtitleFontWeight)
@@ -205,7 +205,7 @@ constructor(
                     SubtitlePosition.BOTTOM_END -> {
                         views.setViewVisibility(R.id.widget_subtitle_top, View.GONE)
                         views.setViewVisibility(R.id.widget_subtitle_bottom, View.VISIBLE)
-                        views.setTextViewText(R.id.widget_subtitle_bottom, subtitleText!!)
+                        views.setTextViewTextWithFontWeight(R.id.widget_subtitle_bottom, subtitleText!!, subtitleFontWeight)
                         views.setTextViewTextSize(R.id.widget_subtitle_bottom, COMPLEX_UNIT_SP, subtitleSize)
                         views.setTextColor(R.id.widget_subtitle_bottom, subtitleColor)
                         views.setTextViewFontWeight(R.id.widget_subtitle_bottom, subtitleFontWeight)

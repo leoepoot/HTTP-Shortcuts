@@ -2,6 +2,10 @@ package ch.rmy.android.http_shortcuts.widget
 
 import android.content.res.ColorStateList
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.TypefaceSpan
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RemoteViews
@@ -17,9 +21,52 @@ fun RemoteViews.setTextSize(@IdRes id: Int, fontSize: Float) {
     setFloatSafely(TextView::class.java, id, "setTextSize", fontSize)
 }
 
+private const val FONT_WEIGHT_TAG = "WidgetFontWeight"
+
 fun RemoteViews.setTextViewFontWeight(@IdRes id: Int, weight: Int) {
     val familyName = FontWeight.fromWeight(weight).familyName
-    setStringSafely(TextView::class.java, id, "setFontFamily", familyName)
+    try {
+        val annotated = TextView::class.java
+            .getMethod("setFontFamily", String::class.java)
+            .isRemoteViewMethod()
+        Log.i(
+            FONT_WEIGHT_TAG,
+            "setFontFamily: viewId=$id weight=$weight family='$familyName' annotated=$annotated sdk=${Build.VERSION.SDK_INT}",
+        )
+        setString(id, "setFontFamily", familyName)
+    } catch (e: Throwable) {
+        Log.e(FONT_WEIGHT_TAG, "setFontFamily failed: viewId=$id weight=$weight family='$familyName'", e)
+    }
+}
+
+fun RemoteViews.setTextViewTextWithFontWeight(@IdRes id: Int, text: CharSequence?, weight: Int) {
+    if (text == null) {
+        setTextViewText(id, null)
+        return
+    }
+    val familyName = FontWeight.fromWeight(weight).familyName
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        try {
+            val spannable = SpannableString.valueOf(text)
+            spannable.setSpan(
+                TypefaceSpan(familyName),
+                0,
+                spannable.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE,
+            )
+            setTextViewText(id, spannable)
+            Log.i(
+                FONT_WEIGHT_TAG,
+                "TypefaceSpan applied: viewId=$id weight=$weight family='$familyName' sdk=${Build.VERSION.SDK_INT}",
+            )
+            return
+        } catch (e: Throwable) {
+            Log.e(FONT_WEIGHT_TAG, "TypefaceSpan failed: viewId=$id weight=$weight family='$familyName'", e)
+        }
+    } else {
+        Log.i(FONT_WEIGHT_TAG, "TypefaceSpan skipped: sdk=${Build.VERSION.SDK_INT} < 28, viewId=$id family='$familyName'")
+    }
+    setTextViewText(id, text)
 }
 
 fun RemoteViews.setLineHeight(@IdRes id: Int, lineHeightPx: Int) {
@@ -60,15 +107,6 @@ fun RemoteViews.setIntSafely(clazz: Class<*>, @IdRes id: Int, methodName: String
         val method = clazz.getMethod(methodName, Int::class.java)
         if (method.isRemoteViewMethod()) {
             setInt(id, methodName, value)
-        }
-    }
-}
-
-private fun RemoteViews.setStringSafely(clazz: Class<*>, @IdRes id: Int, methodName: String, value: String) {
-    tryOrLog {
-        val method = clazz.getMethod(methodName, String::class.java)
-        if (method.isRemoteViewMethod()) {
-            setString(id, methodName, value)
         }
     }
 }
