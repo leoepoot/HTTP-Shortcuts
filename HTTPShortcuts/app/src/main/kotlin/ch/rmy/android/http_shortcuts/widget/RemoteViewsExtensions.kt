@@ -10,6 +10,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import ch.rmy.android.framework.extensions.tryOrLog
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import java.lang.reflect.Method
 
 fun RemoteViews.setTextSize(@IdRes id: Int, fontSize: Float) {
@@ -17,7 +18,8 @@ fun RemoteViews.setTextSize(@IdRes id: Int, fontSize: Float) {
 }
 
 fun RemoteViews.setTextViewFontWeight(@IdRes id: Int, weight: Int) {
-    setIntSafely(TextView::class.java, id, "setTextFontWeight", weight)
+    val familyName = FontWeight.fromWeight(weight).familyName
+    setStringSafely(TextView::class.java, id, "setFontFamily", familyName)
 }
 
 fun RemoteViews.setLineHeight(@IdRes id: Int, lineHeightPx: Int) {
@@ -58,6 +60,15 @@ fun RemoteViews.setIntSafely(clazz: Class<*>, @IdRes id: Int, methodName: String
         val method = clazz.getMethod(methodName, Int::class.java)
         if (method.isRemoteViewMethod()) {
             setInt(id, methodName, value)
+        }
+    }
+}
+
+private fun RemoteViews.setStringSafely(clazz: Class<*>, @IdRes id: Int, methodName: String, value: String) {
+    tryOrLog {
+        val method = clazz.getMethod(methodName, String::class.java)
+        if (method.isRemoteViewMethod()) {
+            setString(id, methodName, value)
         }
     }
 }
