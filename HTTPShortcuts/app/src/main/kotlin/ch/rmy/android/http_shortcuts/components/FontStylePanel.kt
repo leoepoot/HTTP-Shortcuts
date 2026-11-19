@@ -93,7 +93,7 @@ fun FontStylePanel(
         Slider(
             modifier = Modifier.fillMaxWidth(),
             value = size,
-            onValueChange = onSizeChanged,
+            onValueChange = { onSizeChanged(snapFontSize(it)) },
             valueRange = WidgetConstants.FONT_SIZE_MIN..WidgetConstants.FONT_SIZE_MAX,
             steps = ((WidgetConstants.FONT_SIZE_MAX - WidgetConstants.FONT_SIZE_MIN) / WidgetConstants.FONT_SIZE_STEP).toInt() - 1,
         )
@@ -108,8 +108,9 @@ fun FontStylePanel(
 }
 
 private fun formatSize(size: Float): String =
-    if (size % 1f == 0f) {
-        "${size.toInt()} sp"
-    } else {
-        "$size sp"
-    }
+    "${snapFontSize(size).roundToInt()} sp"
+
+private fun snapFontSize(value: Float): Float {
+    val snapped = (value / WidgetConstants.FONT_SIZE_STEP).roundToInt() * WidgetConstants.FONT_SIZE_STEP
+    return snapped.coerceIn(WidgetConstants.FONT_SIZE_MIN, WidgetConstants.FONT_SIZE_MAX)
+}

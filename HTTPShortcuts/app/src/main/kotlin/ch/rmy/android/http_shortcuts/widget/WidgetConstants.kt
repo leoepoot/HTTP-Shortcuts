@@ -7,7 +7,7 @@ object WidgetConstants {
 
     const val FONT_SIZE_MIN = 6f
     const val FONT_SIZE_MAX = 48f
-    const val FONT_SIZE_STEP = 0.5f
+    const val FONT_SIZE_STEP = 2f
 
     const val DEFAULT_TITLE_SIZE = 20f
     const val DEFAULT_TITLE_COLOR = 0xCC000000.toInt()
