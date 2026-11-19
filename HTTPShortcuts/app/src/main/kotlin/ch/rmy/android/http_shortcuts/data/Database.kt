@@ -70,7 +70,6 @@ import ch.rmy.android.http_shortcuts.data.models.WorkingDirectory
         AutoMigration(from = 10, to = 11),
         AutoMigration(from = 11, to = 12),
         AutoMigration(from = 12, to = 13),
-        AutoMigration(from = 13, to = 14),
     ],
     exportSchema = true,
 )
