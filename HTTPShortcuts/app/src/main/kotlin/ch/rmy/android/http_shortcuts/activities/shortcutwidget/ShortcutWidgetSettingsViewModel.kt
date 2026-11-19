@@ -8,6 +8,7 @@ import ch.rmy.android.http_shortcuts.activities.variablewidget.models.Selectable
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutRepository
 import ch.rmy.android.http_shortcuts.data.domains.widgets.ShortcutWidgetsRepository
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
@@ -52,12 +53,16 @@ constructor(
             selectableShortcuts = selectableShortcuts,
             selectedShortcutId = selectedShortcutId,
             background = widget?.background,
-            titleSize = widget?.titleSize?.toInt() ?: WidgetConstants.DEFAULT_TITLE_SIZE.toInt(),
-            titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR,
+            titleSize = widget?.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE,
+            titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_TITLE_COLOR,
+            titleFontWeight = FontWeight.fromWeight(widget?.titleFontWeight),
             titleSource = widget?.titleSource ?: WidgetTextSource.SHORTCUT_NAME,
             titleText = widget?.titleText ?: "",
             subtitleSource = widget?.subtitleSource ?: WidgetTextSource.SHORTCUT_DESCRIPTION,
             subtitleText = widget?.subtitleText ?: "",
+            subtitleSize = widget?.subtitleSize ?: WidgetConstants.DEFAULT_SUBTITLE_SIZE,
+            subtitleColor = widget?.subtitleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_SUBTITLE_COLOR,
+            subtitleFontWeight = FontWeight.fromWeight(widget?.subtitleFontWeight),
             padding = widget?.padding ?: PaddingType.DEFAULT,
         )
     }
@@ -136,9 +141,15 @@ constructor(
         }
     }
 
-    fun onTitleSizeChanged(size: Int) = runAction {
+    fun onTitleSizeChanged(size: Float) = runAction {
         updateViewState {
             copy(titleSize = size)
+        }
+    }
+
+    fun onTitleFontWeightChanged(weight: FontWeight) = runAction {
+        updateViewState {
+            copy(titleFontWeight = weight)
         }
     }
 
@@ -182,6 +193,34 @@ constructor(
         }
     }
 
+    fun onSubtitleSizeChanged(size: Float) = runAction {
+        updateViewState {
+            copy(subtitleSize = size)
+        }
+    }
+
+    fun onSubtitleFontWeightChanged(weight: FontWeight) = runAction {
+        updateViewState {
+            copy(subtitleFontWeight = weight)
+        }
+    }
+
+    fun onSubtitleColorButtonClicked() = runAction {
+        updateViewState {
+            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.SUBTITLE)
+        }
+    }
+
+    fun onSubtitleColorSelected(color: Int) = runAction {
+        updateViewState {
+            copy(
+                colorDialogVisible = false,
+                subtitleColor = color,
+                colorDialogTarget = ColorTarget.NONE,
+            )
+        }
+    }
+
     fun onPaddingChanged(padding: PaddingType) = runAction {
         updateViewState {
             copy(padding = padding)
@@ -200,10 +239,14 @@ constructor(
                 background = viewState.background,
                 titleSize = viewState.titleSize,
                 titleColor = viewState.titleColorFormatted,
+                titleFontWeight = viewState.titleFontWeight.weight,
                 titleSource = viewState.titleSource,
                 titleText = viewState.titleText,
                 subtitleSource = viewState.subtitleSource,
                 subtitleText = viewState.subtitleText,
+                subtitleSize = viewState.subtitleSize,
+                subtitleColor = viewState.subtitleColorFormatted,
+                subtitleFontWeight = viewState.subtitleFontWeight.weight,
                 padding = viewState.padding,
             ),
         )

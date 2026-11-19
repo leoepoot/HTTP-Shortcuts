@@ -2,6 +2,7 @@ package ch.rmy.android.http_shortcuts.data
 
 import android.content.Context
 import androidx.room.Room
+import ch.rmy.android.http_shortcuts.data.migrations.Migration14To15
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,6 +19,8 @@ constructor(
             context = context,
             klass = Database::class.java,
             name = "main-db",
-        ).build()
+        )
+            .addMigrations(Migration14To15())
+            .build()
     }
 }

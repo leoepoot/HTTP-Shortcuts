@@ -42,6 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif"
                 android:maxLines="2"
                 android:textColor="@color/variable_widget_foreground"
                 android:textSize="14sp" />
@@ -51,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif"
                 android:maxLines="1"
                 android:textColor="#88888888"
                 android:textSize="10sp"

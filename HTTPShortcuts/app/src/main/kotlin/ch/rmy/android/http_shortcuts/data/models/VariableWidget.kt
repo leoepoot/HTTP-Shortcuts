@@ -40,4 +40,20 @@ data class VariableWidget(
     val subtitlePosition: SubtitlePosition? = null,
     @ColumnInfo(name = "padding")
     val padding: PaddingType? = null,
+    @ColumnInfo(name = "title_font_weight")
+    val titleFontWeight: Int? = null,
+    @ColumnInfo(name = "value_font_weight")
+    val valueFontWeight: Int? = null,
+    @ColumnInfo(name = "unit_size")
+    val unitSize: Float? = null,
+    @ColumnInfo(name = "unit_color")
+    val unitColor: String? = null,
+    @ColumnInfo(name = "unit_font_weight")
+    val unitFontWeight: Int? = null,
+    @ColumnInfo(name = "subtitle_size")
+    val subtitleSize: Float? = null,
+    @ColumnInfo(name = "subtitle_color")
+    val subtitleColor: String? = null,
+    @ColumnInfo(name = "subtitle_font_weight")
+    val subtitleFontWeight: Int? = null,
 )

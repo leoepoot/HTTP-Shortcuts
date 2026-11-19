@@ -39,4 +39,12 @@ data class ShortcutWidget(
     val subtitleText: String? = null,
     @ColumnInfo(name = "padding")
     val padding: PaddingType? = null,
+    @ColumnInfo(name = "title_font_weight")
+    val titleFontWeight: Int? = null,
+    @ColumnInfo(name = "subtitle_size")
+    val subtitleSize: Float? = null,
+    @ColumnInfo(name = "subtitle_color")
+    val subtitleColor: String? = null,
+    @ColumnInfo(name = "subtitle_font_weight")
+    val subtitleFontWeight: Int? = null,
 )

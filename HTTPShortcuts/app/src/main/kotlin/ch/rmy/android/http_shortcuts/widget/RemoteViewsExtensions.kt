@@ -16,6 +16,10 @@ fun RemoteViews.setTextSize(@IdRes id: Int, fontSize: Float) {
     setFloatSafely(TextView::class.java, id, "setTextSize", fontSize)
 }
 
+fun RemoteViews.setTextViewFontWeight(@IdRes id: Int, weight: Int) {
+    setIntSafely(TextView::class.java, id, "setTextFontWeight", weight)
+}
+
 fun RemoteViews.setLineHeight(@IdRes id: Int, lineHeightPx: Int) {
     setIntSafely(TextView::class.java, id, "setLineHeight", lineHeightPx)
 }

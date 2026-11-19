@@ -43,18 +43,25 @@ fun VariableWidgetSettingsScreen(
         VariableWidgetSettingsContent(
             viewState = viewState,
             onVariableSelected = viewModel::onVariableSelected,
-            onFontSizeChanged = viewModel::onFontSizeChanged,
             onTitleChanged = viewModel::onTitleChanged,
             onBackgroundChanged = viewModel::onBackgroundChanged,
             onBackgroundImagePicked = viewModel::onBackgroundImagePicked,
             onShortcutSelected = viewModel::onShortcutSelected,
             onTitleSizeChanged = viewModel::onTitleSizeChanged,
             onTitleColorButtonClicked = viewModel::onTitleColorButtonClicked,
+            onTitleFontWeightChanged = viewModel::onTitleFontWeightChanged,
             onValueSizeChanged = viewModel::onValueSizeChanged,
             onValueColorButtonClicked = viewModel::onValueColorButtonClicked,
+            onValueFontWeightChanged = viewModel::onValueFontWeightChanged,
             onUnitChanged = viewModel::onUnitChanged,
+            onUnitSizeChanged = viewModel::onUnitSizeChanged,
+            onUnitColorButtonClicked = viewModel::onUnitColorButtonClicked,
+            onUnitFontWeightChanged = viewModel::onUnitFontWeightChanged,
             onSubtitleTextChanged = viewModel::onSubtitleTextChanged,
             onSubtitlePositionChanged = viewModel::onSubtitlePositionChanged,
+            onSubtitleSizeChanged = viewModel::onSubtitleSizeChanged,
+            onSubtitleColorButtonClicked = viewModel::onSubtitleColorButtonClicked,
+            onSubtitleFontWeightChanged = viewModel::onSubtitleFontWeightChanged,
             onPaddingChanged = viewModel::onPaddingChanged,
         )
     }
@@ -64,6 +71,8 @@ fun VariableWidgetSettingsScreen(
             initialColor = when (state.colorDialogTarget) {
                 ColorTarget.TITLE -> state.titleColor
                 ColorTarget.VALUE -> state.valueColor
+                ColorTarget.UNIT -> state.unitColor
+                ColorTarget.SUBTITLE -> state.subtitleColor
                 else -> state.titleColor
             },
             withAlpha = true,
@@ -71,6 +80,8 @@ fun VariableWidgetSettingsScreen(
                 when (state.colorDialogTarget) {
                     ColorTarget.TITLE -> viewModel.onTitleColorSelected(color)
                     ColorTarget.VALUE -> viewModel.onValueColorSelected(color)
+                    ColorTarget.UNIT -> viewModel.onUnitColorSelected(color)
+                    ColorTarget.SUBTITLE -> viewModel.onSubtitleColorSelected(color)
                     else -> Unit
                 }
             },

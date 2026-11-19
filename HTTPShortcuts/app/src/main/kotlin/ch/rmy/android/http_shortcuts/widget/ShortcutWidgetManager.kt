@@ -14,6 +14,7 @@ import ch.rmy.android.http_shortcuts.activities.ExecuteActivity
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutRepository
 import ch.rmy.android.http_shortcuts.data.domains.widgets.ShortcutWidgetsRepository
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.ShortcutTriggerType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
@@ -115,8 +116,9 @@ constructor(
                 views.setTextViewTextSize(R.id.widget_title, COMPLEX_UNIT_SP, titleSize)
                 val titleColor = shortcutWidget.titleColor?.let { parseColorSafe(it) }
                     ?: shortcutWidget.labelColor?.let { parseColorSafe(it) }
-                    ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR
+                    ?: WidgetConstants.DEFAULT_TITLE_COLOR
                 views.setTextColor(R.id.widget_title, titleColor)
+                views.setTextViewFontWeight(R.id.widget_title, FontWeight.fromWeight(shortcutWidget.titleFontWeight).weight)
             } else {
                 views.setViewVisibility(R.id.widget_title, View.GONE)
             }
@@ -130,9 +132,12 @@ constructor(
             if (subtitleText.isNotEmpty()) {
                 views.setViewVisibility(R.id.widget_subtitle, View.VISIBLE)
                 views.setTextViewText(R.id.widget_subtitle, subtitleText)
-                val subtitleSize = (shortcutWidget.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE) - WidgetConstants.SUBTITLE_SIZE_OFFSET
-                views.setTextViewTextSize(R.id.widget_subtitle, COMPLEX_UNIT_SP, maxOf(subtitleSize, 8f))
-                views.setTextColor(R.id.widget_subtitle, WidgetConstants.DEFAULT_SUBTITLE_COLOR)
+                val subtitleSize = shortcutWidget.subtitleSize ?: WidgetConstants.DEFAULT_SUBTITLE_SIZE
+                views.setTextViewTextSize(R.id.widget_subtitle, COMPLEX_UNIT_SP, subtitleSize)
+                val subtitleColor = shortcutWidget.subtitleColor?.let { parseColorSafe(it) }
+                    ?: WidgetConstants.DEFAULT_SUBTITLE_COLOR
+                views.setTextColor(R.id.widget_subtitle, subtitleColor)
+                views.setTextViewFontWeight(R.id.widget_subtitle, FontWeight.fromWeight(shortcutWidget.subtitleFontWeight).weight)
             } else {
                 views.setViewVisibility(R.id.widget_subtitle, View.GONE)
             }

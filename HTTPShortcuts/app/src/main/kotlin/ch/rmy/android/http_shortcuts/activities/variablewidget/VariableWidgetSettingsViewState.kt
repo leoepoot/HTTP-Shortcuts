@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import ch.rmy.android.http_shortcuts.activities.variablewidget.models.SelectableShortcut
 import ch.rmy.android.http_shortcuts.activities.variablewidget.models.SelectableVariable
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
@@ -18,13 +19,21 @@ data class VariableWidgetSettingsViewState(
     val background: WidgetBackgroundType?,
     val shortcutId: ShortcutId?,
     val selectableShortcuts: List<SelectableShortcut>,
-    val titleSize: Int,
+    val titleSize: Float,
     val titleColor: Int,
-    val valueSize: Int,
+    val titleFontWeight: FontWeight,
+    val valueSize: Float,
     val valueColor: Int,
+    val valueFontWeight: FontWeight,
     val unit: String,
+    val unitSize: Float,
+    val unitColor: Int,
+    val unitFontWeight: FontWeight,
     val subtitleText: String,
     val subtitlePosition: SubtitlePosition,
+    val subtitleSize: Float,
+    val subtitleColor: Int,
+    val subtitleFontWeight: FontWeight,
     val padding: PaddingType,
     val colorDialogVisible: Boolean = false,
     val colorDialogTarget: ColorTarget = ColorTarget.NONE,
@@ -36,10 +45,16 @@ data class VariableWidgetSettingsViewState(
         get() = String.format("#%08x", titleColor)
     val valueColorFormatted
         get() = String.format("#%08x", valueColor)
+    val unitColorFormatted
+        get() = String.format("#%08x", unitColor)
+    val subtitleColorFormatted
+        get() = String.format("#%08x", subtitleColor)
 }
 
 enum class ColorTarget {
     NONE,
     TITLE,
     VALUE,
+    UNIT,
+    SUBTITLE,
 }

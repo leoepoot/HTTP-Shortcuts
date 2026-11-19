@@ -31,13 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.rmy.android.framework.utils.FilePickerUtil
 import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.components.Checkbox
 import ch.rmy.android.http_shortcuts.components.ColorPickerDialog
 import ch.rmy.android.http_shortcuts.components.FontSize
+import ch.rmy.android.http_shortcuts.components.FontStylePanel
 import ch.rmy.android.http_shortcuts.components.OrderedOptionsSlider
 import ch.rmy.android.http_shortcuts.components.SelectionField
 import ch.rmy.android.http_shortcuts.components.SettingsButton
@@ -45,6 +45,7 @@ import ch.rmy.android.http_shortcuts.components.SettingsGroup
 import ch.rmy.android.http_shortcuts.components.Spacing
 import ch.rmy.android.http_shortcuts.components.VerticalSpacer
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.data.enums.WidgetTextSource
@@ -52,7 +53,6 @@ import ch.rmy.android.http_shortcuts.icons.EditImageContract
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
 
 private val ICON_SCALE_OPTIONS = arrayOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
-private val TITLE_SIZE_OPTIONS = WidgetConstants.TITLE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
 
 @Composable
 fun ShortcutWidgetSettingsContent(
@@ -64,12 +64,16 @@ fun ShortcutWidgetSettingsContent(
     onIconScaleChanged: (Float) -> Unit,
     onBackgroundSelected: (WidgetBackgroundType?) -> Unit,
     onBackgroundImagePicked: (Uri) -> Unit,
-    onTitleSizeChanged: (Int) -> Unit,
+    onTitleSizeChanged: (Float) -> Unit,
     onTitleColorButtonClicked: () -> Unit,
+    onTitleFontWeightChanged: (FontWeight) -> Unit,
     onTitleSourceChanged: (WidgetTextSource) -> Unit,
     onTitleTextChanged: (String) -> Unit,
     onSubtitleSourceChanged: (WidgetTextSource) -> Unit,
     onSubtitleTextChanged: (String) -> Unit,
+    onSubtitleSizeChanged: (Float) -> Unit,
+    onSubtitleColorButtonClicked: () -> Unit,
+    onSubtitleFontWeightChanged: (FontWeight) -> Unit,
     onPaddingChanged: (PaddingType) -> Unit,
 ) {
     val cropImage = rememberLauncherForActivityResult(
@@ -185,23 +189,13 @@ fun ShortcutWidgetSettingsContent(
                 )
             }
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(Spacing.SMALL),
-                modifier = Modifier.padding(horizontal = Spacing.MEDIUM),
-            ) {
-                Text(text = stringResource(R.string.label_widget_title_size))
-                OrderedOptionsSlider(
-                    modifier = Modifier.fillMaxWidth(),
-                    options = TITLE_SIZE_OPTIONS.map { it.toFloat() }.toTypedArray(),
-                    value = viewState.titleSize.toFloat(),
-                    onValueChange = { onTitleSizeChanged(it.toInt()) },
-                )
-            }
-
-            SettingsButton(
-                title = stringResource(R.string.label_widget_title_color),
-                subtitle = viewState.titleColorFormatted,
-                onClick = onTitleColorButtonClicked,
+            FontStylePanel(
+                color = viewState.titleColor,
+                onColorButtonClicked = onTitleColorButtonClicked,
+                size = viewState.titleSize,
+                onSizeChanged = onTitleSizeChanged,
+                weight = viewState.titleFontWeight,
+                onWeightChanged = onTitleFontWeightChanged,
             )
         }
 
@@ -233,6 +227,15 @@ fun ShortcutWidgetSettingsContent(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = Spacing.MEDIUM, vertical = Spacing.SMALL),
+            )
+
+            FontStylePanel(
+                color = viewState.subtitleColor,
+                onColorButtonClicked = onSubtitleColorButtonClicked,
+                size = viewState.subtitleSize,
+                onSizeChanged = onSubtitleSizeChanged,
+                weight = viewState.subtitleFontWeight,
+                onWeightChanged = onSubtitleFontWeightChanged,
             )
         }
 
@@ -427,4 +430,3 @@ private fun Modifier.borderIfSelected(selected: Boolean): Modifier =
     } else {
         this
     }
-    

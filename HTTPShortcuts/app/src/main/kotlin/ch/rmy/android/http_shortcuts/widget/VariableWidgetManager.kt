@@ -16,6 +16,7 @@ import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableRepository
 import ch.rmy.android.http_shortcuts.data.domains.variables.VariableKeyOrId
 import ch.rmy.android.http_shortcuts.data.domains.widgets.VariableWidgetsRepository
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.ShortcutTriggerType
 import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
@@ -40,11 +41,19 @@ constructor(
         shortcutId: ShortcutId?,
         titleSize: Float? = null,
         titleColor: String? = null,
+        titleFontWeight: Int? = null,
         valueSize: Float? = null,
         valueColor: String? = null,
+        valueFontWeight: Int? = null,
         unit: String? = null,
+        unitSize: Float? = null,
+        unitColor: String? = null,
+        unitFontWeight: Int? = null,
         subtitleText: String? = null,
         subtitlePosition: SubtitlePosition? = null,
+        subtitleSize: Float? = null,
+        subtitleColor: String? = null,
+        subtitleFontWeight: Int? = null,
         padding: PaddingType? = null,
     ) {
         variableWidgetsRepository.createOrUpdateVariableWidget(
@@ -56,11 +65,19 @@ constructor(
             shortcutId = shortcutId,
             titleSize = titleSize,
             titleColor = titleColor,
+            titleFontWeight = titleFontWeight,
             valueSize = valueSize,
             valueColor = valueColor,
+            valueFontWeight = valueFontWeight,
             unit = unit,
+            unitSize = unitSize,
+            unitColor = unitColor,
+            unitFontWeight = unitFontWeight,
             subtitleText = subtitleText,
             subtitlePosition = subtitlePosition,
+            subtitleSize = subtitleSize,
+            subtitleColor = subtitleColor,
+            subtitleFontWeight = subtitleFontWeight,
             padding = padding,
         )
     }
@@ -125,6 +142,11 @@ constructor(
             val paddingPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingDp.toFloat(), context.resources.displayMetrics).toInt()
             views.setViewPadding(R.id.widget_container, paddingPx, paddingPx, paddingPx, paddingPx)
 
+            val titleFontWeight = FontWeight.fromWeight(variableWidget.titleFontWeight).weight
+            val valueFontWeight = FontWeight.fromWeight(variableWidget.valueFontWeight).weight
+            val unitFontWeight = FontWeight.fromWeight(variableWidget.unitFontWeight).weight
+            val subtitleFontWeight = FontWeight.fromWeight(variableWidget.subtitleFontWeight).weight
+
             val title = variableWidget.title
             if (title.isNotEmpty()) {
                 views.setViewVisibility(R.id.widget_title, View.VISIBLE)
@@ -132,8 +154,9 @@ constructor(
                 val titleSize = variableWidget.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE
                 views.setTextViewTextSize(R.id.widget_title, COMPLEX_UNIT_SP, titleSize)
                 val titleColor = variableWidget.titleColor?.let { parseColorSafe(it) }
-                    ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR
+                    ?: WidgetConstants.DEFAULT_TITLE_COLOR
                 views.setTextColor(R.id.widget_title, titleColor)
+                views.setTextViewFontWeight(R.id.widget_title, titleFontWeight)
             } else {
                 views.setViewVisibility(R.id.widget_title, View.GONE)
             }
@@ -143,15 +166,20 @@ constructor(
             val valueSize = variableWidget.valueSize ?: WidgetConstants.DEFAULT_VALUE_SIZE
             views.setTextViewTextSize(R.id.widget_value, COMPLEX_UNIT_SP, valueSize)
             val valueColor = variableWidget.valueColor?.let { parseColorSafe(it) }
-                ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR
+                ?: WidgetConstants.DEFAULT_VALUE_COLOR
             views.setTextColor(R.id.widget_value, valueColor)
+            views.setTextViewFontWeight(R.id.widget_value, valueFontWeight)
 
             val unit = variableWidget.unit
             if (!unit.isNullOrEmpty()) {
                 views.setViewVisibility(R.id.widget_unit, View.VISIBLE)
                 views.setTextViewText(R.id.widget_unit, unit)
-                val unitSize = valueSize - WidgetConstants.SUBTITLE_SIZE_OFFSET
-                views.setTextViewTextSize(R.id.widget_unit, COMPLEX_UNIT_SP, maxOf(unitSize, 8f))
+                val unitSize = variableWidget.unitSize ?: WidgetConstants.DEFAULT_UNIT_SIZE
+                views.setTextViewTextSize(R.id.widget_unit, COMPLEX_UNIT_SP, unitSize)
+                val unitColor = variableWidget.unitColor?.let { parseColorSafe(it) }
+                    ?: WidgetConstants.DEFAULT_UNIT_COLOR
+                views.setTextColor(R.id.widget_unit, unitColor)
+                views.setTextViewFontWeight(R.id.widget_unit, unitFontWeight)
             } else {
                 views.setViewVisibility(R.id.widget_unit, View.GONE)
             }
@@ -160,23 +188,27 @@ constructor(
             val widgetWidth = getWidgetWidth(variableWidget.widgetId)
             val showSubtitle = !subtitleText.isNullOrEmpty() && widgetWidth > 160
             val subtitlePosition = variableWidget.subtitlePosition ?: SubtitlePosition.DEFAULT
+            val subtitleSize = variableWidget.subtitleSize ?: WidgetConstants.DEFAULT_SUBTITLE_SIZE
+            val subtitleColor = variableWidget.subtitleColor?.let { parseColorSafe(it) }
+                ?: WidgetConstants.DEFAULT_SUBTITLE_COLOR
 
             if (showSubtitle) {
-                val subtitleSize = valueSize - WidgetConstants.SUBTITLE_SIZE_SMALL_OFFSET
                 when (subtitlePosition) {
                     SubtitlePosition.TOP_END -> {
                         views.setViewVisibility(R.id.widget_subtitle_top, View.VISIBLE)
                         views.setViewVisibility(R.id.widget_subtitle_bottom, View.GONE)
                         views.setTextViewText(R.id.widget_subtitle_top, subtitleText!!)
-                        views.setTextViewTextSize(R.id.widget_subtitle_top, COMPLEX_UNIT_SP, maxOf(subtitleSize, 8f))
-                        views.setTextColor(R.id.widget_subtitle_top, WidgetConstants.DEFAULT_SUBTITLE_COLOR)
+                        views.setTextViewTextSize(R.id.widget_subtitle_top, COMPLEX_UNIT_SP, subtitleSize)
+                        views.setTextColor(R.id.widget_subtitle_top, subtitleColor)
+                        views.setTextViewFontWeight(R.id.widget_subtitle_top, subtitleFontWeight)
                     }
                     SubtitlePosition.BOTTOM_END -> {
                         views.setViewVisibility(R.id.widget_subtitle_top, View.GONE)
                         views.setViewVisibility(R.id.widget_subtitle_bottom, View.VISIBLE)
                         views.setTextViewText(R.id.widget_subtitle_bottom, subtitleText!!)
-                        views.setTextViewTextSize(R.id.widget_subtitle_bottom, COMPLEX_UNIT_SP, maxOf(subtitleSize, 8f))
-                        views.setTextColor(R.id.widget_subtitle_bottom, WidgetConstants.DEFAULT_SUBTITLE_COLOR)
+                        views.setTextViewTextSize(R.id.widget_subtitle_bottom, COMPLEX_UNIT_SP, subtitleSize)
+                        views.setTextColor(R.id.widget_subtitle_bottom, subtitleColor)
+                        views.setTextViewFontWeight(R.id.widget_subtitle_bottom, subtitleFontWeight)
                     }
                 }
             } else {

@@ -11,6 +11,7 @@ import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutRepository
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableRepository
 import ch.rmy.android.http_shortcuts.data.domains.widgets.VariableWidgetsRepository
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.VariableType
@@ -61,13 +62,21 @@ constructor(
             background = widget?.background,
             shortcutId = widget?.shortcutId,
             selectableShortcuts = selectableShortcuts,
-            titleSize = widget?.titleSize?.toInt() ?: WidgetConstants.DEFAULT_TITLE_SIZE.toInt(),
-            titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR,
-            valueSize = widget?.valueSize?.toInt() ?: WidgetConstants.DEFAULT_VALUE_SIZE.toInt(),
-            valueColor = widget?.valueColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_WIDGET_TEXT_COLOR,
+            titleSize = widget?.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE,
+            titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_TITLE_COLOR,
+            titleFontWeight = FontWeight.fromWeight(widget?.titleFontWeight),
+            valueSize = widget?.valueSize ?: WidgetConstants.DEFAULT_VALUE_SIZE,
+            valueColor = widget?.valueColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_VALUE_COLOR,
+            valueFontWeight = FontWeight.fromWeight(widget?.valueFontWeight),
             unit = widget?.unit ?: "",
+            unitSize = widget?.unitSize ?: WidgetConstants.DEFAULT_UNIT_SIZE,
+            unitColor = widget?.unitColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_UNIT_COLOR,
+            unitFontWeight = FontWeight.fromWeight(widget?.unitFontWeight),
             subtitleText = widget?.subtitleText ?: "",
             subtitlePosition = widget?.subtitlePosition ?: SubtitlePosition.DEFAULT,
+            subtitleSize = widget?.subtitleSize ?: WidgetConstants.DEFAULT_SUBTITLE_SIZE,
+            subtitleColor = widget?.subtitleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_SUBTITLE_COLOR,
+            subtitleFontWeight = FontWeight.fromWeight(widget?.subtitleFontWeight),
             padding = widget?.padding ?: PaddingType.DEFAULT,
         )
     }
@@ -132,9 +141,15 @@ constructor(
         }
     }
 
-    fun onTitleSizeChanged(size: Int) = runAction {
+    fun onTitleSizeChanged(size: Float) = runAction {
         updateViewState {
             copy(titleSize = size)
+        }
+    }
+
+    fun onTitleFontWeightChanged(weight: FontWeight) = runAction {
+        updateViewState {
+            copy(titleFontWeight = weight)
         }
     }
 
@@ -150,9 +165,15 @@ constructor(
         }
     }
 
-    fun onValueSizeChanged(size: Int) = runAction {
+    fun onValueSizeChanged(size: Float) = runAction {
         updateViewState {
             copy(valueSize = size)
+        }
+    }
+
+    fun onValueFontWeightChanged(weight: FontWeight) = runAction {
+        updateViewState {
+            copy(valueFontWeight = weight)
         }
     }
 
@@ -174,6 +195,30 @@ constructor(
         }
     }
 
+    fun onUnitSizeChanged(size: Float) = runAction {
+        updateViewState {
+            copy(unitSize = size)
+        }
+    }
+
+    fun onUnitFontWeightChanged(weight: FontWeight) = runAction {
+        updateViewState {
+            copy(unitFontWeight = weight)
+        }
+    }
+
+    fun onUnitColorButtonClicked() = runAction {
+        updateViewState {
+            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.UNIT)
+        }
+    }
+
+    fun onUnitColorSelected(color: Int) = runAction {
+        updateViewState {
+            copy(colorDialogVisible = false, unitColor = color, colorDialogTarget = ColorTarget.NONE)
+        }
+    }
+
     fun onSubtitleTextChanged(text: String) = runAction {
         updateViewState {
             copy(subtitleText = text)
@@ -183,6 +228,30 @@ constructor(
     fun onSubtitlePositionChanged(position: SubtitlePosition) = runAction {
         updateViewState {
             copy(subtitlePosition = position)
+        }
+    }
+
+    fun onSubtitleSizeChanged(size: Float) = runAction {
+        updateViewState {
+            copy(subtitleSize = size)
+        }
+    }
+
+    fun onSubtitleFontWeightChanged(weight: FontWeight) = runAction {
+        updateViewState {
+            copy(subtitleFontWeight = weight)
+        }
+    }
+
+    fun onSubtitleColorButtonClicked() = runAction {
+        updateViewState {
+            copy(colorDialogVisible = true, colorDialogTarget = ColorTarget.SUBTITLE)
+        }
+    }
+
+    fun onSubtitleColorSelected(color: Int) = runAction {
+        updateViewState {
+            copy(colorDialogVisible = false, subtitleColor = color, colorDialogTarget = ColorTarget.NONE)
         }
     }
 
@@ -209,11 +278,19 @@ constructor(
                 shortcutId = viewState.shortcutId,
                 titleSize = viewState.titleSize,
                 titleColor = viewState.titleColorFormatted,
+                titleFontWeight = viewState.titleFontWeight.weight,
                 valueSize = viewState.valueSize,
                 valueColor = viewState.valueColorFormatted,
+                valueFontWeight = viewState.valueFontWeight.weight,
                 unit = viewState.unit,
+                unitSize = viewState.unitSize,
+                unitColor = viewState.unitColorFormatted,
+                unitFontWeight = viewState.unitFontWeight.weight,
                 subtitleText = viewState.subtitleText,
                 subtitlePosition = viewState.subtitlePosition,
+                subtitleSize = viewState.subtitleSize,
+                subtitleColor = viewState.subtitleColorFormatted,
+                subtitleFontWeight = viewState.subtitleFontWeight.weight,
                 padding = viewState.padding,
             ),
         )

@@ -31,46 +31,48 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.rmy.android.framework.utils.FilePickerUtil
 import ch.rmy.android.http_shortcuts.R
 import ch.rmy.android.http_shortcuts.components.ColorPickerDialog
 import ch.rmy.android.http_shortcuts.components.FontSize
-import ch.rmy.android.http_shortcuts.components.OrderedOptionsSlider
+import ch.rmy.android.http_shortcuts.components.FontStylePanel
 import ch.rmy.android.http_shortcuts.components.SelectionField
-import ch.rmy.android.http_shortcuts.components.SettingsButton
 import ch.rmy.android.http_shortcuts.components.SettingsGroup
 import ch.rmy.android.http_shortcuts.components.Spacing
 import ch.rmy.android.http_shortcuts.components.VerticalSpacer
 import ch.rmy.android.http_shortcuts.data.domains.shortcuts.ShortcutId
 import ch.rmy.android.http_shortcuts.data.domains.variables.GlobalVariableId
+import ch.rmy.android.http_shortcuts.data.enums.FontWeight
 import ch.rmy.android.http_shortcuts.data.enums.PaddingType
 import ch.rmy.android.http_shortcuts.data.enums.SubtitlePosition
 import ch.rmy.android.http_shortcuts.data.enums.WidgetBackgroundType
 import ch.rmy.android.http_shortcuts.icons.EditImageContract
 import ch.rmy.android.http_shortcuts.widget.WidgetConstants
 
-private val TITLE_SIZE_OPTIONS = WidgetConstants.TITLE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
-private val VALUE_SIZE_OPTIONS = WidgetConstants.VALUE_SIZE_OPTIONS.map { it.toInt() }.toTypedArray()
-private const val BACKGROUND_TYPE_COLOR = "color"
-
 @Composable
 fun VariableWidgetSettingsContent(
     viewState: VariableWidgetSettingsViewState,
     onVariableSelected: (GlobalVariableId?) -> Unit,
-    onFontSizeChanged: (Int) -> Unit,
     onTitleChanged: (String) -> Unit,
     onBackgroundChanged: (WidgetBackgroundType?) -> Unit,
     onBackgroundImagePicked: (Uri) -> Unit,
     onShortcutSelected: (ShortcutId?) -> Unit,
-    onTitleSizeChanged: (Int) -> Unit,
+    onTitleSizeChanged: (Float) -> Unit,
     onTitleColorButtonClicked: () -> Unit,
-    onValueSizeChanged: (Int) -> Unit,
+    onTitleFontWeightChanged: (FontWeight) -> Unit,
+    onValueSizeChanged: (Float) -> Unit,
     onValueColorButtonClicked: () -> Unit,
+    onValueFontWeightChanged: (FontWeight) -> Unit,
     onUnitChanged: (String) -> Unit,
+    onUnitSizeChanged: (Float) -> Unit,
+    onUnitColorButtonClicked: () -> Unit,
+    onUnitFontWeightChanged: (FontWeight) -> Unit,
     onSubtitleTextChanged: (String) -> Unit,
     onSubtitlePositionChanged: (SubtitlePosition) -> Unit,
+    onSubtitleSizeChanged: (Float) -> Unit,
+    onSubtitleColorButtonClicked: () -> Unit,
+    onSubtitleFontWeightChanged: (FontWeight) -> Unit,
     onPaddingChanged: (PaddingType) -> Unit,
 ) {
     val cropImage = rememberLauncherForActivityResult(
@@ -158,46 +160,26 @@ fun VariableWidgetSettingsContent(
                 maxLines = 2,
             )
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(Spacing.SMALL),
-                modifier = Modifier.padding(horizontal = Spacing.MEDIUM),
-            ) {
-                Text(text = stringResource(R.string.label_widget_title_size))
-                OrderedOptionsSlider(
-                    modifier = Modifier.fillMaxWidth(),
-                    options = TITLE_SIZE_OPTIONS.map { it.toFloat() }.toTypedArray(),
-                    value = viewState.titleSize.toFloat(),
-                    onValueChange = { onTitleSizeChanged(it.toInt()) },
-                )
-            }
-
-            SettingsButton(
-                title = stringResource(R.string.label_widget_title_color),
-                subtitle = viewState.titleColorFormatted,
-                onClick = onTitleColorButtonClicked,
+            FontStylePanel(
+                color = viewState.titleColor,
+                onColorButtonClicked = onTitleColorButtonClicked,
+                size = viewState.titleSize,
+                onSizeChanged = onTitleSizeChanged,
+                weight = viewState.titleFontWeight,
+                onWeightChanged = onTitleFontWeightChanged,
             )
         }
 
         HorizontalDivider()
 
         SettingsGroup(title = stringResource(R.string.label_widget_section_value)) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(Spacing.SMALL),
-                modifier = Modifier.padding(horizontal = Spacing.MEDIUM),
-            ) {
-                Text(text = stringResource(R.string.label_widget_value_size))
-                OrderedOptionsSlider(
-                    modifier = Modifier.fillMaxWidth(),
-                    options = VALUE_SIZE_OPTIONS.map { it.toFloat() }.toTypedArray(),
-                    value = viewState.valueSize.toFloat(),
-                    onValueChange = { onValueSizeChanged(it.toInt()) },
-                )
-            }
-
-            SettingsButton(
-                title = stringResource(R.string.label_widget_value_color),
-                subtitle = viewState.valueColorFormatted,
-                onClick = onValueColorButtonClicked,
+            FontStylePanel(
+                color = viewState.valueColor,
+                onColorButtonClicked = onValueColorButtonClicked,
+                size = viewState.valueSize,
+                onSizeChanged = onValueSizeChanged,
+                weight = viewState.valueFontWeight,
+                onWeightChanged = onValueFontWeightChanged,
             )
 
             TextField(
@@ -208,6 +190,15 @@ fun VariableWidgetSettingsContent(
                 value = viewState.unit,
                 onValueChange = onUnitChanged,
                 singleLine = true,
+            )
+
+            FontStylePanel(
+                color = viewState.unitColor,
+                onColorButtonClicked = onUnitColorButtonClicked,
+                size = viewState.unitSize,
+                onSizeChanged = onUnitSizeChanged,
+                weight = viewState.unitFontWeight,
+                onWeightChanged = onUnitFontWeightChanged,
             )
         }
 
@@ -249,6 +240,15 @@ fun VariableWidgetSettingsContent(
                     onItemSelected = onSubtitlePositionChanged,
                 )
             }
+
+            FontStylePanel(
+                color = viewState.subtitleColor,
+                onColorButtonClicked = onSubtitleColorButtonClicked,
+                size = viewState.subtitleSize,
+                onSizeChanged = onSubtitleSizeChanged,
+                weight = viewState.subtitleFontWeight,
+                onWeightChanged = onSubtitleFontWeightChanged,
+            )
         }
 
         HorizontalDivider()

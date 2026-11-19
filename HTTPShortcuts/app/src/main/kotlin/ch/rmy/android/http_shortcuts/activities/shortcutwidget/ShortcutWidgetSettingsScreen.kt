@@ -50,21 +50,31 @@ fun ShortcutWidgetSettingsScreen(
             onBackgroundImagePicked = viewModel::onBackgroundImagePicked,
             onTitleSizeChanged = viewModel::onTitleSizeChanged,
             onTitleColorButtonClicked = viewModel::onTitleColorButtonClicked,
+            onTitleFontWeightChanged = viewModel::onTitleFontWeightChanged,
             onTitleSourceChanged = viewModel::onTitleSourceChanged,
             onTitleTextChanged = viewModel::onTitleTextChanged,
             onSubtitleSourceChanged = viewModel::onSubtitleSourceChanged,
             onSubtitleTextChanged = viewModel::onSubtitleTextChanged,
+            onSubtitleSizeChanged = viewModel::onSubtitleSizeChanged,
+            onSubtitleColorButtonClicked = viewModel::onSubtitleColorButtonClicked,
+            onSubtitleFontWeightChanged = viewModel::onSubtitleFontWeightChanged,
             onPaddingChanged = viewModel::onPaddingChanged,
         )
     }
 
     if (state?.colorDialogVisible == true) {
         ColorPickerDialog(
-            initialColor = if (state.colorDialogTarget == ColorTarget.TITLE) state.titleColor else state.labelColor,
+            initialColor = when (state.colorDialogTarget) {
+                ColorTarget.LABEL -> state.labelColor
+                ColorTarget.TITLE -> state.titleColor
+                ColorTarget.SUBTITLE -> state.subtitleColor
+                else -> state.titleColor
+            },
             onColorSelected = { color ->
                 when (state.colorDialogTarget) {
                     ColorTarget.LABEL -> viewModel.onLabelColorSelected(color)
                     ColorTarget.TITLE -> viewModel.onTitleColorSelected(color)
+                    ColorTarget.SUBTITLE -> viewModel.onSubtitleColorSelected(color)
                     else -> Unit
                 }
             },

@@ -1304,6 +1304,32 @@
     <string name="label_widget_value_size">Value Size</string>
     <!-- Label: Button to pick widget value text color -->
     <string name="label_widget_value_color">Value Color</string>
+    <!-- Label: Generic label for the color row inside the unified font style panel -->
+    <string name="label_widget_text_color">Color</string>
+    <!-- Label: Generic label for the font size slider inside the unified font style panel -->
+    <string name="label_widget_text_size">Size</string>
+    <!-- Label: Generic label for the font weight dropdown inside the unified font style panel -->
+    <string name="label_widget_text_weight">Weight</string>
+    <!-- Label: Option for the thinnest font weight -->
+    <string name="label_font_weight_thin">Thin</string>
+    <!-- Label: Option for an extra-light font weight -->
+    <string name="label_font_weight_extra_light">ExtraLight</string>
+    <!-- Label: Option for a light font weight -->
+    <string name="label_font_weight_light">Light</string>
+    <!-- Label: Option for a normal font weight -->
+    <string name="label_font_weight_normal">Normal</string>
+    <!-- Label: Option for a regular font weight -->
+    <string name="label_font_weight_regular">Regular</string>
+    <!-- Label: Option for a medium font weight -->
+    <string name="label_font_weight_medium">Medium</string>
+    <!-- Label: Option for a semi-bold font weight -->
+    <string name="label_font_weight_semi_bold">Semibold</string>
+    <!-- Label: Option for a demi-bold font weight -->
+    <string name="label_font_weight_demi_bold">Demibold</string>
+    <!-- Label: Option for a bold font weight -->
+    <string name="label_font_weight_bold">Bold</string>
+    <!-- Label: Option for a heavy font weight -->
+    <string name="label_font_weight_heavy">Heavy</string>
     <!-- Label: Input field for the unit displayed after the widget value -->
     <string name="label_widget_unit">Unit</string>
     <!-- Label: Selector for the subtitle position on the widget -->
