@@ -57,7 +57,7 @@
                 android:id="@+id/widget_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
+                android:ellipsize="none"
                 android:fontFamily="sans-serif"
                 android:maxLines="1"
                 android:textColor="@color/variable_widget_foreground"
@@ -68,25 +68,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:ellipsize="end"
                 android:fontFamily="sans-serif"
-                android:maxLines="1"
                 android:textColor="#88888888"
                 android:textSize="14sp"
                 android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/widget_subtitle_bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:maxLines="1"
-                android:textColor="#88888888"
-                android:textSize="10sp"
-                android:visibility="gone" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_subtitle_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:textColor="#88888888"
+            android:textSize="10sp"
+            android:visibility="gone" />
 
     </FrameLayout>
 
