@@ -142,10 +142,10 @@ constructor(
             val paddingPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, paddingDp.toFloat(), context.resources.displayMetrics).toInt()
             views.setViewPadding(R.id.widget_container, paddingPx, paddingPx, paddingPx, paddingPx)
 
-            val titleFontWeight = FontWeight.fromWeight(variableWidget.titleFontWeight).weight
-            val valueFontWeight = FontWeight.fromWeight(variableWidget.valueFontWeight).weight
-            val unitFontWeight = FontWeight.fromWeight(variableWidget.unitFontWeight).weight
-            val subtitleFontWeight = FontWeight.fromWeight(variableWidget.subtitleFontWeight).weight
+            val titleFontWeight = (variableWidget.titleFontWeight?.let { FontWeight.fromWeight(it) } ?: WidgetConstants.DEFAULT_TITLE_FONT_WEIGHT).weight
+            val valueFontWeight = (variableWidget.valueFontWeight?.let { FontWeight.fromWeight(it) } ?: WidgetConstants.DEFAULT_VALUE_FONT_WEIGHT).weight
+            val unitFontWeight = (variableWidget.unitFontWeight?.let { FontWeight.fromWeight(it) } ?: WidgetConstants.DEFAULT_UNIT_FONT_WEIGHT).weight
+            val subtitleFontWeight = (variableWidget.subtitleFontWeight?.let { FontWeight.fromWeight(it) } ?: WidgetConstants.DEFAULT_SUBTITLE_FONT_WEIGHT).weight
 
             val title = variableWidget.title
             if (title.isNotEmpty()) {

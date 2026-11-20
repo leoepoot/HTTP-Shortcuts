@@ -6,3 +6,6 @@ store_listings
 
 # macOS
 .DS_Store
+
+# Trae IDE rules (local only, not tracked)
+.trae/

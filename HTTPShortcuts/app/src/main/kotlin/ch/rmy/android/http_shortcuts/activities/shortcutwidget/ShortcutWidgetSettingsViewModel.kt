@@ -55,14 +55,14 @@ constructor(
             background = widget?.background,
             titleSize = widget?.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE,
             titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_TITLE_COLOR,
-            titleFontWeight = FontWeight.fromWeight(widget?.titleFontWeight),
+            titleFontWeight = widget?.titleFontWeight?.let { FontWeight.fromWeight(it) } ?: WidgetConstants.DEFAULT_TITLE_FONT_WEIGHT,
             titleSource = widget?.titleSource ?: WidgetTextSource.SHORTCUT_NAME,
             titleText = widget?.titleText ?: "",
             subtitleSource = widget?.subtitleSource ?: WidgetTextSource.SHORTCUT_DESCRIPTION,
             subtitleText = widget?.subtitleText ?: "",
             subtitleSize = widget?.subtitleSize ?: WidgetConstants.DEFAULT_SUBTITLE_SIZE,
             subtitleColor = widget?.subtitleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_SUBTITLE_COLOR,
-            subtitleFontWeight = FontWeight.fromWeight(widget?.subtitleFontWeight),
+            subtitleFontWeight = widget?.subtitleFontWeight?.let { FontWeight.fromWeight(it) } ?: WidgetConstants.DEFAULT_SUBTITLE_FONT_WEIGHT,
             padding = widget?.padding ?: PaddingType.DEFAULT,
         )
     }
