@@ -50,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
+            android:baselineAligned="false"
             android:gravity="bottom"
             android:orientation="horizontal">
 
@@ -59,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="none"
                 android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
                 android:maxLines="1"
                 android:textColor="@color/variable_widget_foreground"
                 android:textSize="24sp" />
@@ -69,6 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:fontFamily="sans-serif"
+                android:includeFontPadding="false"
                 android:textColor="#88888888"
                 android:textSize="14sp"
                 android:visibility="gone" />

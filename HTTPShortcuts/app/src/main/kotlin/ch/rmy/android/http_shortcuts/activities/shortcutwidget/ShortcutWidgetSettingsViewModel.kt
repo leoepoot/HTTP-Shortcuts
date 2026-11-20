@@ -52,7 +52,7 @@ constructor(
             iconScale = widget?.iconScale ?: 1f,
             selectableShortcuts = selectableShortcuts,
             selectedShortcutId = selectedShortcutId,
-            background = widget?.background,
+            background = widget?.background ?: WidgetBackgroundType.Color(WidgetConstants.DEFAULT_BACKGROUND_COLOR),
             titleSize = widget?.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE,
             titleColor = widget?.titleColor?.let { runCatching { Color.parseColor(it) }.getOrNull() } ?: WidgetConstants.DEFAULT_TITLE_COLOR,
             titleFontWeight = widget?.titleFontWeight?.let { FontWeight.fromWeight(it) } ?: WidgetConstants.DEFAULT_TITLE_FONT_WEIGHT,

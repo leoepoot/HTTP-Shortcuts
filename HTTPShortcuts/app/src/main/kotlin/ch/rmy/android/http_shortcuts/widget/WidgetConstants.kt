@@ -11,11 +11,11 @@ object WidgetConstants {
 
     const val DEFAULT_TITLE_SIZE = 20f
     const val DEFAULT_TITLE_COLOR = 0xCC000000.toInt()
-    val DEFAULT_TITLE_FONT_WEIGHT = FontWeight.DEMI_BOLD
+    val DEFAULT_TITLE_FONT_WEIGHT = FontWeight.SEMI_BOLD
 
     const val DEFAULT_VALUE_SIZE = 42f
     const val DEFAULT_VALUE_COLOR = 0xCC000000.toInt()
-    val DEFAULT_VALUE_FONT_WEIGHT = FontWeight.SEMI_BOLD
+    val DEFAULT_VALUE_FONT_WEIGHT = FontWeight.DEMI_BOLD
 
     const val DEFAULT_UNIT_SIZE = 20f
     const val DEFAULT_UNIT_COLOR = 0x80000000.toInt()
@@ -24,6 +24,8 @@ object WidgetConstants {
     const val DEFAULT_SUBTITLE_SIZE = 12f
     const val DEFAULT_SUBTITLE_COLOR = 0x80000000.toInt()
     val DEFAULT_SUBTITLE_FONT_WEIGHT = FontWeight.REGULAR
+
+    const val DEFAULT_BACKGROUND_COLOR = 0xD9FFFFFF.toInt()
 
     const val WIDGET_BACKGROUND_MAX_SIZE_PX = 400
     const val WIDGET_BACKGROUND_CACHE_MAX_SIZE_BYTES = 4 * 1024 * 1024L

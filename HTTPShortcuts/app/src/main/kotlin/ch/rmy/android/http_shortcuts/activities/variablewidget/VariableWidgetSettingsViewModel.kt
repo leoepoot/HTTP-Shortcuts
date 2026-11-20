@@ -59,7 +59,7 @@ constructor(
             variableValue = selectedVariable?.value,
             fontSize = widget?.fontSize ?: 22,
             title = widget?.title ?: "",
-            background = widget?.background,
+            background = widget?.background ?: WidgetBackgroundType.Color(WidgetConstants.DEFAULT_BACKGROUND_COLOR),
             shortcutId = widget?.shortcutId,
             selectableShortcuts = selectableShortcuts,
             titleSize = widget?.titleSize ?: WidgetConstants.DEFAULT_TITLE_SIZE,
