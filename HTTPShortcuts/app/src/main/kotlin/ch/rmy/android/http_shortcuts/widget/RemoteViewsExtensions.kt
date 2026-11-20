@@ -1,6 +1,7 @@
 package ch.rmy.android.http_shortcuts.widget
 
 import android.content.res.ColorStateList
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
 import android.text.Spannable
@@ -24,6 +25,19 @@ fun RemoteViews.setTextSize(@IdRes id: Int, fontSize: Float) {
 
 private const val FONT_WEIGHT_TAG = "WidgetFontWeight"
 
+private val miproAvailable: Boolean by lazy {
+    try {
+        val paint = Paint().apply { textSize = 100f }
+        paint.typeface = Typeface.create("mipro-heavy", Typeface.NORMAL)
+        val heavyWidth = paint.measureText("MWMW")
+        paint.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+        val defaultWidth = paint.measureText("MWMW")
+        heavyWidth != defaultWidth
+    } catch (e: Throwable) {
+        false
+    }
+}
+
 fun RemoteViews.setTextViewFontWeight(@IdRes id: Int, weight: Int) {
     val familyName = FontWeight.fromWeight(weight).familyName
     try {
@@ -45,31 +59,25 @@ fun RemoteViews.setTextViewTextWithFontWeight(@IdRes id: Int, text: CharSequence
         setTextViewText(id, null)
         return
     }
-    val actualWeight = FontWeight.fromWeight(weight).renderWeight
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        try {
-            val baseTypeface = Typeface.create("sans-serif", Typeface.NORMAL)
-            val typeface = Typeface.create(baseTypeface, actualWeight, false)
-            val spannable = SpannableString.valueOf(text)
-            spannable.setSpan(
-                TypefaceSpan(typeface),
-                0,
-                spannable.length,
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE,
-            )
-            setTextViewText(id, spannable)
-            Log.i(
-                FONT_WEIGHT_TAG,
-                "TypefaceSpan applied: viewId=$id weight=$actualWeight sdk=${Build.VERSION.SDK_INT}",
-            )
-            return
-        } catch (e: Throwable) {
-            Log.e(FONT_WEIGHT_TAG, "TypefaceSpan failed: viewId=$id weight=$actualWeight", e)
-        }
-    } else {
-        Log.i(FONT_WEIGHT_TAG, "TypefaceSpan skipped: sdk=${Build.VERSION.SDK_INT} < 28, viewId=$id weight=$actualWeight")
+    val fw = FontWeight.fromWeight(weight)
+    val familyName = if (miproAvailable) fw.miproFamilyName else fw.familyName
+    try {
+        val spannable = SpannableString.valueOf(text)
+        spannable.setSpan(
+            TypefaceSpan(familyName),
+            0,
+            spannable.length,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE,
+        )
+        setTextViewText(id, spannable)
+        Log.i(
+            FONT_WEIGHT_TAG,
+            "TypefaceSpan applied: viewId=$id weight=${fw.weight} family='$familyName' mipro=$miproAvailable",
+        )
+    } catch (e: Throwable) {
+        Log.e(FONT_WEIGHT_TAG, "TypefaceSpan failed: viewId=$id family='$familyName'", e)
+        setTextViewText(id, text)
     }
-    setTextViewText(id, text)
 }
 
 fun RemoteViews.setLineHeight(@IdRes id: Int, lineHeightPx: Int) {
