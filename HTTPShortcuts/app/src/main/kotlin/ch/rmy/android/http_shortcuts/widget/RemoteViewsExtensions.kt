@@ -48,7 +48,8 @@ fun RemoteViews.setTextViewTextWithFontWeight(@IdRes id: Int, text: CharSequence
     val actualWeight = FontWeight.fromWeight(weight).renderWeight
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         try {
-            val typeface = Typeface.create("sans-serif", actualWeight, false)
+            val baseTypeface = Typeface.create("sans-serif", Typeface.NORMAL)
+            val typeface = Typeface.create(baseTypeface, actualWeight, false)
             val spannable = SpannableString.valueOf(text)
             spannable.setSpan(
                 TypefaceSpan(typeface),
