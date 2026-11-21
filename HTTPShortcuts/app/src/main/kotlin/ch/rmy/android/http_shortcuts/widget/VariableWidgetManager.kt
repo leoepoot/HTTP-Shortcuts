@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.util.TypedValue.COMPLEX_UNIT_SP
 import android.view.View
@@ -209,6 +211,21 @@ constructor(
                         views.setTextViewTextSize(R.id.widget_subtitle_bottom, COMPLEX_UNIT_SP, subtitleSize)
                         views.setTextColor(R.id.widget_subtitle_bottom, subtitleColor)
                         views.setTextViewFontWeight(R.id.widget_subtitle_bottom, subtitleFontWeight)
+                        val valueSize = variableWidget.valueSize ?: WidgetConstants.DEFAULT_VALUE_SIZE
+                        val unitVisible = !variableWidget.unit.isNullOrEmpty()
+                        val unitSize = variableWidget.unitSize ?: WidgetConstants.DEFAULT_UNIT_SIZE
+                        val groupMaxDescent = maxOf(
+                            measureDescentPx(valueSize),
+                            if (unitVisible) measureDescentPx(unitSize) else 0,
+                        )
+                        val subtitleDescent = measureDescentPx(subtitleSize)
+                        views.setViewPadding(
+                            R.id.widget_subtitle_bottom,
+                            0,
+                            0,
+                            0,
+                            (groupMaxDescent - subtitleDescent).coerceAtLeast(0),
+                        )
                     }
                 }
             } else {
@@ -234,6 +251,18 @@ constructor(
         Color.parseColor(colorString)
     } catch (_: Exception) {
         null
+    }
+
+    private val widgetMetricsPaint = Paint()
+
+    private fun measureDescentPx(sizeSp: Float): Int {
+        widgetMetricsPaint.textSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sizeSp,
+            context.resources.displayMetrics,
+        )
+        widgetMetricsPaint.typeface = Typeface.DEFAULT
+        return widgetMetricsPaint.fontMetricsInt.descent
     }
 
     suspend fun deleteWidgets(widgetIds: List<Int>) {

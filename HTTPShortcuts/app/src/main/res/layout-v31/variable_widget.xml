@@ -29,6 +29,7 @@
             android:layout_gravity="top|start"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
+            android:includeFontPadding="false"
             android:maxLines="2"
             android:textColor="@color/variable_widget_foreground"
             android:textSize="14sp" />
@@ -40,6 +41,7 @@
             android:layout_gravity="top|end"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
+            android:includeFontPadding="false"
             android:maxLines="1"
             android:textColor="#88888888"
             android:textSize="10sp"
@@ -50,7 +52,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
-            android:baselineAligned="false"
             android:gravity="bottom"
             android:orientation="horizontal">
 
@@ -84,6 +85,7 @@
             android:layout_gravity="bottom|end"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
+            android:includeFontPadding="false"
             android:maxLines="1"
             android:textColor="#88888888"
             android:textSize="10sp"
